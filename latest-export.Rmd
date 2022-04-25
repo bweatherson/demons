@@ -1,0 +1,298 @@
+## Summary and Plan
+
+## Proceduralism and Defensivism
+
+The first thing to do is to argue against proceduralism.
+
+Proceduralism has a pair of input conditions, and a pair of output conditions
+
+The input conditions are:
+- What is to be chosen is a function of what things are like at the start of deliberation
+- The values that are relevant are knowable to the chooser as long as the chooser is rational
+
+The output conditions are:
+- Decisiveness (if multiple acceptable, then adding a penny breaks tie)
+- No dilemmas
+
+I'm going to reject every part of proceduralism.
+
+Note that proceduralism is even more general than what @Elga2021 calls a 'suppositional' decision theory'.
+
+Proceduralism is not a package deal - Stalnaker accepts part of it and rejects other parts - but it is tempting to see the whole thing running together.
+
+## Games and Decisions
+
+## The Defensible Norm {#thenorm}
+
+A rational chooser knows what they are doing, and thinks that it is for the best. That is, they think that there is nothing else they could be doing that would be better. This book defends a version of decision theory that starts, and largely ends, with this principle. 
+
+```{r, include=FALSE}
+	require(knitr)
+	require(tidyverse)
+	require(kableExtra)
+	require(huxtable)
+	
+	knitr::opts_chunk$set(echo = FALSE, results = "asis")
+	
+	gameformat <- function(game, caption){
+	  gg <- as_hux(game) %>%
+	    set_width(ncol(game)/10) %>%
+	    set_caption(caption) %>%
+	    set_bold(1, everywhere) %>%
+	    set_bold(everywhere, 1) %>%
+	    set_right_border(everywhere, 1, 0.5) %>%
+	    set_bottom_border(1, everywhere, 0.5) %>%
+	    set_align(everywhere, everywhere, "center") %>%
+	    set_caption_pos("bottom") %>%
+	    set_row_height(everywhere, 0.6) %>%
+		set_markdown() 
+	  right_border_color(gg) <- "grey80"
+	  print_html(gg)
+	  # kbl(game, 
+	  #     booktabs = F, 
+	  #     escape = FALSE,
+	  #     align = paste0("r",strrep("c", ncol(game)-1)),
+	  #     linesep = "",
+	  #     caption = caption) %>%
+	  #   column_spec(1, 
+	  #               border_right = T,
+	  #               bold = T) %>%
+	  #   row_spec(0, bold = T, extra_css = "border-bottom: solid 0.5px;") %>%
+	  #   cell_spec(df[1, 2], extra_css = "border_left = solid 0.5px;") %>%
+	  #   kable_styling(full_width = F)  
+	}
+```
+
+In this book I'm mostly going to focus on what I'll call Demonic decision problem. I'll have much more to say about demons in section \@ref(aboutademon), but for now all we need to know is that demons have the means, motive, and opportunity to correctly predict what strategy a Chooser will adopt.
+
+The most famous demonic problem is _Newcomb's Problem_ @Nozick1969. The chooser is presented with two boxes, one opaque and one clear. They have a choice between taking just the opaque box, i.e., taking one box, and taking both the opaque and the clear box, i.e., taking two boxes. The clear box has a good of value $y$ in  it. The contents of the opaque box are unknown. A demon has predicted the chooser's choice, and has placed a good of value $x$ in it if they predict the chooser will take one box, and left it empty (which we'll assume has value 0) if they predict the chooser will take both boxes. The key constraint is $x > y$. In most versions the value given for $x$ is massively greater than that for $y$, but the theories that are developed for the problem typically are sensitive only to whether $x$ is larger than $y$, not to how much larger it is.
+
+The demon is really good at their job. They are not a time traveller; they are making a prediction that is not causally influenced by what the Chooser actually does. But they are really good. I'll assume that they are arbitrarily good, and come back to just what I mean by that in section \@ref(aboutademon).
+
+I'll write 1 and 2 for the two choices, and P1 and P2 for the predictions. In general, where there is a demon who makes these kinds of predictions, I'll write 'PX' to mean the state of choice X being predicted. So here is the decision problem.
+
+	`{r}
+	general_newcomb <- tribble(
+		   ~"", ~P1, ~P2,
+		   "1", "$x$", "0",
+		   "2", "$x + y$", "$y$"
+		)
+	gameformat(general_newcomb, "Newcomb's Problem")
+	`
+
+A large part of late 20th Century decision theory was given over to discussing this problem. So-called Causal Decision Theorists argued in favor of taking both boxes. The primary argument is that whatever the demon has done, the chooser gets a bonus of $y$ for taking the second box. It's good to get guaranteed bonuses, so they should take the bonus. This is basically the view I'm going to defend in this book, though with a number of deviations from the way it was defended in these classic works. So-called Evidential Decision Theorists argued in favor of taking just the one box. The primary argument is that the chooser who takes one box expects to get $x$, the chooser who expects to get both boxes expects to get $y$, it's better to take a choice that one expects to do better, and $x > y$, so it's better to take one box. Insert citations to each side
+
+Both of these arguments can be given little dramatisations, though I have my doubts in each case about how much these dramatisations add to the force of the argument.
+
+The dramatisation for the one-box argument involves the chooser being part of a number of people taking part in this choice procedure. Ahead of them, they see a stream of people going into the room to interact with the demon, and those who chose one-box coming out with $x$, while those who chose two-boxes came out with $y$. If $x >>> y$, as in the most common version, we can imagine that the emotional reactions of these people to the interaction are quite different. And the chooser very much wants to be part of the happier group, which it seems they will be iff they choose one-box.
+
+The dramatisation for the two-box argument involves postulating a well-meaning friend  Insert citation. Imagine that the chooser has a friend who has their interests at heart, and can see into the opaque box. Perhaps the box is clear at the back, and the friend is standing behind the boxes. The friend will want the chooser to take both boxes, whatever they see. And the chooser knows that the friend will think this, even without knowing what the friend knows. And the chooser knows the friend would think this, even without the friend existing. That is, even in the original game, with no friend, they know what such a friend would think. And they should defer to that friend, since they are better informed. So they should take both boxes.
+
+The example involving the friend can be used to generate an interesting variant of Newcomb's Puzzle, due to Frank @Arntzenius2008. Keep the contents of the boxes the same, including that the demon puts $x$ into the first box iff the demon predicts only one box will be taken. But this time both boxes are clear. Now the chooser has the same view as the well-meaning friend. What should they do?
+
+We can model this problem using the following decision tree.
+
+Insert drawing of tree
+
+This representation should look familiar from game theory textbooks. It's just a standard extensive form representation of a game where each player makes one move. But perhaps it isn't obvious just how deep the analogy to game theory is. As William @Harper1986 notes, the original Newcomb problem can be thought of as a game too. It's a simultaneous move game. Of course, the moves aren't made simultaneously; it's crucial to the story that the money in the first box is there (or isn't) while the chooser decides. But what matters in game theory is when the moves are revealed, not when they are made, and they are revealed simultaneously, so it's a simultaneous move game.
+
+And we know the payouts for the demon. The demon gets payout 1 if the prediction is correct, and payout 0 if the prediction is incorrect. That's not to say that the demon will actually be given some monetary reward for a correct prediction. Rather, it's that what it is in game theory for one to have a value function just is for one's actions to make sense assuming that one is aiming to maximise that function. And the demon clearly is aiming at maximising the function that takes value 1 when the prediction is correct, and 0 when it is incorrect. So that's the demon's value function.
+
+With this in mind, we can redraw the game tree with both player's payouts listed.
+
+Insert drawing of tree with both payouts
+
+I've put the demon's payouts second, even though the demon moves first. The focus here is on the chooser, so they are player 1. When a game representation lists the payout in a situation as $a, b$ that means that player 1 gets $a$ and player 2 gets $b$. In this case that means the chooser gets $a$ and the demon gets $b$. 
+
+In this book I'm mostly going to work with games where the demon's payouts are either 1 for a correct prediction of 0 for an incorrect one. But once we've got the basic concept of the demon as a player getting payouts, we can set the demon up with other payouts too. And then we can bring just about any tool we like from contemporary game theory to bear on demonic decision theory. And that move, which I should stress is really taken straight from @Harper1986, is going to be the central move in this book.
+
+Here is what the original Newcomb problem looks like when we follow Harper's lead and transform it into a game.
+
+	`{r}
+	general_newcomb <- tribble(
+		   ~"", ~P1, ~P2,
+		   "1", "$x, 1$", "$0, 0$",
+		   "2", "$x + y, 0$", "$y, 1$"
+		)
+	gameformat(general_newcomb, "Newcomb's Problem as a Game")
+	`
+
+
+
+# Make Defensible Decisions
+
+
+## Why Do Ideal Decision Theory
+
+This one is actually harder for the proceduralist to answer, but it's a challenge for us too.
+
+## Why Do Decision Theory?
+
+The proceduralist has an answer - to advise about decision problems. What's our answer?
+
+
+## Decision Theory and Making Decisions
+
+Roughly, proceduralism must be right because decision theory is a theory of how to make decisions.
+
+No, because of nuclear war cases
+
+## Methodology
+
+## About a Demon {#aboutademon}
+
+Include stuff about arbitrarily accurate
+Note that known perfect accuracy leads to challenges, one's we'll come back to in...
+
+Also note that we're assuming the demon predicts the strategy a player chooses. That could include randomisation.
+
+Note that I'm simply assuming expected utility theory is right for non-demonic problems.
+
+But that does imply an assumption that there is some reason for that. And I think that's got to include something like a Sure Thing Principle.
+
+But I am including the open box Newcomb Problem as demonic.
+
+And maybe a riff on why it's Player/Chooser/Agent whatever
+
+# Against Rational Possibility
+
+## The Possibility Assumption in Philosophical Arguments
+
+The bad argument against utility theory - pick a number in [0, 1), every positive is ruled out so 0 huh?!
+
+The recent PQ article as an example of the same kind of thing
+
+## Dilemmas in Simple Games
+
+Death in Damascus, including asymmetric
+Versions of the ABC game
+
+Intuitively these just are dilemmas
+Note that Nash doesn't match up with intuition here
+
+## Mixed Strategies to the Rescue?
+
+Why we might think mixed strategies will help here
+
+Problem one - maybe that's unintuitive
+ - I'm not moved; I think rational players can do ok at rock paper scissors
+
+Problem two - the [0, 1) choice
+
+Problem three - the Econometrica 1995 paper example, which I'll have to find again
+
+Feels like this won't really get us out of the jam even if you think, as I do, that others have been too quick to say chooser is rational but can't mix
+
+## What Dilemmas are Like
+
+Be like a smart rationally constrained person
+
+Use heuristics that work much of the time, on average
+
+This might end up looking a lot like EDT
+Maybe this is why Newcomb's Problem is so hard
+
+# Against Coherence Norms
+
+Some say decision theory is just about doing well by one's own lights.
+
+I follow Comesana 2020 in saying rational action requires rational belief.
+
+Actually doesn't quite require - Knight's kid playing in the field is fine
+
+And I mean I think something stronger than Comesana - I mean that there isn't anything extra good re coherence
+
+## Coherence for the Incoherent
+
+What is it to do best by one's own lights
+
+If one believes p, q -\> -p, and q, is it best to act as if p, or as if q
+
+At best we can get rules for how to be more coherent if you are a bit coherent
+
+And that's maybe something, but not a lot
+
+But even this requires there being a gap between coherence norms and evidence norms, and I don't think there is
+
+## Coherence is a Substantive Norm
+
+Summarise Worsnip book
+
+Intuition about guy who punches self in head because he thinks it will mean some trivial thing he cares about is realised
+
+Intuition about guy who goes from p to p v  q1, p v q2, etc, etc, all day every day
+
+Intuition that Dummett/Priest etc are, if wrong about anything, wrong about a substantive matter
+
+Worsnip response - everyone has a tendency to be coherent
+
+Response - what, and I cannot stress this enough, the f
+
+There is no way that's a correct description of the dialethist, the intuitionist, etc
+
+## Coherence in Signaling Games
+
+The best solution to beer-quiche puts constraints on priors
+
+These aren't coherence constraints in any recognisable sense
+
+But they are the kind of thing decision theory should take into account
+
+So decision theory should take substantive notions of rationality into account
+
+# Responding to Evidential Decision Theory
+
+
+## So Why Ain't You Rich?
+
+From existing paper
+
+## To Bet the Impossible Bet
+
+The Ahmed cases all go away if you focus on what's possible at the end of deliberation, not at the start of it
+
+This might require some contextualism about ability, a la Hawthorne and Pettit, to really make stick
+
+## Why Weak Dominance
+
+Basic ABC example. Demon might not give a choice but if they do Up beats Down
+
+This doesn’t require weak dominance but that’s the simplest explanation
+
+Also fits with the “can you defend this”
+
+But two puzzles for the next two sections
+
+## Three Kinds of Demon
+
+Set up red green game and properly cite
+
+Note this is my third try at it
+
+First demon, limit prob. This one is easy
+
+Second demon, zero prob but possible. Answer one this can’t happen. But this takes us into infinitesimal territory and I’m not going there. Answer two, the speech sounds bad. Don’t take uncompensated risks. 
+
+Third demon, can not fail.  Then not in fact weak dominance post choice bc alternative is not in fact possible. 
+
+Same goes for symmetric humans but third is really impossible. 
+
+## Iterated Weak Dominance
+
+Sometimes thought that if WD then committed to IWD. Cite HH and Stalnaker in reply. 
+
+Three objections 
+1. Order effects
+2. Gets unintuitive results
+3. Nothing incoherent about speeches that violate
+
+Start with Bonanno on order effects
+
+Do strategic version of money burning and show what IWD leads to
+Note that nothing wrong with all H speech
+This might get complicated
+
+Now do dynamic version 
+Really absurd that having an untaken option can make a difference, when others know you won’t take it
+But does HH mean that you think demon is stupid? No it means that you think demon might follow up stupid with stupid
+Also do this using counterfactuals maybe 

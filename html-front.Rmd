@@ -1,0 +1,2 @@
+
+The view is somewhat customisable using the toolbar above. You can change the font type, the font size, and the background color. And you can download a PDF or EPub version from the toolbar as well.

@@ -1,0 +1,20 @@
+bookdown::gitbook:
+  css: style.css
+  table_css: false
+  config:
+    toc:
+      before: |
+        <li><a href="./index.html">Demons and Decisions</a></li>
+      after: |
+        <li><a href="https://github.com/rstudio/bookdown" target="blank">Made with bookdown</a></li>
+    download: ["pdf", "epub"]
+bookdown::pdf_book:
+  includes:
+    in_header: iri-book-style.tex
+  latex_engine: xelatex
+  md_extensions: +example_lists+fancy_lists+startnum+line_blocks
+  citation_package: natbib
+  keep_tex: yes
+  number_sections: yes
+  toc: true
+bookdown::epub_book: default
