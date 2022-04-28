@@ -41,5 +41,3 @@ description: "A new version of Causal Decision Theory, centred around how decisi
 # Front Matter {-}
 
 Draft of a book in progress defending a novel version of Causal Decision Theory.
-
-Draws on @Harper1986.

@@ -1,6 +1,93 @@
-# Summary and Plan
+# Make Defensible Decisions {#introchap}
 
-## Proceduralism and Defensivism
+
+```{r, include=FALSE}
+require(knitr)
+require(tidyverse)
+require(kableExtra)
+require(huxtable)
+
+knitr::opts_chunk$set(echo = FALSE, results = "asis")
+
+gameformat <- function(game, caption){
+  gg <- as_hux(game) %>%
+    set_width(ncol(game)/10) %>%
+	  set_markdown() %>% 
+    set_caption(caption) %>%
+    set_bold(1, everywhere) %>%
+    set_bold(everywhere, 1) %>%
+    set_align(everywhere, everywhere, "center") %>%
+    set_right_border(everywhere, 1, 0.5) %>%
+    set_bottom_border(1, everywhere, 0.5) %>%
+    set_right_border_color(everywhere, 1, "grey60") %>%
+    set_bottom_border_color(1, everywhere, "grey60") %>%
+    set_caption_pos("bottom") %>%
+    set_row_height(everywhere, 0.6) %>%
+  print_html(gg)
+  # kbl(game, 
+  #     booktabs = F, 
+  #     escape = FALSE,
+  #     align = paste0("r",strrep("c", ncol(game)-1)),
+  #     linesep = "",
+  #     caption = caption) %>%
+  #   column_spec(1, 
+  #               border_right = T,
+  #               bold = T) %>%
+  #   row_spec(0, bold = T, extra_css = "border-bottom: solid 0.5px;") %>%
+  #   cell_spec(df[1, 2], extra_css = "border_left = solid 0.5px;") %>%
+  #   kable_styling(full_width = F)  
+}
+```
+
+
+A rational chooser knows what they are doing, and thinks that it is for the best. That is, they think that there is nothing else they could be doing that would be better. This book defends a version of decision theory that starts, and largely ends, with this principle. Properly understood, this is all there is to decision theory. But how to properly understand it will be the subject of much of this book.
+
+The principle I just stated is backwards looking. It says that the chooser must think that the decision is for the best when they make it. It doesn't say much about how they come to make that decision, or whether the decision makes sense given the views the chooser has at the start of deliberation. That's by design. Decision theory is the theory of when decisions can be defended. Or, at least, that's what I'll argue in this book.
+
+I'm mostly going to be concerned with a special class of decision problems: those involving demons who have spectacular predictive powers. These have been a particular focus of decision theorists for the last half-century. In keeping them center stage I am, in this one respect at least, following tradition. But I will make use of the principle that our theory of how to make decisions when demons are around should be consistent with our theory of how to make decisions when demons are not around. And the motivations for the two parts of the theory should be consistent as well. This turns out to be a somewhat substantive constraint.
+
+Demons predict what other people will choose, make moves accordingly, and these moves make a difference to the consequences of other choices. That's to say, demons behave just like the rational players in orthodox game theory. Interacting with demons is, at a fairly deep level, playing games with them. So we should expect game theory to have something to tell us about how those interactions go. This isn't a novel point; I owe it to William @Harper1986. But it is going to be central to the plot of this book.
+
+The next three sections spell out the points made in each of the last three paragraphs. And then I'll close the chapter by setting out a generic version of the main example of the book, and going over the plans for the rest of the book.
+
+
+
+
+## Proceduralism and Defensivism 
+
+The vast bulk of decision theories on the market are what I'll call proceduralist. That is, they provide a procedure for determining what  to do in a given problem. I'm going to argue against proceduralism, and in favor of what I'll call defensivism. And to do that, it helps to clarify just what is meant by saying that a theory provides a procedure for determining what to do. As I'll understand it, proceduralism is the conjunction of four claims about what to do in a decision problem. Two of these are about the inputs to deliberation, and two of them are about the outputs. Here are the four claims, with some hopefully useful names.
+
+Ex Ante
+:    What is to be done is a function of what things are like at the start of deliberation.
+
+Transparency
+:    The inputs to that function are all knowable as long as the chooser is sufficiently rational and self-aware.
+
+Decisiveness
+:    In any decision problem, there is only one thing which is to be done, unless there are several things that are equally good. In the latter case, adding a minimal sweetening to any one of the equally good options would make it the option to be chosen.
+
+Possibility
+:    In any finite decision problem, at least one choice is rationally permissible. That is, there are no finite rational dilemmas.
+
+I'm going to argue against all four of these claims. The kind of theory I favor, defensivism, instead endorses the following four claims.
+
+Ex Post
+:    What is to be done is a function of what things are like at the end of deliberation.
+
+Opacity
+:    The inputs to that function involve, among other things, what probabilities are rational given the chooser's evidence, and this may be opaque to the self-aware, rational agent.
+
+Indecisiveness
+:    In many decision problems, there are permissible options which are not equally good, and there would still be many permissible options after sweetening one or other option.
+
+Dilemmas
+:    In many finite decision problems, no choice is rationally permissible. That is, there are finite rational dilemmas.
+
+Neither Proceduralism nor Defensivism is a package deal; you can mix and match the parts. And there are many natural weakenings of one or other part of the family of views. For instance, in chapter \@ref(decisive), I'll spend some time on views that say that Decisiveness is only guaranteed to hold in cases where there are just two options.
+
+But that said, there are natural affinities between the four parts of Proceduralism. if you thought the point of decision theory was to provide a user's guide to making decisions, you'll naturally end up with a proceduralist theory. And lots of theories have done just that. Any theory which starts with a function from states available to the chooser at the start of deliberation to numerical values, and instructs the chooser to maximise that value, will be proceduralist. That very abstract description of a decision theory 
+
+
 
 The first thing to do is to argue against proceduralism.
 
@@ -24,50 +111,8 @@ Proceduralism is not a package deal - Stalnaker accepts part of it and rejects o
 
 ## The Defensible Norm {#thenorm}
 
-A rational chooser knows what they are doing, and thinks that it is for the best. That is, they think that there is nothing else they could be doing that would be better. This book defends a version of decision theory that starts, and largely ends, with this principle. 
 
-
-```{r, include=FALSE}
-require(knitr)
-require(tidyverse)
-require(kableExtra)
-require(huxtable)
-
-knitr::opts_chunk$set(echo = FALSE, results = "asis")
-
-gameformat <- function(game, caption){
-  gg <- as_hux(game) %>%
-    set_width(ncol(game)/10) %>%
-	  set_markdown() %>% 
-    set_caption(caption) %>%
-    set_bold(1, everywhere) %>%
-    set_bold(everywhere, 1) %>%
-    set_align(everywhere, everywhere, "center") %>%
-    set_valign(everywhere, everywhere, "bottom") %>%
-    set_row_height(everywhere, 0.6) %>%
-    set_right_border(everywhere, 1, 0.5) %>%
-    set_bottom_border(1, everywhere, 0.5) %>%
-    set_right_border_color(everywhere, 1, "grey60") %>%
-    set_bottom_border_color(1, everywhere, "grey60") %>%
-    set_caption_pos("bottom") %>%
-  print_html(gg)
-  # kbl(game, 
-  #     booktabs = F, 
-  #     escape = FALSE,
-  #     align = paste0("r",strrep("c", ncol(game)-1)),
-  #     linesep = "",
-  #     caption = caption) %>%
-  #   column_spec(1, 
-  #               border_right = T,
-  #               bold = T) %>%
-  #   row_spec(0, bold = T, extra_css = "border-bottom: solid 0.5px;") %>%
-  #   cell_spec(df[1, 2], extra_css = "border_left = solid 0.5px;") %>%
-  #   kable_styling(full_width = F)  
-}
-```
-
-
-In this book I'm mostly going to focus on what I'll call Demonic decision problem. I'll have much more to say about demons in section \@ref(aboutademon), but for now all we need to know is that demons have the means, motive, and opportunity to correctly predict what strategy a Chooser will adopt.
+In this book I'm mostly going to focus on what I'll call Demonic decision problems. I'll have much more to say about demons in section \@ref(aboutademon), but for now all we need to know is that demons have the means, motive, and opportunity to correctly predict what strategy a Chooser will adopt.
 
 The most famous demonic problem is _Newcomb's Problem_ [@Nozick1969]. The chooser is presented with two boxes, one opaque and one clear. They have a choice between taking just the opaque box, i.e., taking one box, and taking both the opaque and the clear box, i.e., taking two boxes. The clear box has a good of value $y$ in  it. The contents of the opaque box are unknown. A demon has predicted the chooser's choice, and has placed a good of value $x$ in it if they predict the chooser will take one box, and left it empty (which we'll assume has value 0) if they predict the chooser will take both boxes. The key constraint is $x > y$. In most versions the value given for $x$ is massively greater than that for $y$, but the theories that are developed for the problem typically are sensitive only to whether $x$ is larger than $y$, not to how much larger it is.
 
@@ -98,7 +143,7 @@ We can model this problem using the following decision tree.
 
 Insert drawing of tree
 
-This representation should look familiar from game theory textbooks. It's just a standard extensive form representation of a game where each player makes one move. But perhaps it isn't obvious just how deep the analogy to game theory is. As William [@Harper1986] notes, the original Newcomb problem can be thought of as a game too. It's a simultaneous move game. Of course, the moves aren't made simultaneously; it's crucial to the story that the money in the first box is there (or isn't) while the chooser decides. But what matters in game theory is when the moves are revealed, not when they are made, and they are revealed simultaneously, so it's a simultaneous move game.
+This representation should look familiar from game theory textbooks. It's just a standard extensive form representation of a game where each player makes one move. But perhaps it isn't obvious just how deep the analogy to game theory is. As William @Harper1986 notes, the original Newcomb problem can be thought of as a game too. It's a simultaneous move game. Of course, the moves aren't made simultaneously; it's crucial to the story that the money in the first box is there (or isn't) while the chooser decides. But what matters in game theory is when the moves are revealed, not when they are made, and they are revealed simultaneously, so it's a simultaneous move game.
 
 And we know the payouts for the demon. The demon gets payout 1 if the prediction is correct, and payout 0 if the prediction is incorrect. That's not to say that the demon will actually be given some monetary reward for a correct prediction. Rather, it's that what it is in game theory for one to have a value function just is for one's actions to make sense assuming that one is aiming to maximise that function. And the demon clearly is aiming at maximising the function that takes value 1 when the prediction is correct, and 0 when it is incorrect. So that's the demon's value function.
 
@@ -108,7 +153,7 @@ Insert drawing of tree with both payouts
 
 I've put the demon's payouts second, even though the demon moves first. The focus here is on the chooser, so they are player 1. When a game representation lists the payout in a situation as $a, b$ that means that player 1 gets $a$ and player 2 gets $b$. In this case that means the chooser gets $a$ and the demon gets $b$. 
 
-In this book I'm mostly going to work with games where the demon's payouts are either 1 for a correct prediction of 0 for an incorrect one. But once we've got the basic concept of the demon as a player getting payouts, we can set the demon up with other payouts too. And then we can bring just about any tool we like from contemporary game theory to bear on demonic decision theory. And that move, which I should stress is really taken straight from [@Harper1986], is going to be the central move in this book.
+In this book I'm mostly going to work with games where the demon's payouts are either 1 for a correct prediction of 0 for an incorrect one. But once we've got the basic concept of the demon as a player getting payouts, we can set the demon up with other payouts too. And then we can bring just about any tool we like from contemporary game theory to bear on demonic decision theory. And that move, which I should stress is really taken straight from @Harper1986, is going to be the central move in this book.
 
 Here is what the original Newcomb problem looks like when we follow Harper's lead and transform it into a game.
 
@@ -124,6 +169,47 @@ gameformat(general_newcomb, "Newcomb's Problem as a Game")
 
 
 
+## The Main Example
+
+```{tikz, tikz-ex, fig.cap = "Generic version of the main example", fig.ext = 'png', cache=TRUE}
+\usetikzlibrary{calc}
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzset{
+% Two node styles for game trees: solid and hollow
+solid node/.style={circle,draw,inner sep=1.5,fill=black},
+hollow node/.style={circle,draw,inner sep=1.5}
+}
+% Specify spacing for each level of the tree
+\tikzstyle{level 1}=[level distance=10mm,sibling distance=25mm]
+\tikzstyle{level 2}=[level distance=10mm,sibling distance=25mm]
+\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+% The Tree
+\node(0)[solid node,label=above:{$Demon$}]{}
+
+child{node(1)[hollow node, label=below:{$(x_5,y)$}]{}
+edge from parent node[left,xshift=-3]{Out}
+}
+child{node(2)[solid node,label=right:{$Demon$}]{}
+child{node(3)[solid node]{}
+child{node[hollow node,label=below:{$(x_1,1)$}]{}edge from parent node[left]{A} }
+child{node[hollow node,label=below:{$(x_2,0)$}]{} edge from parent node[right]{B}}
+edge from parent node[left,xshift = -3]{PA}}
+child{node(4)[solid node]{}
+child{node[hollow node,label=below:{$(x_3,0)$}]{}edge from parent node[left]{A} }
+child{node[hollow node,label=below:{$(x_4,1)$}]{} edge from parent node[right]{B}}
+edge from parent node[right,xshift = 3]{PB}
+}
+edge from parent node[right,xshift=3]{In}
+};
+% information set
+\draw[dashed,rounded corners=10]($(3) + (-.2,.25)$)rectangle($(4) +(.2,-.25)$);
+% specify mover at 2nd information set
+\node at ($(3)!.5!(4)$) {$Chooser$};
+\end{tikzpicture}
+```
 # Make Defensible Decisions
 
 
@@ -158,6 +244,8 @@ But that does imply an assumption that there is some reason for that. And I thin
 But I am including the open box Newcomb Problem as demonic.
 
 And maybe a riff on why it's Player/Chooser/Agent whatever
+
+# Against Decisiveness
 
 # Against Rational Possibility
 
@@ -237,6 +325,93 @@ There is no way that's a correct description of the dialethist, the intuitionist
 
 ## Coherence in Signaling Games
 
+So far I've offered the following argument against the view that decision theory is only about how people should act given their existing beliefs and desires, and has no interest in the rationality of the beliefs.
+
+1. The view does not make sense when applied to people whose beliefs are not just irrational, but incoherent.
+2. So the view needs a distinction between coherence norms on belief, which must be satisfied for decision theory to be applicable, and substantive norms on belief, which are  irrelevant to decision theory.
+3. But thinking about heterodox logicians reveals that there is no distinction to be found here.
+4. So, the view does not ultimately make sense.
+
+Here I want to change tack and offer a direct argument, from with decision theory, for the argument that the decision-theoretic notion of rational action is sensitive to the rationality of the chooser's underlying beliefs. The argument is going to be that the best solution to the beer-quiche game [@ChoKreps1985] requires that we look at the rationality of the underlying beliefs, not just at which actions flow in the right way from existing beliefs.
+
+To start, let's translate the beer-quiche game into decision-theoretic terms, using an arbitrarily accurate demon. The problem is a little more complicated than Newcomb-like problems often are, but it should be reasonably familiar if one is used to the kind of signaling games first developed by David Lewis [-@Lewis1969a]. The game goes through the following stages.
+
+1. Both Chooser and Demon are informed of all the following facts, and it is made clear that they are common knowledge.
+2. Chooser is randomly assigned to one of two _types_, which we'll call $u$ and $d$, for Up and Down. This assignment is done by a random device which has an 0.6 chance of assigning Chooser to $u$, and an 0.4 chance of assigning Chooser to $d$. Demon is not told of the assignment, and cannot predict how random devices work.
+3. Chooser will then make a choice of two options, which we will label $U$ and $D$. Demon will be told which option Chooser takes.
+4. Demon will then try to guess which type Chooser is.
+5. In making this guess, Demon will use their arbitrarily good ability to predict Chooser's _strategy_. The strategy, in the relevant sense, is Chooser's function from type assignment to choice. Chooser can randomise, so a function is a pair of probabilities - what probability of selecting $U$ if they are type $u$, and what probability of selecting $U$ if they are type $d$.
+6. Chooser gets 2 utils if Demon predicts they are type $u$, and 1 util if their choice 'matches' their type, i.e., if they select $U$ if they are $u$ or $D$ if they are $d$.
+7. Demon gets 1 util if their guess is correct.
+
+Here is the game in graphical form.
+
+```{tikz, beer-quiche, fig.cap = "A Signaling Game", fig.ext = 'png', cache=TRUE}
+\usetikzlibrary{calc}
+\begin{tikzpicture}[scale=1.4,font=\footnotesize]
+\tikzset{
+% Two node styles for game trees: solid and hollow
+solid node/.style={circle,draw,inner sep=1.5,fill=black},
+hollow node/.style={circle,draw,inner sep=1.5}
+}
+
+% Specify spacing for each level of the tree
+\tikzstyle{level 1}=[level distance=12mm,sibling distance=25mm]
+\tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle{level 3}=[level distance=17mm,sibling distance=10mm]
+% The Tree
+\node(0)[solid node,label=right:{Nature}]{}
+child[grow=up]{node[solid node,label=above:{
+$Chooser$
+}] {}
+child[grow=left]{node(1)[solid node]{}
+child{node[hollow node,label=left:{$(3,1)$}]{} edge from parent node [above]{$u$}}
+child{node[hollow node,label=left:{$(0,0)$}]{} edge from parent node [below]{$d$}}
+edge from parent node [below]{$U$}
+}
+child[grow=right]{node(3)[solid node]{}
+child{node[hollow node,label=right:{$(1,0)$}]{} edge from parent node [below]{$d$}}
+child{node[hollow node,label=right:{$(2,1)$}]{} edge from parent node [above]{$u$}}
+edge from parent node [below]{$D$}
+}
+edge from parent node [left]{$0.6$}
+}
+child[grow=down]{node[solid node,label=below:{
+$Chooser$
+}] {}
+child[grow=left]{node(2)[solid node]{}
+child{node[hollow node,label=left:{$(2,0)$}]{} edge from parent node [above]{$u$}}
+child{node[hollow node,label=left:{$(0,1)$}]{} edge from parent node [below]{$d$}}
+edge from parent node [above]{$U$}
+}
+child[grow=right]{node(4)[solid node]{}
+child{node[hollow node,label=right:{$(1,1)$}]{} edge from parent node [below]{$d$}}
+child{node[hollow node,label=right:{$(3,0)$}]{} edge from parent node [above]{$u$}}
+edge from parent node [above]{$D$}
+}
+edge from parent node [right]{$0.4$}
+};
+
+% information set
+\draw[dashed,rounded corners=10]($(1) + (-.45,.45)$)rectangle($(2) +(.45,-.45)$);
+\draw[dashed,rounded corners=10]($(3) + (-.45,.45)$)rectangle($(4) +(.45,-.45)$);
+% specify mover at 2nd information set
+\node at ($(1)!.5!(2)$) {$Demon$};
+\node at ($(3)!.5!(4)$) {$Demon$};
+\end{tikzpicture}
+```
+
+The game starts in the middle. Nature assigns Chooser to a type, and we move either up, if they are assigned $u$, or down, if they are assigned $d$. Then Chooser chooses an option. We move left if they choose $U$, and right if they choose $R$. Then Demon chooses, and we move up or down on the angled lines. The dotted lines around the two nodes are there because Demon doesn't know precisely which node they are at. They know what Chooser chose, the nodes inside the dashed lines are alike in that respect. But they don't know  which type assignment was made. And then we get the payouts, using the formulae in lines 6 and 7.
+
+Note that while Demon can perfectly predict Chooser's strategy, it doesn't follow that they will perfectly predict Chooser's type. This can be true even if Chooser uses a non-probabilistic strategy. In particular, it is true if Chooser adopts what's called a pooling strategy, of playing the same option whatever type they are. If Chooser plays $U$ whether they are $u$ or $d$, the Demon will get no information from the play, and have to use their prior credence that Chooser has an 0.6 chance of being $u$. And so, it will be expected utility maximising for Demon to guess that Chooser is $u$, and that's what they will do. And the same goes for the situation where Chooser's strategy is to play $D$ no matter what.
+
+The non-pooling strategies, on the other hand, are not stable. If Chooser gives Demon information about their type, that will mean Demon is more likely to accurately guess their type. And that's bad news for choosers who are of type $d$. But since Chooser knows their type when they act, they will not perform an act that's bad for their type. So they will not do anything other than play one of the two pooling strategies. (I'm glossing over a lot of the details here, but this is well worked out territory. See, inter alia, @ChoKreps1985 for the more careful version of the argument in this paragraph.)
+
+So Chooser will play a pooling strategy. But which one will they play? Playing $U$ makes sense. If they are of type $u$, then they will get the best possible return, so they will be happy to follow through on the strategy. And if they are of type $d$, they will get a return of 2 from this strategy, and a return of 1 if they deviate from the strategy and play $D$. 
+
+
+
+
 The best solution to beer-quiche puts constraints on priors
 
 These aren't coherence constraints in any recognisable sense
@@ -257,6 +432,10 @@ From existing paper
 The Ahmed cases all go away if you focus on what's possible at the end of deliberation, not at the start of it
 
 This might require some contextualism about ability, a la Hawthorne and Pettit, to really make stick
+
+# Epistemic Uniqueness and Decisiveness
+
+# Puzzles about Weak Dominance
 
 ## Why Weak Dominance
 
