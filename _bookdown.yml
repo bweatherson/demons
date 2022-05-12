@@ -3,7 +3,4 @@ delete_merged_file: true
 language:
   ui:
     chapter_name: "Chapter "
-rmd_files:
-  html: ["index.Rmd", "html-front.Rmd", "latest-export.md", "references.Rmd"]
-  latex: ["index.Rmd", "latest-export.md"]
-  epub: ["index.Rmd", "latest-export.md"]
+rmd_files: ["index.Rmd", "latest-export.md", "references.Rmd"]

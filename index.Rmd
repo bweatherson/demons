@@ -32,7 +32,7 @@ output:
           <li><a href="https://bookdown.org" target="_blank">Made with bookdown</a></li>
 url: 'https\://brian.weatherson.org/kahis/'
 #cover-image: "tree.jpg"
-bibliography: "CollBib.bib"
+bibliography: "demon-bib.bib"
 biblio-style: philreview
 link-citations: yes
 description: "A new version of Causal Decision Theory, centred around how decisions look once they are made."

@@ -28,3 +28,5 @@ vignettes/*.pdf
 .Renviron
 _bookdown_files
 _book
+warnings.txt
+CollBib.bib
