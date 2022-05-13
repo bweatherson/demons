@@ -91,6 +91,8 @@ Any theory of decision that assigns numerical values to each option on the basis
 
 In a recent paper, Adam @Elga2021 describes a class of theories he calls 'suppositional', and notes that most existing theories of decision are suppositional. (And goes on to argue that we should want a theory to be suppositional.) The suppositional theories, as he describes them, are a subset of the procedural theories. Indeed, they are a subset of the theories described in the last paragraph - those that assign numerical values to choices. So saying that most theories on the market are proceduralist is not saying anything new. If anything, it's a commonplace.
 
+**NOT COMPLETE**
+
 ## Causal Defensivism {#cdintroduced}
 
 It's going to take some setup to articulate precisely the positive theory I'm going to defend in this book. But I think it's worth having a rough statement of it up front, so you can see where we're headed.
@@ -103,7 +105,11 @@ Second, at the time the choice is made, no other choice weakly dominates the cho
 
 There are a lot of technical terms there which I'll make clearer as this chapter goes along. But the key thing 
 
+**NOT COMPLETE**
+
 ## Basic Decision Theory {#bdt}
+
+### Simple Decision Problems {#simpledecision}
 
 A simple decision problem starts with a table like this.
 
@@ -121,6 +127,8 @@ On the rows we list the options that the chooser, who I'll mostly call Chooser f
 Now there are a lot of questions you could have about that last paragraph, and I'll spend section \@ref(tables) going over five such questions at some length. But for now let's start with that basic picture. In general there are more than two possible options and more than two possible states, but let's start with this simple case for now and work up to the more complicated cases.
 
 In order to make a decision, Chooser typically needs one more piece of information - how likely are the states $S_1$ and $S_2$? Let's add that information in: the probability of $S_1$ is $p_1$ and the probability of $S_2$ is $y$. What do we mean by 'probability' here? Good question, and one that I'll spend a lot of time on in chapter \@ref(coherence). For now, just use its colloquial meaning.
+
+### Defining Basic Decision Theory {#bdtdefine}
 
 Given all these facts, Chooser can assign a value to an option $O_i$ using the following formula:
 
@@ -146,7 +154,7 @@ $$
 
 I'll call the theory that values each option this way, and says that rational choosers maximise value, Basic Decision Theory. It could just as easily be called the Crude Savage Decision Theory. The 'Savage' there is because the formula at the heart of it is the same formula that @Savage1954 puts at the heart of his decision theory. But the 'Crude' is there because Basic Decision Theory leaves off all that Savage says about the nature of options and states. @SteeleSEP [sect 3.1] have a good summary of what Savage says here. I'm not going to go into that, and instead note why something needs to be said. Because as it stands, Basic Decision Theory leads to absurd outcomes.
 
-## Why Basic Decision Theory Fails {#notbasic}
+### Why Basic Decision Theory Fails {#notbasic}
 
 Consider the St. Crispin's Day speech that Shakespeare has Henry V give before the Battle of Agincourt. (I'm indebted to a long ago conversation with Jamie Dreier for pointing out the connection between this speech and decision theory.) The background is that the English are about to go to battle with the French, and they are heavily outnumbered. Westmoreland wants to wait for more troops, and Henry does not, offering this reasoning.
 
@@ -186,8 +194,9 @@ It's not quite a universal view, and we'll come back in section \@ref(quiggin) t
 So that covers the cases where there is both an evidential and causal connection - Basic Decision Theory gets things wrong - and the cases where there is neither - Basic Decision Theory gets things right. But what about the cases where there is one such connection but not the other? We're all taught that correlation is not causation. What happens when there is correlation but not causation between the choices and the states? Then things get really interesting, and that's the debate we're doing to jump into.
 
 
-## Newcomb Problems {#newcombproblem}
+## Some Theories of Decision {##sometheories}
 
+### Newcomb Problems {#newcombproblem}
 
 It's not at all obvious how there could be a case where the possible choices and possible states could be causally connected but not evidentially connected. I'm going to set the possibility of such a case aside, at least until someone shows me what such a case might look like. Because there is a very natural way that the choices and states could be evidentially but not causally connected: they could have a common cause. And one way that could come about is if the states are predictions of Chooser's choice, made by someone who has a deep insight into Chooser's choice dispositions.
 
@@ -208,11 +217,13 @@ general_newcomb <- tribble(
 gameformat(general_newcomb, "Newcomb's Problem")
 ```
 
-A large part of late 20th Century decision theory was given over to discussing this problem. So-called Causal Decision Theorists argued in favor of taking both boxes. The primary argument is that whatever the demon has done, the chooser gets a bonus of $y$ for taking the second box. It's good to get guaranteed bonuses, so they should take the bonus. This is basically the view I'm going to defend in this book, though with a number of deviations from the way it was defended in these classic works. So-called Evidential Decision Theorists argued in favor of taking just the one box. The primary argument is that the chooser who takes one box expects to get $x$, the chooser who expects to get both boxes expects to get $y$, it's better to take a choice that one expects to do better, and $x > y$, so it's better to take one box. Insert citations to each side
+A large part of late 20th Century decision theory was given over to discussing this problem. So-called Causal Decision Theorists argued in favor of taking both boxes. The primary argument is that whatever the demon has done, the chooser gets a bonus of $y$ for taking the second box. It's good to get guaranteed bonuses, so they should take the bonus. This is basically the view I'm going to defend in this book, though with a number of deviations from the way it was defended in these classic works. So-called Evidential Decision Theorists argued in favor of taking just the one box. The primary argument is that the chooser who takes one box expects to get $x$, the chooser who expects to get both boxes expects to get $y$, it's better to take a choice that one expects to do better, and $x > y$, so it's better to take one box. 
 
-## Two Ways to Extend Basic Decision Theory {#edtcdt}
+Both of these arguments trace back to the original presentation of the problem by Nozick. He named the problem after William Newcomb, a physicist from whom he learned of the problem. For much more detail on the background to this problem, and the motivation for the two prominent solutions, see @WeirichSEP. Let's turn to looking at those two solutions in more detail.
 
-The two most famous theories in recent work in decision theory are Causal Decision Theory and Evidential Decision Theory. I introduced these terms in section \@ref(newcombproblem) without defining them. It's time to do that now.
+### Introducing EDT and CDT {#edtcdt}
+
+The two most famous theories in recent work in decision theory are Causal Decision Theory and Evidential Decision Theory. I used these terms in subsection \@ref(newcombproblem) without defining them. It's time to do that now.
 
 As I understand the way the terms are used, and indeed as I'll be using them, they are potentially misleading. Both of these are not really theories, but families of theories. Evidential Decision Theory (EDT) is a somewhat tighter family of theories than Causal Decision Theory (CDT), but neither is something that I would typically be happy calling a theory. In this section I'll give somewhat imprecise descriptions of each 'theory', starting with EDT. In section \@ref(edtcdtprecise) I'll say why both of these are really theory schema, and set out some of the more viable ways of making them into precise theories.
 
@@ -234,23 +245,35 @@ The idea is that Basic Decision Theory was not incorrect, as EDT says, but incom
 
 In Newcomb's Problem, CDT says that one should take one box. What Demon predicts is not causally dependent on what Chooser selects. So we can use P1 and P2 as states. Let $z$ be the probability of P1, and hence the probability of P2 is $1-z$. Then the expected value of taking one box is $zx$, while the expected value of taking two boxes is $zx + y$. Without yet knowing what $z$ is, a question that will become rather important as we go on, we know that $zx + y > zx$, so taking two boxes has higher value. So that's what one should do.
 
+### Making The Theories Precise {#edtcdtprecise}
+
+So that's the basic picture of EDT and CDT. But as I alluded to earlier, setting out the basic picture isn't quite the same thing as setting out a theory. In this section I'll flag some factors that need to be settled to turn them into a theory.
+
+**NOT COMPLETE**
+
+### Non-Unique Solutions {#nonunique}
+
+ - Say about 1; almost dominance
+- Say about 2; basically link to decisiveness chapter
+- Say about 0; basically link to dilemmas chapter
+
+**NOT COMPLETE**
+
+### Defensivism {#defensivismintroduced}
+
+- Just give a definition
+
+**NOT COMPLETE**
 
 
 
+## Games and Decisions {#gamesdecisions}
 
-## Making The Theories Precise {#edtcdtprecise}
+This section goes into a bit of detail about the connection between game theory and decision theory. If you want much more background on game theory, I've included some explanations of the key concepts in Appendix \@ref(gametheory). The point of this section is that the connection between game theory and decision theory is much tighter than a lot of theorists have realised.
 
-So that's the basic picture of EDT and CDT. But as I alluded to earlier, setting out the basic picture isn't quite the same thing as setting out a theory. In this section I'll flag some factors that need to be settled 
+### Newcomb Games {#newcombgames}
 
-## Defensivism {#defensivism}
-
-- Given probabilities after decision making, the view makes sense (by causal standards)
-- Not weakly dominated
-- This is also a post-decision rule
-
-## Newcomb Games {#newcombgames}
-
-The example involving the friend can be used to generate an interesting variant of Newcomb's Puzzle, due to Frank @Arntzenius2008. Keep the contents of the boxes the same, including that the demon puts $x$ into the first box iff the demon predicts only one box will be taken. But this time both boxes are clear. Now the chooser has the same view as the well-meaning friend. What should they do?
+Let's start with an interesting variant of Newcomb's Puzzle, one which is used to good effect by Frank @Arntzenius2008. Keep the contents of the boxes the same, including that Demon puts $x$ into the first box iff they predict only one box will be taken. But this time both boxes are clear. Now Chooser can see exactly what is in each box before making a decision. What should they do?
 
 We can model this problem using the following decision tree.
 
@@ -285,8 +308,7 @@ edge from parent node[right,yshift = 5]{P2}
 \end{tikzpicture}
 ```
 
-
-This representation should look familiar from game theory textbooks. It's just a standard extensive form representation of a game where each player makes one move. Since we'll be using trees like this a bit, I want to explain the notation. It's mostly standard within game theory, but since not all philosophers are game theorists, it's worth going a bit carefully.
+This representation should look familiar from game theory textbooks. It's just a standard extensive form representation of a game where each player makes one move. Since we'll be using trees like this a bit, I want to explain the notation.
 
 The game starts at the hollow node, which in this case is at the top of the tree. At each node, we move along a path from wherever we are to a subsequent node. So each node gets labeled with who is making the choice, and the edges get labeled with the choices they can make. This game starts with the Demon predicting either that Chooser takes 1 box - this is the edge labeled P1 - or that Chooser takes 2 boxes. Either way we get to a node where Chooser moves, either by taking 1 box or 2. It's a solid node, which means (in the notation of this book) that it's not where the game starts, and it's not where the game ends. Then whatever happens, we get to a terminal node, here denoted with a square. At each terminal node we list the payouts. 
 
@@ -376,11 +398,11 @@ edge from parent node[right,yshift = 5]{P2}
 \end{tikzpicture}
 ```
 
-The dashed line there represents that those two nodes are in what game theorists call at information set. That means that when the player to move reaches one of those nodes, all they know is that they are at one of these nodes and not any other. In this case, Chooser knows that they have to select 1 box or 2, and they know the payouts given their choice and Demon's prediction. But they do not know what Demon predicted, so they do not know which node they are at.
+The dashed line there represents that those two nodes are in what game theorists call an **information set**. That means that when the player to move reaches one of those nodes, all they know is that they are at one of these nodes and not any other. In this case, Chooser knows that they have to select 1 box or 2, and they know the payouts given their choice and Demon's prediction. But they do not know what Demon predicted, so they do not know which node they are at.
 
 This extensive form representation is in a way more accurate than the strategic form representation in the table above. It encodes that Demon goes first, which is something usually stressed in the story that is told about Newcomb's Problem. But the table form is easier to read, and makes clearer that there is only one equilibrium of the game: Demon makes prediction P2 and Chooser chooses 2. So I'll mostly use tables when they are possible. And they often are possible - lots of games can be turned into demonic decision problems like Newcomb's Problem.
 
-## Familiar Games {#familiar}
+### Familiar Games {#familiar}
 
 Much of what happens in this book comes from seeing demonic decision problems as games and, conversely, seeing games as potential demonic decision problems. So I want to spend a little time setting out how the translation between the two works. 
 
@@ -556,9 +578,9 @@ The second point is that most of the simple games you find in those introductory
 
 In later parts of the book, I'll be frequently appealing to decision problems that are generated from other games that have been widely discussed by economic theorists. Most of these discussions are not particularly recent; the bulk of the work I'll be citing is from the 1980s and 1990s, and I don't take myself to be making a significant contribution to contemporary economic theorising. But what I want to point out is that there is a vast source of examples in the economic theory literature that decision theorists could be, and should be, discussing. And I've spent so long here on the translation between the two literatures in part because I think there are huge gains to be had from bringing these literatures into contact.
 
-## An Indecisive Example {#indecisive}
+### An Indecisive Example {#indecisive}
 
-This section is mostly going to be talking about games that are commonly known as Stag Hunts. Brian Skyrms has written extensively on why Stag Hunts are philosophically important [@Skyrms2001, @Skyrms2004], and putting them at the center of the story is one of several ways in which this book is following Skyrms's lead.
+This subsection is mostly going to be talking about games that are commonly known as Stag Hunts. Brian Skyrms has written extensively on why Stag Hunts are philosophically important [@Skyrms2001, @Skyrms2004], and putting them at the center of the story is one of several ways in which this book is following Skyrms's lead.
 
 Stag Hunts are symmetric two-player two-option, simultaneous move games. So they can be defined by putting constraints on the values in \@ref(tab:basic-sym-game). In this case, the constraints are
 
@@ -622,52 +644,112 @@ gameformat(not_stag_decision, "A multiple equilibrium decision problem that is n
 
 I certainly don't want to lean too hard on the intuition that either option is rational in Stag Hunts - though I do in fact think that it's intuitive that either option is rational in Stag Hunts. But if we were just leaning on intuitions, then this example would be devastating to my theory, since it really isn't particularly intuitive here that either option is rational. Thankfully, the argument, which I'll set out in some detail in chapter \@ref(decisive), doesn't appeal to these kinds of intuitions. Still, I think it's useful to focus on Stag Hunts because, as Skyrms shows, they are so philosophically important. And they will be my canonical example of a problem where the right decision theory is Indecisive.
 
-## An Example of a Dilemma {#firstdilemma}
+### An Example of a Dilemma {#firstdilemma}
 
 - Rock Paper Scissors
 
-## The Main Example
+### The ABC Game {#abcgameintroduce}
 
-```{tikz, main-example, fig.cap = "Generic version of the main example", fig.ext = 'png', cache=TRUE}
+```{tikz, abc-game-generic-long, fig.cap = "Generic version of the (long version of the) ABC Game", fig.ext = 'png', cache=TRUE}
 \usetikzlibrary{calc}
 \begin{tikzpicture}[scale=1.5,font=\footnotesize]
 \tikzset{
 % Two node styles for game trees: solid and hollow
 solid node/.style={circle,draw,inner sep=1.5,fill=black},
-hollow node/.style={circle,draw,inner sep=1.5}
+hollow node/.style={circle,draw,inner sep=1.5},
+square node/.style={rectangle,draw, inner sep = 1, fill = black}
 }
 % Specify spacing for each level of the tree
-\tikzstyle{level 1}=[level distance=10mm,sibling distance=25mm]
-\tikzstyle{level 2}=[level distance=10mm,sibling distance=25mm]
+\tikzstyle{level 1}=[level distance=20mm]
+\tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
 \tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
 \tikzstyle arrowstyle=[scale=1]
 \tikzstyle directed=[postaction={decorate,decoration={markings,
 mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
 % The Tree
-\node(0)[solid node,label=above:{$Demon$}]{}
+\node(0)[hollow node,label=above:{$Demon$}]{}
 
-child{node(1)[hollow node, label=below:{$(x_5,y)$}]{}
-edge from parent node[left,xshift=-3]{Out}
+child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$e_1,e_2$}]{}
+edge from parent node[above]{A}
 }
-child{node(2)[solid node,label=right:{$Demon$}]{}
-child{node(3)[solid node]{}
-child{node[hollow node,label=below:{$(x_1,1)$}]{}edge from parent node[left]{A} }
-child{node[hollow node,label=below:{$(x_2,0)$}]{} edge from parent node[right]{B}}
-edge from parent node[left,xshift = -3]{PA}}
-child{node(4)[solid node]{}
-child{node[hollow node,label=below:{$(x_3,0)$}]{}edge from parent node[left]{A} }
-child{node[hollow node,label=below:{$(x_4,1)$}]{} edge from parent node[right]{B}}
-edge from parent node[right,xshift = 3]{PB}
+child[grow=225]{node(3)[solid node]{}
+child[grow=240]{node[square node,label=below:{$x_1,y_1$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$x_3,y_3$}]{} edge from parent node[right]{D}}
+edge from parent node[left, xshift = -3]{B}}
+child[grow=315]{node(4)[solid node]{}
+child[grow=240]{node[square node,label=below:{$x_2,y_2$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$x_4,y_4$}]{} edge from parent node[right]{D}}
+edge from parent node[right,xshift = 3]{C}
 }
-edge from parent node[right,xshift=3]{In}
-};
+;
 % information set
-\draw[dashed,rounded corners=10]($(3) + (-.2,.25)$)rectangle($(4) +(.2,-.25)$);
+\draw[dashed](3) to (4);
 % specify mover at 2nd information set
-\node at ($(3)!.5!(4)$) {$Chooser$};
+\node at ($(3)!.5!(4)$) [above] {$Chooser$};
 \end{tikzpicture}
 ```
+
+
+```{tikz, abc-game-generic-early, fig.cap = "Generic version of the early version of the ABC Game", fig.ext = 'png', cache=TRUE}
+\usetikzlibrary{calc}
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzset{
+% Two node styles for game trees: solid and hollow
+solid node/.style={circle,draw,inner sep=1.5,fill=black},
+hollow node/.style={circle,draw,inner sep=1.5},
+square node/.style={rectangle,draw, inner sep = 1, fill = black}
+}
+% Specify spacing for each level of the tree
+\tikzstyle{level 1}=[level distance=15mm,sibling distance=25mm]
+\tikzstyle{level 2}=[level distance=10mm,sibling distance=13mm]
+\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+% The Tree
+\node(0)[hollow node,label=above:{$Demon$}]{}
+
+child{node(2)[solid node]{}
+child{node[square node,label=below:{$e_1,e_2$}]{}edge from parent node[left]{U} }
+child{node[square node,label=below:{$e_1,e_2$}]{} edge from parent node[right]{D}}
+edge from parent node[left, xshift = -4]{A}}
+child{node(3)[solid node]{}
+child{node[square node,label=below:{$x_1,y_1$}]{}edge from parent node[left]{U} }
+child{node[square node,label=below:{$x_3,y_3$}]{} edge from parent node[right]{D}}
+edge from parent node[left, xshift = 0]{B}}
+child{node(4)[solid node]{}
+child{node[square node,label=below:{$x_2,y_2$}]{}edge from parent node[left]{U} }
+child{node[square node,label=below:{$x_4,y_4$}]{} edge from parent node[right]{D}}
+edge from parent node[right,xshift = 4]{C}
+}
+;
+% information set
+\draw[dashed](2) to (4);
+% specify mover at 2nd information set
+\node at ($(3)!.3!(4)$) [above] {$Chooser$};
+\end{tikzpicture}
+```
+
+**NOT COMPLETE**
+
+- Short game as 2\*2 strategic form
+- Early game as 2\*3 strategic form
+- Note that a game includes a specification of probability of Demon action in case of ties
+
+Big argument
+
+- Same moves are rational in Long Game as in Short Game (by backward induction)
+- Same moves are rational in Long Game as in Early Game (by intuition that these are just the same game)
+- So same moves are rational in Short Game as Early Game
+- This turns out to rule out approximately all theories of decision currently on the market.
+
 ## Plan for the Book {#Plan}
+
+**NOT COMPLETE**
+
+- Talk about appendices
+- Talk about each chapter
+- This is literally the last thing to write
 
 # Why So Defensive? {#defensive}
 
@@ -998,6 +1080,19 @@ If Chooser can't randomise, then it's a dilemma. What we say here should be simi
 ## Mixtures and Dilemmas {#mixedavoidance}
 
 Various theorems exist proving the existence of equilibria in games. (See @BonannoText
+
+## Infinite Dilemmas {#infinitedilemma}
+
+Any argument against dilemmas overgenerates, because of infinite cases.
+
+Ahmed 2012 disagrees, for reasons that are completely unclear to me: (This is from "Push the Button", Philosophy of Science 2012)
+
+It is the catastrophic conclusion that whatever you do in ABZ is irrational: which- ever option you take, some other option is (and always was) rationally preferable to it.4
+It may be fair to say this about an agent whose beliefs or preferences are insane or incoherent and also about one whose options are infinite. But we are not facing either case here. Your beliefs and preferences in ABZ are, despite their science-fictional character, plainly sane and coherent.5 And it is equally clear that ABZ does not offer an infinitude of options but only three.
+
+Really, why is the infinitude relevant here? Any argument that it's 'catastrophic' should apply in all cases or in none, and it is bound to overgenerate
+
+We have reasons for treating some everyday decisions as infinite. For instance, I'm deciding how much force and what angle to throw a paper when I aim at the trash. This doesn't feel like choosing from a discrete set of options - it's a complicated feedback process that is best treated as a choice of a spot in a multi-dimension continuous space
 
 ## What Dilemmas are Like
 
@@ -1428,7 +1523,7 @@ In chapter \@ref(decisive) I argued that decision theory is often compatible wit
 
 This chapter argues that thinking about symmetric games gives us new reason to believe in permissivism. In some finite games, if permissivism is false then we have to think that a player is more likely to take one option rather than another, even though each have the same expected return given that player's credences. And in some infinite games, if permissivism is false there is no rational way to play the game, although intuitively the games could be rationally played. The latter set of arguments rely on the recent discovery that there are symmetric games with only asymmetric equilibria. It was long known that there are symmetric games with no pure strategy symmetric equilibria; the surprising new discovery is that there are symmetric games with asymmetric equilibria, but no symmetric equilibria involving either mixed or pure strategies.
 
-The permissivist theses that have been the focus on recent philosophical attention vary along two dimensions.^[For a much more thorough introduction to the debate, and especially into the varieties of permissivist theses, see @KopecTitelbaum2016. Much of the setup here, including for example the use of the subjective Bayesian as an illustrative example, is from that paper.]
+The permissivist theses that have been the focus on recent philosophical attention vary along two dimensions.^[For a much more thorough introduction to the debate, and especially into the varieties of permissivist theses, see @KopecTitelbaum2016. Much of the setup here, including for example the use of the subjective Bayesian as an illustrative example, is from that paper. Some notable more recent contributions to the debate include @Schultheis2018 arguing for Uniqueness, and @Callahan2021 arguing for Permissivism. Callahan connects Permissivism to existentialism. I suspect there are deep and unexplored connections here, but exploring them is a task for a different book. ]
 
 The first dimension concerns what we hold fixed when we say that multiple attitudes are rationally permissible. The weakest possible theory just says that two people with distinct attitudes may both be rational. No one really denies this. The strongest theory says that holding every fact about a situation constant, there are two possible rational attitudes. In between we have a number of interesting theses. For instance, we can ask whether multiple attitudes are rationally compatible holding constant the evidence the believer has. And we can ask whether multiple attitudes are rationally compatible holding constant both the evidence and the believer's prior doxastic states. A classic form of subjective Bayesianism answers _yes_ to the first question, and _no_ to the second. The focus here will be on a thesis very close to the strongest one - whether two people who are alike in all qualitative respects can rationally have different attitudes.
 
@@ -1563,6 +1658,24 @@ I think the conclusion to draw from these cases of symmetric interactions this i
 # Puzzles about Weak Dominance
 
 ## Why Weak Dominance
+
+Consider the following version of the ABC game.
+
+- Demon chooses A, B or C
+- If Demon chooses A then game ends and payouts are made. 
+- If Demon chooses B or C then Chooser is told that Demon did not choose A, but not which choice was made. 
+- Then Chooser chooses L or R. 
+- That’s the last move, and the payouts are a function of what each player chose. 
+- In this case Demon gets 1 if they choose A, 0 otherwise. 
+- Chooser gets 1 if either Demon chooses A or they choose L, otherwise they get 0. 
+
+Here is the game tree, with Chooser’s payouts listed first. 
+
+**Insert Tree**
+
+Obviously if Chooser gets to choose, they should choose L; that way they get 1 not 0. But what precisely Is wrong with the following belief/strategy pair. 
+
+- Chooser believes that Demon will play A because it strictly dominates B and C
 
 Basic ABC example. Demon might not give a choice but if they do Up beats Down
 
