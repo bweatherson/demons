@@ -1,3 +1,179 @@
+# Introduction {#intro}
+
+## Two Questions {#twoquestions}
+
+Decision theory should have at its heart two questions.
+
+1. What makes a decision good?
+2. How does one make good decisions?
+
+It is of the first importance that these questions not be confused. The answers to the two questions are different, and the constraints on plausible answers to the two questions are different.
+
+This book argues for a particular answer to the first question. I'll call this answer _causal defensivism_. It says that what makes a decision good is that the decision maker can rationally defend it. Once the decision is made, the decision makes sense. That's the reason for including 'defensivism' in the name. The account I'll give of what it is to rationally defend a decision gives a central role to causal concepts, which is why I've included the first word in the name.
+
+Once I've set it out, causal defensivism won't look too surprising to people familiar with contemporary game theory. But it does look fairly different to most contemporary decision theory. For example, it doesn't assign values to options, and instruct choosers to maximise value. Most contemporary work in decision theory does just that, with the primary disputes being over how to identify the values. 
+
+Causal defensivism most closely resembles work in decision theory that follows @Skyrms1990 in looking at whether a chooser's views are in equilibrium. But most such views go on to identify a privileged equilibrium in decision problems that have multiple equilibria. Causal defensivism does not. Very roughly, it just says that the chooser must rationally be in equilibrium, and then their choice is rational.
+
+Causal defensivism isn't just different from most existing theories. It violates all sorts of constraints that philosophical decision theorists have, implicitly or explicitly, imposed on theories of decision. I'll set out these constraints precisely in section \@ref(procdef), and call them collectively **proceduralism**. Much of the rest of the book will be a sustained argument against proceduralism. If one were trying to answer the second question I started with, how should one make good decisions, proceduralism would be a very plausible set of constraints. But they are not plausible constraints on answers to the first question, what makes a decision good.
+
+If I'm going to rest so much argumentative weight on the difference between these questions, and on the different constraints on answers to them, I better say more about what the questions mean, and why I think they are so different. Let's turn to that first.
+
+## Ideal Decision Theory
+
+### Decisions Under Certainty {#deccertainty}
+
+Most philosophical work on decision theory focusses on choices under uncertainty. And I'm going to follow suit for most of this book. But not yet. Instead, I'll start with an example of decision making under certainty, and in particular a version of the problem that Julia Robinson dubbed the 'travelling salesman' problem.^[The dubbing is in @Robinson1949. For a thorough history of the problem, see @Schrijver2005. For an accessible history of the problem, which includes these references, see the wikipedia page on 'Traveling Salesman Problem'.] 
+
+> > **Salesman**    
+> > Chooser is given the distance between any two capitals of the continguous 48 states of the United States, as well as the distance of each of these cities from Ann Arbor. Using this information, Chooser has to order the 48 capitals in such a way that the path that starts in Ann Arbor, goes to each capital in order chosen, then returns to Ann Arbor, has minimal length. 
+
+Since there are $48!$ possible paths, Chooser has a few options here.
+
+Question: What makes a particular choice of path a good one? Answer: It's shorter than the other $48!-1$ options.
+
+Question: How should Chooser make a good choice here? Answer: Read a lot of the literature on this kind of optimisation problem, look for ways to rule out large collections of options all at once, etc.
+
+These answers are quite different, and that means the questions are different to. The first question is asking something almost metaphysical - in virtue of what is the right answer the right one? The second question is practical - how do we go about finding that right answer, or at least getting close to it?
+
+It would be really terrible to answer the second question by saying "choose the shortest route". This wouldn't be obviously incorrect. But it would be useless, which in context is almost as bad. The second question is asking a question in what we might call non-ideal decision theory.^[I'm borrowing the term 'non-ideal' from work in political philosophy. See @Valentini2012 for a good survey of some relevant work, and @Mills2005 for an important critique of the centrality of ideal theory in political philosophy. Critics of ideal theory, like Mills and @Sen2006, argue that we shouldn't base non-ideal theory on ideal theory. I'm going to agree, but my focus is primarily in the other direction. I'm going to argue that it isn't a constraint on ideal theory that it is useful in constructing a non-ideal theory.] And a constraint on a non-ideal theory is that it is useful, in a way that "choose the shortest route" is useless.
+
+But this is the right answer to the first question. The shortest route is, kind of by definition in this case, the best choice. That's the ideal. An ideal decision theory should say to choose it.
+
+
+
+### Decisions Under Uncertainty {#decuncertain}
+
+It's time to introduce uncertainty into the mix, because cases like Salesman might leave a misleading impression about what ideal decision theory tries to achieve.
+
+> > **Basketball**    
+> > Chooser is at a casino, and a basketball game is about to start. Chooser knows that basketball games don't have draws or ties; one side will win. And Chooser knows the teams are equally balanced; each team is 50% likely to win. Chooser has three options. They can bet on the Home team to win, bet on the Away team to win, or Pass, and not bet. If they bet, they win $100 if the team they bet on wins, and lose $110 if that team loses. If they Pass, they neither gain nor lose anything.
+
+Ideal decision theory says that in Basketball, Chooser should Pass. That's not the optimal outcome for Chooser. The optimal outcome is that they bet on the winning team. But since they don't know who that is, and either bet will, on average, lose them money, they should Pass rather than bet on Home or Away.
+
+Still, there is some sense in which they should not Pass - it doesn't produce the best outcomes. We could have a theory that just evaluated the possible outcomes in any decision. I'll call this Outcome Evaluation Theory, though it's more commonly called axiology. My name has the vice of being longer, but the virtue of using more familiar and descriptive language, so I'll stick with it.
+
+Now there are three theories on the table: Outcome Evaluation Theory, Ideal Decision Theory, and Non-Ideal Decision Theory. One initial claim I want to make is that ordinary claims about what one should do are often three-way ambiguous, with the three ways corresponding to these three theories. Sometimes the claim is that one will produce the best outcome by doing this, sometimes that Ideal Decision Theory says to do it, and sometimes that Non-Ideal Decision Theory says to do it. Possibly the middle one, about Ideal Decision Theory, is the least commonly used in ordinary thought and talk, but it is a possible interpretation of a claim that one should do a particular thing. It's just that it's not the only possible interpretation of that claim.
+
+We can distinguish these three theories by what they say to do in two examples introduced so far: Salesman and Basketball.
+
+          Theory          Salesman            Basketball
+--------------------  ---------------------- -----------------
+ Outcome Evaluation     Shortest route         Bet on winner
+     Ideal Decision     Shortest route         Pass
+ Non-Ideal Decision     Study optimization     Pass
+
+Ideal Decision Theory is an odd mid-point between the two other theories listed. It takes Chooser's worldly knowledge as it is, and Chooser's mathematical abilities as they might be. That is, it idealises away from mathematical shortcomings, but not worldly ignorance. One question we might well ask is why we care about just these idealisations.
+
+A related question is what benefit we gain from studying Ideal Decision Theory. Outcome Evaluation is obviously useful; we need to know what's better than what. Non-Ideal Decision Theory is obviously useful; it's good to make better decisions. But what do we gain from Ideal Decision Theory? The answer I'm going to give in chapter \@ref(defensive) is that Ideal Decision Theory is a vital input into worthwhile explanatory projects. But for now what I want to argue is that Ideal Decision Theory is distinct from Outcome Evaluation Theory and from Non-Ideal Decision Theory. And not just is it distinct, it's the project that philosophy decision theorists have primarily been engaged in for decades.
+
+
+### Decision Theorists are Ideal {#areideal}
+
+Most philosophical work in decision theory concerns what I've called Ideal Decision Theory. At least, that's what I'm going to argue in this subsection. And I'm going to argue for it with two caveats.
+
+First, this particular usage of the Ideal/Non-Ideal distinction is mine. So it isn't that decision theorists are addressing Ideal Decision Theory under that label. But they are, I'll presently argue, implicitly addressing it.
+
+Second, the reason I say 'most' not 'all' here is primarily to exclude what is called 'descriptive decision theory' [@ChandlerSEP] from the scope of the my claim. Descriptive decision theory concerns how people actually make decisions. Most of that work takes place outside philosophy, but I don't want to get into needless border wars to defend the claim I'm making. So I'll just note that philosophers working on descriptive decision theory are definitely not working on Ideal Decision Theory.
+
+But Non-Ideal Decision Theory isn't Descriptive Decision Theory. It's a normative theory; it's about what people should do. The verdicts of Non-Ideal Decision Theory are that someone facing a problem like Salesman should learn some optimisation theory, that someone facing a novel and difficult situation should stop and have a think about their options, and so on. These are normative claims; they are about what the person should do. But they are not the kinds of claims that Outcome Evaluation Theory, or Ideal Decision Theory make. And my main sociological claim is that very few philosophers work on this normative but Non-Ideal branch of decision theory. Very few isn't zero, and there are philosophers who aim to take into account the kinds of limitations that Non-Ideal Decision Theory accounts for. But they are a small minority of decision theorists.
+
+To see this, think about what most decision theorists say about our two examples: Salesman and Basketball. I'm not going to go over the range of what different decision theorists say case by case, for a couple of reasons. First, there are several good surveys of these views. The Stanford Encyclopedia alone has three surveys of different parts of the field [@SteeleSEP; @WeirichSEP; @BriggsSEP]. Second, and more importantly, they all say the same thing. They all say that Chooser should pick the shortest route in Salesman, and should Pass in Basketball.
+
+These theories all say that Chooser should pick the shortest route in Salesman in part because as stated they assume perfect mathematical competence. But they do not assume perfect foresight, so they don't say Chooser should see into the future. It's not just that they assume perfect mathematical competence, and that's enough to solve Salesman. It's that the particular skills that one needs to solve Salesman are also needed to apply any of the theories of decision on the market.
+
+Think about what it takes to solve Salesman by brute force. For each option, one has to look up 50 values, and sum them. Then one has to find the minimum value of the resulting sums.
+
+Think about what it takes to maximise expected utility by brute force.^[I'll say more about what that means in a bit. For now, see @BriggsSEP for the details.]  For each option, one has to calculate some values - products of utilities and probabilities - and sum the results of these calculations. Then one has to find the maximum value of the resulting sums.
+
+These are more or less the same skills. Anyone who can find the maximum expected utility of any of an arbitrarily large set of options can find the shortest path from an arbitrarily large set of possible paths. Applying the most popular decision theory we have, expected utility theory, requires exactly the same skill as solving problems like Salesman. And we said that the signature difference between Ideal and Non-Ideal Decision Theory was that the former did, but the latter did not, abstract away from the fact that ordinary humans cannot simply solve these problems.
+
+None of this is an objection to expected utility theory. Indeed, the theory I'm going to develop is just a version of expected utility theory. Rather, it's a claim that expected utility theory cannot be a theory of how to make good decisions. Instead, it's a theory of what makes a decision good. A chooser shouldn't calculate expected utilities for all their options. If they have, for example, $48! options, they probably won't be able to. But a choice is good if it is the option with maximal expected utility. That's to say, expected utility theory is a form of Ideal Decision Theory.
+
+And what goes for expected utility theory goes equally well for all theories out there. Treating any of them as a general theory of Non-Ideal Decision Theory would require that the person using them was able to solve problems at least as hard as the one in Salesman. And that's not something we should assume in a theory that's designed to be useful. Again, this isn't an objection to these theories. It's rather an argument that they should be interpreted as theories of Ideal Decision Theory. The only alternative is to interpret them in a way that Salesman is a quick refutation of each of them. That interpretation would be so uncharitable as to be wrong. Hence they are, as I said at the top of the subsection, attempts to offer an Ideal Decision Theory.
+
+### The Keynesian Critique {#keynesian}
+
+I'm going to spend some time in chapter \@ref(defensive) defending the study of Ideal Decision Theory. But we shouldn't give short shrift to the worry that maybe it shouldn't be. There are plenty of modern arguments to this effect, but for now I just want to briefly mention of the classics. 
+
+One of Keynes's most famous, most notorious, quotes concerns the relationship between Ideal and Non-Ideal theory in realms including Decision Theory. It's normally quoted wildly out of context, but here it is actually in context.
+
+> > But this _long run_ is a misleading guide to current affairs. _In the long run_ we are all dead. Economists set themselves too easy, too useless a task if in tempestuous seasons they can only tell us that when the storm is long past the ocean will be flat again. [@Keynes1923, 80, emphasis in original]
+
+Don't focus on the temporal connotations of Keynes's terminology of 'long run'. What's characteristic of his long run is not that it takes place in the distance future. What is characteristic of it instead is that it takes place in a world where some sources of interference are absent. It's a world where we sail but there are no storms. It's a study where we abstract away from storms and other unfortunate complications.
+
+And that's what's characteristic of Ideal Decision Theory. We know that people cannot simply solve problems like the one in Salesman. But we think that, at least some of the time, it's worthwhile abstracting away from that particular human limitation. I think the connection between Ideal Decision Theory and the kind of equilibrium analysis that Keynes is critiquing here is even closer, since I think that notions of equilibria are at the heart of the right account of Ideal Decision Theory.
+
+So let's say that Keynes's target here is excessive abstraction, and that there are many views that might fall within that target. Classical economics is the proximal target, but Ideal Decision Theory may be another, various views in political philosophy might be yet another, and so on. And Keynes makes, as I read him, two distinct criticisms of these kinds of views: they are too easy, and they are useless. Both of these seem like they are good criticisms of the view that says of Salesman that Chooser should simply choose the shortest route. Saying that is indeed both easy and useless.
+
+In general though, the objection that these theories are 'easy' is not, I think, particularly fair. The most casual observation of twentieth century economics journals should make that clear. Even in the case Keynes uses, it isn't quite obvious why the sea should be flat once the storm passes. It won't be perfectly flat; the tides are not the result of any storm. But couldn't a big enough storm make semi-permanent shifts to the state of the ocean? If not, it takes some work to show this. A bit more seriously, by the time of the _General Theory_, Keynes himself thought economic storms could lead to equilibria with bad characteristics [@Keynes1936]. In economics, some storms do not leave flat seas in their wake.
+
+On the other hand, the objection that we set ourselves too "useless" a task if we confine ourselves to Ideal Theory does ring true. Note, however, an important detail to this complaint. It's not that Ideal Theory is useless. It's that if we do nothing but Ideal Theory, if we only say that when the storm is over the seas are flat, we are not sufficiently useful. That all seems right, but it doesn't show that we should never do Ideal Theory. It just shows that we should never settle for just doing it.
+
+Ideal Theory is an abstraction. In decision theory, it abstracts away from mathematical limitations. In economics, it might abstract away from various idiosyncratic features of individual economies. There is nothing wrong with abstraction as such. Without any abstraction, we just have a buzzing, blooming confusion of data. That's to say, for any problem, there is some abstraction that will be helpful in solving it. But there's a quantifier shift fallacy that's dangerously tempting around here. We might infer from every problem needs some abstraction, that there is some abstraction that is needed for every problem. And that latter claim is false. It's when you believe something like that that you end up settling for Ideal Theory, and set yourself, if not always too easy, then definitely too useless a task.
+
+We should do more than Ideal Theory. But the rule there is collective. We, collectively, should do more than Ideal Theory. It doesn't follow that any one person, or any one book, must do more. And this book isn't, for the most part, going to do any more; this is a work in Ideal Theory. But I've belabored this point about the role of Ideal Theory in inquiry because the approach this book takes to Ideal Theory doesn't make sense if you see Ideal Theory as the pinnacle, or as the center, of inquiry. It's one task among many, and it has limits. And the approach I'm going to take will make those limits clearer, and only make sense in light of those limits.
+
+## Proceduralism and Defensivism  {#procdef}
+
+The vast bulk of decision theories on the market are what I'll call proceduralist. The theory I'm going to offer, causal defensivism, is not. Many people, I suspect, will see that as reason enough to reject causal defensivism. But this would be a mistake. As I'll argue in this section, we should want our Non-Ideal Decision Theory to be proceduralist. But there is no obvious reason why an Ideal Decision Theory should be proceduralisy.
+
+### Proceduralism Defined {#procdefine}
+
+A proceduralist decision theory provides a procedure for determining what  to do in a given problem. The procedure might not be particularly efficient, or even remotely practical. I'll count things like _Add up the lengths in each path, then do a selection sort on the results_, as a procedure for solving Salesman, even if it would never complete in the available time. But let's abstract away from those details for now. Instead of focusing on computational complexity, I'll understand proceduralism about decision problems as the conjunction of four claims. Two of these are about the inputs to deliberation, and two of them are about the outputs. Here are the four claims, with some hopefully useful names.
+
+Ex Ante
+:    What is to be done is a function of what things are like at the start of deliberation.
+
+Transparency
+:    The inputs to that function are all knowable as long as the chooser is sufficiently rational and self-aware.
+
+Decisiveness
+:    In any decision problem, there is only one thing which is to be done, unless there are several things that are equally good. In the latter case, adding a minimal sweetening to any one of the equally good options would make it the option to be chosen.
+
+Possibility
+:    In any finite decision problem, at least one choice is rationally permissible. That is, there are no finite rational dilemmas.
+
+
+
+I'm going to argue against all four of these claims. The kind of theory I favor, defensivism, instead endorses the following four claims.
+
+Ex Post
+:    What is to be done is a function of what things are like at the end of deliberation.
+
+Opacity
+:    The inputs to that function involve, among other things, what probabilities are rational given the chooser's evidence, and this may be opaque to the self-aware, rational agent.
+
+Indecisiveness
+:    In many decision problems, there are permissible options which are not equally good, and there would still be many permissible options after sweetening one or other option.
+
+Dilemmas
+:    In many finite decision problems, no choice is rationally permissible. That is, there are finite rational dilemmas.
+
+Neither Proceduralism nor Defensivism is a package deal; you can mix and match the parts. And there are many natural weakenings of one or other part of the family of views. For instance, in chapter \@ref(decisive), I'll spend some time on views that say that Decisiveness is only guaranteed to hold in cases where there are just two options.
+
+But that said, there are natural affinities between the four parts of Proceduralism. if you thought the point of decision theory was to provide a user's guide to making decisions, you'll naturally end up with a proceduralist theory. And lots of theories have done just that. Any theory which starts with a function from states available to the chooser at the start of deliberation to numerical values, and instructs the chooser to maximise that value, will be proceduralist. That very abstract description of a decision theory covers the vast majority of theories on the market today.
+
+Any theory of decision that assigns numerical values to each option on the basis of factors accessible to the chooser at the start of deliberation, and then exhorts the chooser to choose the option with the highest value, will be proceduralist. And if you're familiar with contemporary work in decision theory, you'll know that most theories on the market do indeed assign numerical values to each option on the basis of factors accessible to the chooser at the start of deliberation, and then exhort the chooser to choose the option with the highest value. 
+
+In a recent paper, Adam @Elga2021 describes a class of theories he calls 'suppositional', and notes that most existing theories of decision are suppositional. (And goes on to argue that we should want a theory to be suppositional.) The suppositional theories, as he describes them, are a subset of the procedural theories. Indeed, they are a subset of the theories described in the last paragraph - those that assign numerical values to choices. So saying that most theories on the market are proceduralist is not saying anything new. If anything, it's a commonplace.
+
+**NOT COMPLETE**
+
+## Causal Defensivism {#cdintroduced}
+
+It's going to take some setup to articulate precisely the positive theory I'm going to defend in this book. But I think it's worth having a rough statement of it up front, so you can see where we're headed.
+
+According to causal defensivism, a choice is rational if the following two conditions are met.
+
+First, at the time the choice is made, no other choice has higher expected utility, given some probability distribution over the states that is rational at that time.
+
+Second, at the time the choice is made, no other choice weakly dominates the choice.
+
+There are a lot of technical terms there which I'll make clearer as this chapter goes along. But the key thing 
+
+**NOT COMPLETE**
+
 # Make Defensible Decisions {#introchap}
 
 
@@ -52,60 +228,6 @@ The next three sections spell out the points made in each of the last three para
 
 
 
-
-## Proceduralism and Defensivism  {#procdef}
-
-The vast bulk of decision theories on the market are what I'll call proceduralist. That is, they provide a procedure for determining what  to do in a given problem. I'm going to argue against proceduralism, and in favor of what I'll call defensivism. And to do that, it helps to clarify just what is meant by saying that a theory provides a procedure for determining what to do. As I'll understand it, proceduralism is the conjunction of four claims about what to do in a decision problem. Two of these are about the inputs to deliberation, and two of them are about the outputs. Here are the four claims, with some hopefully useful names.
-
-Ex Ante
-:    What is to be done is a function of what things are like at the start of deliberation.
-
-Transparency
-:    The inputs to that function are all knowable as long as the chooser is sufficiently rational and self-aware.
-
-Decisiveness
-:    In any decision problem, there is only one thing which is to be done, unless there are several things that are equally good. In the latter case, adding a minimal sweetening to any one of the equally good options would make it the option to be chosen.
-
-Possibility
-:    In any finite decision problem, at least one choice is rationally permissible. That is, there are no finite rational dilemmas.
-
-I'm going to argue against all four of these claims. The kind of theory I favor, defensivism, instead endorses the following four claims.
-
-Ex Post
-:    What is to be done is a function of what things are like at the end of deliberation.
-
-Opacity
-:    The inputs to that function involve, among other things, what probabilities are rational given the chooser's evidence, and this may be opaque to the self-aware, rational agent.
-
-Indecisiveness
-:    In many decision problems, there are permissible options which are not equally good, and there would still be many permissible options after sweetening one or other option.
-
-Dilemmas
-:    In many finite decision problems, no choice is rationally permissible. That is, there are finite rational dilemmas.
-
-Neither Proceduralism nor Defensivism is a package deal; you can mix and match the parts. And there are many natural weakenings of one or other part of the family of views. For instance, in chapter \@ref(decisive), I'll spend some time on views that say that Decisiveness is only guaranteed to hold in cases where there are just two options.
-
-But that said, there are natural affinities between the four parts of Proceduralism. if you thought the point of decision theory was to provide a user's guide to making decisions, you'll naturally end up with a proceduralist theory. And lots of theories have done just that. Any theory which starts with a function from states available to the chooser at the start of deliberation to numerical values, and instructs the chooser to maximise that value, will be proceduralist. That very abstract description of a decision theory covers the vast majority of theories on the market today.
-
-Any theory of decision that assigns numerical values to each option on the basis of factors accessible to the chooser at the start of deliberation, and then exhorts the chooser to choose the option with the highest value, will be proceduralist. And if you're familiar with contemporary work in decision theory, you'll know that most theories on the market do indeed assign numerical values to each option on the basis of factors accessible to the chooser at the start of deliberation, and then exhort the chooser to choose the option with the highest value. 
-
-In a recent paper, Adam @Elga2021 describes a class of theories he calls 'suppositional', and notes that most existing theories of decision are suppositional. (And goes on to argue that we should want a theory to be suppositional.) The suppositional theories, as he describes them, are a subset of the procedural theories. Indeed, they are a subset of the theories described in the last paragraph - those that assign numerical values to choices. So saying that most theories on the market are proceduralist is not saying anything new. If anything, it's a commonplace.
-
-**NOT COMPLETE**
-
-## Causal Defensivism {#cdintroduced}
-
-It's going to take some setup to articulate precisely the positive theory I'm going to defend in this book. But I think it's worth having a rough statement of it up front, so you can see where we're headed.
-
-According to causal defensivism, a choice is rational if the following two conditions are met.
-
-First, at the time the choice is made, no other choice has higher expected utility, given some probability distribution over the states that is rational at that time.
-
-Second, at the time the choice is made, no other choice weakly dominates the choice.
-
-There are a lot of technical terms there which I'll make clearer as this chapter goes along. But the key thing 
-
-**NOT COMPLETE**
 
 ## Basic Decision Theory {#bdt}
 
@@ -1523,7 +1645,7 @@ In chapter \@ref(decisive) I argued that decision theory is often compatible wit
 
 This chapter argues that thinking about symmetric games gives us new reason to believe in permissivism. In some finite games, if permissivism is false then we have to think that a player is more likely to take one option rather than another, even though each have the same expected return given that player's credences. And in some infinite games, if permissivism is false there is no rational way to play the game, although intuitively the games could be rationally played. The latter set of arguments rely on the recent discovery that there are symmetric games with only asymmetric equilibria. It was long known that there are symmetric games with no pure strategy symmetric equilibria; the surprising new discovery is that there are symmetric games with asymmetric equilibria, but no symmetric equilibria involving either mixed or pure strategies.
 
-The permissivist theses that have been the focus on recent philosophical attention vary along two dimensions.^[For a much more thorough introduction to the debate, and especially into the varieties of permissivist theses, see @KopecTitelbaum2016. Much of the setup here, including for example the use of the subjective Bayesian as an illustrative example, is from that paper. Some notable more recent contributions to the debate include @Schultheis2018 arguing for Uniqueness, and @Callahan2021 arguing for Permissivism. Callahan connects Permissivism to existentialism. I suspect there are deep and unexplored connections here, but exploring them is a task for a different book. ]
+The permissivist theses that have been the focus of recent philosophical attention vary along two dimensions.^[For a much more thorough introduction to the debate, and especially into the varieties of permissivist theses, see @KopecTitelbaum2016. Much of the setup here, including for example the use of the subjective Bayesian as an illustrative example, is from that paper. Some notable more recent contributions to the debate include @Schultheis2018 arguing for Uniqueness, and @Callahan2021 arguing for Permissivism. Callahan connects Permissivism to existentialism. I suspect there are deep and unexplored connections here, but exploring them is a task for a different book. ]
 
 The first dimension concerns what we hold fixed when we say that multiple attitudes are rationally permissible. The weakest possible theory just says that two people with distinct attitudes may both be rational. No one really denies this. The strongest theory says that holding every fact about a situation constant, there are two possible rational attitudes. In between we have a number of interesting theses. For instance, we can ask whether multiple attitudes are rationally compatible holding constant the evidence the believer has. And we can ask whether multiple attitudes are rationally compatible holding constant both the evidence and the believer's prior doxastic states. A classic form of subjective Bayesianism answers _yes_ to the first question, and _no_ to the second. The focus here will be on a thesis very close to the strongest one - whether two people who are alike in all qualitative respects can rationally have different attitudes.
 
@@ -1625,9 +1747,11 @@ This is the coherent equilibria that Xefteris describes, but note that it is rat
 
 The main difference between this model and Xefteris's is that it allows that players have false beliefs. But why shouldn't they have false beliefs? All they know is that the other players are rational, and rationality (we're assuming) does not settle a unique verdict for what players will do.^[To use the game-theory jargon, Xefteris describes a Nash equilibrium of the game, but what I've described is a a rationalizable strategy triple [@Bernheim1984, Pearce1984]. If Uniqueness is true, then strictly speaking any rationalizable strategy pair for a symmetric game is a Nash equilibrium.] So I think this strategy set, where the players have rational (but false) beliefs about the other players, is more useful to think about.
 
+And what it shows, I think, is that Uniqueness implies a false claim about which games are possible. Given Uniqueness, it is impossible for players who know each other to be rational to play this game. But it is possible for players who know each other to be rational to play this game; we've just seen a way the world could be where both players know the other to be rational. So Uniqueness is false - it implies the impossibility of something we've seen to be possible.
+
 ## Objections
 
-The reductio arguments here have all assumed not just that Uniqueness is true, but that the players know that it is true. What happens if we drop that assumption, and consider the possibility that Uniqueness is true but unknowable?
+The reductio arguments in the previous two sections have  assumed not just that Uniqueness is true, but that the players know that it is true. What happens if we drop that assumption, and consider the possibility that Uniqueness is true but unknowable?
 
 This possibility is a little uncomfortable for philosophical defenders of Uniqueness. If the players in these games do not know that Uniqueness is true, then neither do the authors writing about Uniqueness. And now we have to worry about whether it is permissible to assert in print that Uniqueness is true. I wouldn't make too much of this though. It is unlikely that a knowledge norm governs assertion in philosophical journals.
 
