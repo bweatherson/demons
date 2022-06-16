@@ -1,5 +1,47 @@
 # Introduction {#intro}
 
+
+```{r, include=FALSE}
+require(knitr)
+require(tidyverse)
+require(kableExtra)
+require(huxtable)
+require(TSP)
+require(maps)
+require(grid)
+
+knitr::opts_chunk$set(echo = FALSE, results = "asis")
+
+gameformat <- function(game, caption){
+  gg <- as_hux(game) %>%
+    set_width(ncol(game)/10) %>%
+	  set_markdown() %>% 
+    set_caption(caption) %>%
+    set_bold(1, everywhere) %>%
+    set_bold(everywhere, 1) %>%
+    set_align(everywhere, everywhere, "center") %>%
+    set_right_border(everywhere, 1, 0.5) %>%
+    set_bottom_border(1, everywhere, 0.5) %>%
+    set_right_border_color(everywhere, 1, "grey60") %>%
+    set_bottom_border_color(1, everywhere, "grey60") %>%
+    set_caption_pos("bottom") %>%
+    set_row_height(everywhere, 0.6) %>%
+  print_html(gg)
+  # kbl(game, 
+  #     booktabs = F, 
+  #     escape = FALSE,
+  #     align = paste0("r",strrep("c", ncol(game)-1)),
+  #     linesep = "",
+  #     caption = caption) %>%
+  #   column_spec(1, 
+  #               border_right = T,
+  #               bold = T) %>%
+  #   row_spec(0, bold = T, extra_css = "border-bottom: solid 0.5px;") %>%
+  #   cell_spec(df[1, 2], extra_css = "border_left = solid 0.5px;") %>%
+  #   kable_styling(full_width = F)  
+}
+```
+
 ## Two Questions {#twoquestions}
 
 Decision theory should have at its heart two questions.
@@ -9,13 +51,13 @@ Decision theory should have at its heart two questions.
 
 It is of the first importance that these questions not be confused. The answers to the two questions are different, and the constraints on plausible answers to the two questions are different.
 
-This book argues for a particular answer to the first question. I'll call this answer _causal defensivism_. It says that what makes a decision good is that the decision maker can rationally defend it. Once the decision is made, the decision makes sense. That's the reason for including 'defensivism' in the name. The account I'll give of what it is to rationally defend a decision gives a central role to causal concepts, which is why I've included the first word in the name.
+This book argues for a particular answer to the first question. I'll call this answer _causal ratificationism_. It says that what makes a decision good is that the decision maker can rationally defend it. Once the decision is made, the decision makes sense. The decision can be ratified by the decision maker. That's the reason for including 'ratificationism' in the name. The account I'll give of what it is to rationally ratify a decision gives a central role to causal concepts, which is why I've included the first word in the name.
 
-Once I've set it out, causal defensivism won't look too surprising to people familiar with contemporary game theory. But it does look fairly different to most contemporary decision theory. For example, it doesn't assign values to options, and instruct choosers to maximise value. Most contemporary work in decision theory does just that, with the primary disputes being over how to identify the values. 
+Once I've set it out, causal ratificationism won't look too surprising to people familiar with contemporary game theory. But it does look fairly different to most contemporary decision theory. For example, it doesn't assign values to options, and instruct choosers to maximise value. Most contemporary work in decision theory does just that, with the primary disputes being over how to identify the values. 
 
-Causal defensivism most closely resembles work in decision theory that follows @Skyrms1990 in looking at whether a chooser's views are in equilibrium. But most such views go on to identify a privileged equilibrium in decision problems that have multiple equilibria. Causal defensivism does not. Very roughly, it just says that the chooser must rationally be in equilibrium, and then their choice is rational.
+Causal ratificationism most closely resembles work in decision theory that follows @Skyrms1990 in looking at whether a chooser's views are in equilibrium. But most such views go on to identify a privileged equilibrium in decision problems that have multiple equilibria. Causal ratificationism does not. Very roughly, it just says that the chooser must rationally be in equilibrium, and then their choice is rational.
 
-Causal defensivism isn't just different from most existing theories. It violates all sorts of constraints that philosophical decision theorists have, implicitly or explicitly, imposed on theories of decision. I'll set out these constraints precisely in section \@ref(procdef), and call them collectively **proceduralism**. Much of the rest of the book will be a sustained argument against proceduralism. If one were trying to answer the second question I started with, how should one make good decisions, proceduralism would be a very plausible set of constraints. But they are not plausible constraints on answers to the first question, what makes a decision good.
+Causal ratificationism isn't just different from most existing theories. It violates all sorts of constraints that philosophical decision theorists have, implicitly or explicitly, imposed on theories of decision. I'll set out these constraints precisely in section \@ref(procdef), and call them collectively **proceduralism**. Much of the rest of the book will be a sustained argument against proceduralism. If one were trying to answer the second question I started with, how should one make good decisions, proceduralism would be a very plausible set of constraints. But they are not plausible constraints on answers to the first question, what makes a decision good.
 
 If I'm going to rest so much argumentative weight on the difference between these questions, and on the different constraints on answers to them, I better say more about what the questions mean, and why I think they are so different. Let's turn to that first.
 
@@ -26,11 +68,121 @@ If I'm going to rest so much argumentative weight on the difference between thes
 Most philosophical work on decision theory focusses on choices under uncertainty. And I'm going to follow suit for most of this book. But not yet. Instead, I'll start with an example of decision making under certainty, and in particular a version of the problem that Julia Robinson dubbed the 'travelling salesman' problem.^[The dubbing is in @Robinson1949. For a thorough history of the problem, see @Schrijver2005. For an accessible history of the problem, which includes these references, see the wikipedia page on 'Traveling Salesman Problem'.] 
 
 > > **Salesman**    
-> > Chooser is given the distance between any two capitals of the continguous 48 states of the United States, as well as the distance of each of these cities from Ann Arbor. Using this information, Chooser has to order the 48 capitals in such a way that the path that starts in Ann Arbor, goes to each capital in order chosen, then returns to Ann Arbor, has minimal length. 
+> > Chooser is given the straight line distance between each pair of cities from the 257 represented on the map below. Using this information, Chooser has to find as short a path as possible that goes through all 257 cities and returns to the first one. The longer a path Chooser selects, the worse things will be for Chooser. 
 
-Since there are $48!$ possible paths, Chooser has a few options here.
+```{r salesman-points, fig.cap="The 257 cities that must be visited in the Salesman problem."}
 
-Question: What makes a particular choice of path a good one? Answer: It's shorter than the other $48!-1$ options.
+theme_map <- function(base_size=9, base_family="") {
+  theme_bw(base_size=base_size, base_family=base_family) %+replace%
+    theme(axis.line=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title=element_blank(),
+          panel.background=element_blank(),
+          panel.border=element_blank(),
+          panel.grid=element_blank(),
+          panel.spacing=unit(0, "lines"),
+          plot.background=element_blank(),
+          legend.justification = c(0,0),
+          legend.position = c(0,0)
+    )
+}
+
+theme_set(theme_map())
+
+all_states <- map_data("state") %>% 
+  group_by(region) %>% 
+  tally() %>% 
+  select(state = region)
+
+all_states$code <- c("AL", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA",
+                     "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", 
+                     "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", 
+                     "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", 
+                     "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY")
+
+used_states <- 1:49
+
+long_states <- all_states$state[used_states]
+short_states <- all_states$code[used_states]
+
+data("USCA312")
+data("USCA312_GPS")
+
+cities <- as_tibble(as.matrix(USCA312))
+
+city_numbers <- tibble(
+  id = 1:312,
+  thecities = colnames(cities)
+) %>% 
+  mutate(used_city = case_when(str_sub(thecities, -2) %in% short_states  ~ 1,
+                               TRUE ~ 0))
+
+the_city_numbers <- filter(city_numbers, used_city == 1)$id
+
+
+our_cities <- cities %>% 
+  select(all_of(the_city_numbers)) %>% 
+  slice(the_city_numbers)
+
+our_gps <- USCA312_GPS %>% 
+  slice(the_city_numbers) %>% 
+  rowid_to_column()
+
+city_matrix <- as.matrix(our_cities)
+
+rownames(city_matrix) <- filter(city_numbers, used_city == 1)$thecities
+
+## Fine tour
+#tour_line <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion")
+#tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
+
+## Not good tour
+#tour_line <- solve_TSP(as.TSP(city_matrix), method="cheapest_insertion", start = 17) # - Very messy
+
+## Generate tour by longitude - really bad
+#tour_line <- TOUR(arrange(our_gps, long)$rowid, tsp = as.TSP(city_matrix))
+
+## Best tour
+load("tour_line.RData")
+
+## Turn tour to map path
+# paths <- tribble(
+#   ~step, ~property, ~rowid, ~long, ~lat
+# )
+# 
+# for (i in 1:nrow(our_gps)){
+#   x <- tour_line[i]
+#   first_city <- our_gps %>% slice(x)
+#   next_city <- our_gps %>% slice(x %% 31)
+#   paths <- paths %>% 
+#     add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>% 
+#   #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+# }
+# 
+# x <- tour_line[1]
+# 
+# paths <- paths %>% add_row(step = 24, property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+
+state_map_data <- map_data("state") %>%
+  #  filter(subregion != "north" | is.na(subregion)) %>%
+  filter(region %in% long_states) 
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") + 
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+#  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
+  coord_quickmap()
+#tour_length(tour_line)
+tour_map
+
+#str_c(our_gps$name, sep = "; ", collapse = "; ")
+```
+
+Since there are ~$256!$~ possible paths, Chooser has a few options here.^[The 256 cities are the cities in the lower 48 states from the 312 cities in North America that John Burkardt mapped in his dataset Cities, available at [people.sc.fsu.edu/~jburkardt/datasets/cities/cities.html](https://people.sc.fsu.edu/~jburkardt/datasets/cities/cities.html).]
+
+Question: What makes a particular choice of path a good one? Answer: It's no longer than the other $256!-1$ options.
 
 Question: How should Chooser make a good choice here? Answer: Read a lot of the literature on this kind of optimisation problem, look for ways to rule out large collections of options all at once, etc.
 
@@ -38,7 +190,7 @@ These answers are quite different, and that means the questions are different to
 
 It would be really terrible to answer the second question by saying "choose the shortest route". This wouldn't be obviously incorrect. But it would be useless, which in context is almost as bad. The second question is asking a question in what we might call non-ideal decision theory.^[I'm borrowing the term 'non-ideal' from work in political philosophy. See @Valentini2012 for a good survey of some relevant work, and @Mills2005 for an important critique of the centrality of ideal theory in political philosophy. Critics of ideal theory, like Mills and @Sen2006, argue that we shouldn't base non-ideal theory on ideal theory. I'm going to agree, but my focus is primarily in the other direction. I'm going to argue that it isn't a constraint on ideal theory that it is useful in constructing a non-ideal theory.] And a constraint on a non-ideal theory is that it is useful, in a way that "choose the shortest route" is useless.
 
-But this is the right answer to the first question. The shortest route is, kind of by definition in this case, the best choice. That's the ideal. An ideal decision theory should say to choose it.
+But this is the right answer to the first question. The shortest route is, kind of by definition in this case, the best choice. That's the ideal. An ideal decision theory should say to choose it.^[The full list of cities in the Salesman problem is: `r str_c(our_gps$name, sep = "; ", collapse = "; ")`.]
 
 
 
@@ -82,13 +234,13 @@ To see this, think about what most decision theorists say about our two examples
 
 These theories all say that Chooser should pick the shortest route in Salesman in part because as stated they assume perfect mathematical competence. But they do not assume perfect foresight, so they don't say Chooser should see into the future. It's not just that they assume perfect mathematical competence, and that's enough to solve Salesman. It's that the particular skills that one needs to solve Salesman are also needed to apply any of the theories of decision on the market.
 
-Think about what it takes to solve Salesman by brute force. For each option, one has to look up 50 values, and sum them. Then one has to find the minimum value of the resulting sums.
+Think about what it takes to solve Salesman by brute force. For each option, one has to look up 257 values, and sum them. Then one has to find the minimum value of the resulting sums.
 
-Think about what it takes to maximise expected utility by brute force.^[I'll say more about what that means in a bit. For now, see @BriggsSEP for the details.]  For each option, one has to calculate some values - products of utilities and probabilities - and sum the results of these calculations. Then one has to find the maximum value of the resulting sums.
+Think about what it takes to maximise expected utility by brute force.^[I'll say more about what that means in a bit. For now, see @BriggsSEP for the details on expected utility.]  For each option, one has to calculate some values - products of utilities and probabilities - and sum the results of these calculations. Then one has to find the maximum value of the resulting sums.
 
 These are more or less the same skills. Anyone who can find the maximum expected utility of any of an arbitrarily large set of options can find the shortest path from an arbitrarily large set of possible paths. Applying the most popular decision theory we have, expected utility theory, requires exactly the same skill as solving problems like Salesman. And we said that the signature difference between Ideal and Non-Ideal Decision Theory was that the former did, but the latter did not, abstract away from the fact that ordinary humans cannot simply solve these problems.
 
-None of this is an objection to expected utility theory. Indeed, the theory I'm going to develop is just a version of expected utility theory. Rather, it's a claim that expected utility theory cannot be a theory of how to make good decisions. Instead, it's a theory of what makes a decision good. A chooser shouldn't calculate expected utilities for all their options. If they have, for example, $48! options, they probably won't be able to. But a choice is good if it is the option with maximal expected utility. That's to say, expected utility theory is a form of Ideal Decision Theory.
+I'm not saying this to object to expected utility theory. Indeed, the theory I'm going to develop is just a version of expected utility theory. Rather, I'm saying it to support the claim that expected utility theory cannot be a theory of how to make good decisions. Instead, it's a theory of what makes a decision good. A chooser shouldn't calculate expected utilities for all their options. If they have, for example, $256! options, they probably won't be able to. But a choice is good if it is the option with maximal expected utility. That's to say, expected utility theory is a form of Ideal Decision Theory.
 
 And what goes for expected utility theory goes equally well for all theories out there. Treating any of them as a general theory of Non-Ideal Decision Theory would require that the person using them was able to solve problems at least as hard as the one in Salesman. And that's not something we should assume in a theory that's designed to be useful. Again, this isn't an objection to these theories. It's rather an argument that they should be interpreted as theories of Ideal Decision Theory. The only alternative is to interpret them in a way that Salesman is a quick refutation of each of them. That interpretation would be so uncharitable as to be wrong. Hence they are, as I said at the top of the subsection, attempts to offer an Ideal Decision Theory.
 
@@ -100,9 +252,9 @@ One of Keynes's most famous, most notorious, quotes concerns the relationship be
 
 > > But this _long run_ is a misleading guide to current affairs. _In the long run_ we are all dead. Economists set themselves too easy, too useless a task if in tempestuous seasons they can only tell us that when the storm is long past the ocean will be flat again. [@Keynes1923, 80, emphasis in original]
 
-Don't focus on the temporal connotations of Keynes's terminology of 'long run'. What's characteristic of his long run is not that it takes place in the distance future. What is characteristic of it instead is that it takes place in a world where some sources of interference are absent. It's a world where we sail but there are no storms. It's a study where we abstract away from storms and other unfortunate complications.
+Don't focus on the temporal connotations of Keynes's terminology of 'long run'. What's characteristic of his long run is not that it takes place in the distant future. What is characteristic of it instead is that it takes place in a world where some sources of interference are absent. It's a world where we sail but there are no storms. It's a study where we abstract away from storms and other unfortunate complications.
 
-And that's what's characteristic of Ideal Decision Theory. We know that people cannot simply solve problems like the one in Salesman. But we think that, at least some of the time, it's worthwhile abstracting away from that particular human limitation. I think the connection between Ideal Decision Theory and the kind of equilibrium analysis that Keynes is critiquing here is even closer, since I think that notions of equilibria are at the heart of the right account of Ideal Decision Theory.
+And that's what's characteristic of Ideal Decision Theory. We know that people cannot easily solve problems like the one in Salesman. But we think that, at least some of the time, it's worthwhile abstracting away from that particular human limitation. I think the connection between Ideal Decision Theory and the kind of equilibrium analysis that Keynes is critiquing here is even closer, since I think that notions of equilibria are at the heart of the right account of Ideal Decision Theory.
 
 So let's say that Keynes's target here is excessive abstraction, and that there are many views that might fall within that target. Classical economics is the proximal target, but Ideal Decision Theory may be another, various views in political philosophy might be yet another, and so on. And Keynes makes, as I read him, two distinct criticisms of these kinds of views: they are too easy, and they are useless. Both of these seem like they are good criticisms of the view that says of Salesman that Chooser should simply choose the shortest route. Saying that is indeed both easy and useless.
 
@@ -112,11 +264,11 @@ On the other hand, the objection that we set ourselves too "useless" a task if w
 
 Ideal Theory is an abstraction. In decision theory, it abstracts away from mathematical limitations. In economics, it might abstract away from various idiosyncratic features of individual economies. There is nothing wrong with abstraction as such. Without any abstraction, we just have a buzzing, blooming confusion of data. That's to say, for any problem, there is some abstraction that will be helpful in solving it. But there's a quantifier shift fallacy that's dangerously tempting around here. We might infer from every problem needs some abstraction, that there is some abstraction that is needed for every problem. And that latter claim is false. It's when you believe something like that that you end up settling for Ideal Theory, and set yourself, if not always too easy, then definitely too useless a task.
 
-We should do more than Ideal Theory. But the rule there is collective. We, collectively, should do more than Ideal Theory. It doesn't follow that any one person, or any one book, must do more. And this book isn't, for the most part, going to do any more; this is a work in Ideal Theory. But I've belabored this point about the role of Ideal Theory in inquiry because the approach this book takes to Ideal Theory doesn't make sense if you see Ideal Theory as the pinnacle, or as the center, of inquiry. It's one task among many, and it has limits. And the approach I'm going to take will make those limits clearer, and only make sense in light of those limits.
+We should do more than Ideal Theory. But the rule there is collective. We, collectively, should do more than Ideal Theory. It doesn't follow that any one person, or any one book, must do more. And this book isn't, for the most part, going to do any more; this is a work in Ideal Theory. But I've belabored this point about the role of Ideal Theory in inquiry because the approach this book takes to Ideal Theory doesn't make sense if you see Ideal Theory as the pinnacle, or as the center, of inquiry. It's one task among many, and it has its limits. And the approach I'm going to take will make those limits clearer, and only make sense in light of those limits.
 
-## Proceduralism and Defensivism  {#procdef}
+## Proceduralism and Ratificationism  {#procdef}
 
-The vast bulk of decision theories on the market are what I'll call proceduralist. The theory I'm going to offer, causal defensivism, is not. Many people, I suspect, will see that as reason enough to reject causal defensivism. But this would be a mistake. As I'll argue in this section, we should want our Non-Ideal Decision Theory to be proceduralist. But there is no obvious reason why an Ideal Decision Theory should be proceduralisy.
+The vast bulk of decision theories on the market are what I'll call proceduralist. The theory I'm going to offer, causal ratificationism, is not. Many people, I suspect, will see that as reason enough to reject causal ratificationism. But this would be a mistake. As I'll argue in this section, we should want our Non-Ideal Decision Theory to be proceduralist. But there is no obvious reason why an Ideal Decision Theory should be proceduralist.
 
 ### Proceduralism Defined {#procdefine}
 
@@ -134,9 +286,7 @@ Decisiveness
 Possibility
 :    In any finite decision problem, at least one choice is rationally permissible. That is, there are no finite rational dilemmas.
 
-
-
-I'm going to argue against all four of these claims. The kind of theory I favor, defensivism, instead endorses the following four claims.
+I'm going to argue against all four of these claims. The kind of theory I favor, ratificationism, instead endorses the following four claims.
 
 Ex Post
 :    What is to be done is a function of what things are like at the end of deliberation.
@@ -150,9 +300,9 @@ Indecisiveness
 Dilemmas
 :    In many finite decision problems, no choice is rationally permissible. That is, there are finite rational dilemmas.
 
-Neither Proceduralism nor Defensivism is a package deal; you can mix and match the parts. And there are many natural weakenings of one or other part of the family of views. For instance, in chapter \@ref(decisive), I'll spend some time on views that say that Decisiveness is only guaranteed to hold in cases where there are just two options.
+Neither proceduralism nor ratificationism is a package deal; you can mix and match the parts. And there are many natural weakenings of one or other part of the family of views. For instance, in chapter \@ref(decisive), I'll spend some time on views that say that Decisiveness is only guaranteed to hold in cases where there are just two options.
 
-But that said, there are natural affinities between the four parts of Proceduralism. if you thought the point of decision theory was to provide a user's guide to making decisions, you'll naturally end up with a proceduralist theory. And lots of theories have done just that. Any theory which starts with a function from states available to the chooser at the start of deliberation to numerical values, and instructs the chooser to maximise that value, will be proceduralist. That very abstract description of a decision theory covers the vast majority of theories on the market today.
+But that said, there are natural affinities between the four parts of proceduralism. if you thought the point of decision theory was to provide a user's guide to making decisions, you'll naturally end up with a proceduralist theory. And lots of theories have done just that. Any theory which starts with a function from states available to the chooser at the start of deliberation to numerical values, and instructs the chooser to maximise that value, will be proceduralist. That very abstract description of a decision theory covers the vast majority of theories on the market today.
 
 Any theory of decision that assigns numerical values to each option on the basis of factors accessible to the chooser at the start of deliberation, and then exhorts the chooser to choose the option with the highest value, will be proceduralist. And if you're familiar with contemporary work in decision theory, you'll know that most theories on the market do indeed assign numerical values to each option on the basis of factors accessible to the chooser at the start of deliberation, and then exhort the chooser to choose the option with the highest value. 
 
@@ -160,11 +310,11 @@ In a recent paper, Adam @Elga2021 describes a class of theories he calls 'suppos
 
 **NOT COMPLETE**
 
-## Causal Defensivism {#cdintroduced}
+## Causal Ratificationism {#cdintroduced}
 
 It's going to take some setup to articulate precisely the positive theory I'm going to defend in this book. But I think it's worth having a rough statement of it up front, so you can see where we're headed.
 
-According to causal defensivism, a choice is rational if the following two conditions are met.
+According to causal ratificationism, a choice is rational if the following two conditions are met.
 
 First, at the time the choice is made, no other choice has higher expected utility, given some probability distribution over the states that is rational at that time.
 
@@ -174,47 +324,7 @@ There are a lot of technical terms there which I'll make clearer as this chapter
 
 **NOT COMPLETE**
 
-# Make Defensible Decisions {#introchap}
-
-
-```{r, include=FALSE}
-require(knitr)
-require(tidyverse)
-require(kableExtra)
-require(huxtable)
-
-knitr::opts_chunk$set(echo = FALSE, results = "asis")
-
-gameformat <- function(game, caption){
-  gg <- as_hux(game) %>%
-    set_width(ncol(game)/10) %>%
-	  set_markdown() %>% 
-    set_caption(caption) %>%
-    set_bold(1, everywhere) %>%
-    set_bold(everywhere, 1) %>%
-    set_align(everywhere, everywhere, "center") %>%
-    set_right_border(everywhere, 1, 0.5) %>%
-    set_bottom_border(1, everywhere, 0.5) %>%
-    set_right_border_color(everywhere, 1, "grey60") %>%
-    set_bottom_border_color(1, everywhere, "grey60") %>%
-    set_caption_pos("bottom") %>%
-    set_row_height(everywhere, 0.6) %>%
-  print_html(gg)
-  # kbl(game, 
-  #     booktabs = F, 
-  #     escape = FALSE,
-  #     align = paste0("r",strrep("c", ncol(game)-1)),
-  #     linesep = "",
-  #     caption = caption) %>%
-  #   column_spec(1, 
-  #               border_right = T,
-  #               bold = T) %>%
-  #   row_spec(0, bold = T, extra_css = "border-bottom: solid 0.5px;") %>%
-  #   cell_spec(df[1, 2], extra_css = "border_left = solid 0.5px;") %>%
-  #   kable_styling(full_width = F)  
-}
-```
-
+# Make Ratifiable Decisions {#introchap}
 
 A rational chooser knows what they are doing, and thinks that it is for the best. That is, they think that there is nothing else they could be doing that would be better. This book defends a version of decision theory that starts, and largely ends, with this principle. Properly understood, this is all there is to decision theory. But how to properly understand it will be the subject of much of this book.
 
@@ -274,19 +384,18 @@ $$
 V(O_i) = Pr(S_1) V(S_1 O_i) + Pr(S_2) V(S_2 O_i)
 $$
 
-I'll call the theory that values each option this way, and says that rational choosers maximise value, Basic Decision Theory. It could just as easily be called the Crude Savage Decision Theory. The 'Savage' there is because the formula at the heart of it is the same formula that @Savage1954 puts at the heart of his decision theory. But the 'Crude' is there because Basic Decision Theory leaves off all that Savage says about the nature of options and states. @SteeleSEP [sect 3.1] have a good summary of what Savage says here. I'm not going to go into that, and instead note why something needs to be said. Because as it stands, Basic Decision Theory leads to absurd outcomes.
+I'll call the theory that values each option this way, and says that rational choosers maximise value, Basic Decision Theory. It could just as easily be called the Crude Savage Decision Theory. The 'Savage' there is because the formula at the heart of it is the same formula that @Savage1954 puts at the heart of his decision theory. But the 'Crude' is there because Basic Decision Theory leaves off all that Savage says about the nature of options and states. @SteeleSEP [sect 3.1] have a good summary of what Savage says here. I'm not going to go into that. Instead I'll note why something more needs to be said. As it stands, Basic Decision Theory leads to absurd outcomes.
 
 ### Why Basic Decision Theory Fails {#notbasic}
 
 Consider the St. Crispin's Day speech that Shakespeare has Henry V give before the Battle of Agincourt. (I'm indebted to a long ago conversation with Jamie Dreier for pointing out the connection between this speech and decision theory.) The background is that the English are about to go to battle with the French, and they are heavily outnumbered. Westmoreland wants to wait for more troops, and Henry does not, offering this reasoning.
 
-| What’s he that wishes so?
-| My cousin Westmoreland? No, my fair cousin; 
-| If we are marked to die, we are enough
-| To do our country loss; and if to live,
-| The fewer men, the greater share of  honor. 
-| God’s will! I pray thee, wish not one man more.
-
+> | What’s he that wishes so?
+  | My cousin Westmoreland? No, my fair cousin; 
+  | If we are marked to die, we are enough
+  | To do our country loss; and if to live,
+  | The fewer men, the greater share of  honor. 
+  | God’s will! I pray thee, wish not one man more.
 
 It looks like Henry is suggesting something like the following decision table.
 
@@ -316,13 +425,13 @@ It's not quite a universal view, and we'll come back in section \@ref(quiggin) t
 So that covers the cases where there is both an evidential and causal connection - Basic Decision Theory gets things wrong - and the cases where there is neither - Basic Decision Theory gets things right. But what about the cases where there is one such connection but not the other? We're all taught that correlation is not causation. What happens when there is correlation but not causation between the choices and the states? Then things get really interesting, and that's the debate we're doing to jump into.
 
 
-## Some Theories of Decision {##sometheories}
+## Some Theories of Decision {#sometheories}
 
 ### Newcomb Problems {#newcombproblem}
 
 It's not at all obvious how there could be a case where the possible choices and possible states could be causally connected but not evidentially connected. I'm going to set the possibility of such a case aside, at least until someone shows me what such a case might look like. Because there is a very natural way that the choices and states could be evidentially but not causally connected: they could have a common cause. And one way that could come about is if the states are predictions of Chooser's choice, made by someone who has a deep insight into Chooser's choice dispositions.
 
-We'll call that someone Demon, and a decision problem in which the states are based in Demon's predictions a Demonic decision problem. I'll have much more to say about demons in section \@ref(aboutademon), but for now all we need to know is that Demon has means, motive, and opportunity to correctly predict what strategy a Chooser will adopt.
+We'll call that someone Demon, and a decision problem in which the states are based in Demon's predictions a Demonic decision problem. I'll have much more to say about demons in section \@ref(aboutademon), but for now all we need to know is that Demon has the means, motive, and opportunity to correctly predict what strategy a Chooser will adopt.
 
 The most famous Demonic decision problem is _Newcomb's Problem_ [@Nozick1969]. Chooser is presented with two boxes, one opaque and one clear. They have a choice between taking just the opaque box, i.e., taking one box, and taking both the opaque and the clear box, i.e., taking two boxes. The clear box has a good of value $y$ in  it. The contents of the opaque box are unknown. Demon has predicted the chooser's choice, and has placed a good of value $x$ in it if they predict Chooser will take one box, and left it empty (which we'll assume has value 0) if they predict Chooser will take both boxes. The key constraint is $x > y$. In most versions the value given for $x$ is massively greater than that for $y$, but the theories that are developed for the problem typically are sensitive only to whether $x$ is larger than $y$, not to how much larger it is.
 
@@ -349,7 +458,7 @@ The two most famous theories in recent work in decision theory are Causal Decisi
 
 As I understand the way the terms are used, and indeed as I'll be using them, they are potentially misleading. Both of these are not really theories, but families of theories. Evidential Decision Theory (EDT) is a somewhat tighter family of theories than Causal Decision Theory (CDT), but neither is something that I would typically be happy calling a theory. In this section I'll give somewhat imprecise descriptions of each 'theory', starting with EDT. In section \@ref(edtcdtprecise) I'll say why both of these are really theory schema, and set out some of the more viable ways of making them into precise theories.
 
-EDT, as we're going to understand it, traces back to the first edition of Richard Jeffrey's _The Logic of Decision_ [@Jeffrey1965]. The idea behind it is that what goes wrong with Henry's reasoning at Agincourt is that he ignores the fact that rushing into battle lowers the probability that he will win. In fact, according to EDT, that probability doesn't really matter to his decision. What matters is the probability that he will win if he attacks, and the probability that he will win if he waits for reinforcements. The value of each choice, according to EDT, is given by this formula
+EDT, as I'm going to understand it, traces back to the first edition of Richard Jeffrey's _The Logic of Decision_ [@Jeffrey1965]. The idea behind it is that what goes wrong with Henry's reasoning at Agincourt is that he ignores the fact that rushing into battle lowers the probability that he will win. In fact, according to EDT, the probability that he will win doesn't really matter to his decision. What matters is the probability that he will win if he attacks, and the probability that he will win if he waits for reinforcements. The value of each choice, according to EDT, is given by this formula
 
 $$
 V(O_i) = Pr(S_1 | O_i) V(S_1 O_i) + Pr(S_2 | O_i) V(S_2 O_i)
@@ -363,17 +472,22 @@ In Newcomb's Problem, EDT says that one should take one box. Assume, for simplic
 
 CDT, or at least the version we're going to focus on for a while, traces back to David Lewis's paper _Causal Decision Theory_ [@Lewis1981b]. Lewis actually has two aims in this paper: to set out a version of CDT, and to argue that the other versions don't differ in significant ways from his version. It's going to be somewhat important to the plotline of this book that Lewis's second claim, that the various versions of CDT don't greatly differ, is false. But the positive theory Lewis presents is interesting whether or not that second claim goes through, and that's what we'll focus on.
 
-The idea is that Basic Decision Theory was not incorrect, as EDT says, but incomplete. It needs to be supplemented with rules about when the formula can be applied. In particular, we need to add that the states have to be causally independent of the options. In Lewis's terminology, the states have to be 'dependency hypotheses', that state how the outcomes of the choice depend upon the option Chooser selects. If you apply the formula to cases where the states themselves depend (or even may depend) on the option, things go wrong. That's what CDT says goes wrong in Henry's case. He applies the formula correctly, but he shouldn't have started with simply Win and Lose as the states, since those states depend, causally, upon his choice.
+The idea is that Basic Decision Theory was not incorrect, as EDT says, but incomplete. It needs to be supplemented with rules about when the formula can be applied. In particular, we need to add that the states have to be causally independent of the options. In Lewis's terminology, the states have to be 'dependency hypotheses'. Each dependency hypothesis is something that the chooser has no causal influence over, and which determines, in conjunction with each possible act by the chooser, the probability of each possible outcome. If you apply the formula from Basic Decision Theory to cases where the states themselves depend (or even may depend) on the option, things go wrong. That's what CDT says goes wrong in Henry's case. It's the right formula, and he applies it correctly, but he shouldn't have started with simply _win_ and _lose_ as the states. Rather, he should have started with dependency hypotheses that do not causally depend upon his choices. For example, he could have started with the following three hypotheses: the troops we have now are enough to win; the troops we have now are not enough to win, but the troops we will have after reinforcements will be enough to win; and, even after getting reinforcements, we won't have enough troops to win. Since the middle of those states is very likely, and the utility of waiting for reinforcements is higher in that state, he probably should have waited.
 
-In Newcomb's Problem, CDT says that one should take one box. What Demon predicts is not causally dependent on what Chooser selects. So we can use P1 and P2 as states. Let $z$ be the probability of P1, and hence the probability of P2 is $1-z$. Then the expected value of taking one box is $zx$, while the expected value of taking two boxes is $zx + y$. Without yet knowing what $z$ is, a question that will become rather important as we go on, we know that $zx + y > zx$, so taking two boxes has higher value. So that's what one should do.
+In Newcomb's Problem, CDT says that one should take both boxes. What Demon predicts is not causally dependent on what Chooser selects. So we can use P1 and P2 as states. Let $z$ be the probability of P1, and hence the probability of P2 is $1-z$. Then the expected value of taking one box is $zx$, while the expected value of taking two boxes is $zx + y$. Without yet knowing what $z$ is, a question that will become rather important as we go on, we know that $zx + y > zx$, so taking two boxes has higher value. So that's what one should do.
 
 ### Making The Theories Precise {#edtcdtprecise}
 
 So that's the basic picture of EDT and CDT. But as I alluded to earlier, setting out the basic picture isn't quite the same thing as setting out a theory. In this section I'll flag some factors that need to be settled to turn them into a theory.
 
+- What are probabilities?
+- Are they ex ante or ex post?
+
 **NOT COMPLETE**
 
 ### Non-Unique Solutions {#nonunique}
+
+Especially if using ex post
 
  - Say about 1; almost dominance
 - Say about 2; basically link to decisiveness chapter
@@ -381,7 +495,7 @@ So that's the basic picture of EDT and CDT. But as I alluded to earlier, setting
 
 **NOT COMPLETE**
 
-### Defensivism {#defensivismintroduced}
+### Ratificationism {#ratificationismintroduced}
 
 - Just give a definition
 
@@ -534,7 +648,7 @@ You might worry that this only gives you cases where Demon is approximately perf
 
 The first is what I'll call the Selten strategy, because it gives the demon a 'trembling hand' in the sense of @Selten1975. Instead of letting Demon choose a state in the original problem, let Demon choose one of $n$ buttons, where $n$ is the number of choices the (human) chooser has. Each button is connected to a probabilistic device that generates one of the original states. If you want Demon to be 80% accurate, say the button $b_i$ associated with option $o_i$ outputs state $s_i$ with probability 0.8, and each of the other states with probability $\frac{0.2}{n - 1}$. And still say that Demon gets payout 1 for any $i$ if the chooser selects $o_i$ and the button generates state $s_i$, and 0 otherwise. 
 
-The second is what I'll call the Smullyan strategy, because it involves a Knights and Knaves puzzle of the kind that play a role in several of his books, especially @Smullyan1978. Here the randomisation takes place before Demon's choice. Demon is assigned a type Knight or Knave. Demon is told of the assignment, but Chooser is not. If Demon is assigned type Knight, the payouts stay the same as in the game where Demon is arbitrarily accurate. If Demon is assigned type Knave, the payouts are reversed, and Demon gets payout 1 for an incorrect prediction.
+The second is what I'll call the Smullyan strategy, because it involves a Knights and Knaves puzzle of the kind that play a role in several of Smullyan's books, especially his [-@Smullyan1978]. Here the randomisation takes place before Demon's choice. Demon is assigned a type Knight or Knave. Demon is told of the assignment, but Chooser is not. If Demon is assigned type Knight, the payouts stay the same as in the game where Demon is arbitrarily accurate. If Demon is assigned type Knave, the payouts are reversed, and Demon gets payout 1 for an incorrect prediction.
 
 There are benefits to each approach, and there are slightly different edge cases that are handled better by one or other version. I'm mostly going to stick to cases where Demon is arbitrarily accurate, but I need these on the table to talk about cases others raise where Demon is only 75-80% accurate. And in general either will work for turning a demonic decision problem into a game.
 
@@ -572,7 +686,7 @@ And then replace Demon's moves with states that are generated by Demon's predict
 
 ```{r,gen-dem-problem, cache=TRUE}
 generic_demonic_problem <- tribble(
-	   ~"", ~pa, ~pb,
+	   ~"", ~Pa, ~Pb,
 	   "a", "$x$", "$y$",
 	   "b", "$z$", "$w$"
 	)
@@ -696,7 +810,7 @@ The point of this section has not just been to show that we can turn games into 
 
 One is that most of the problems that have been the focus of attention in the decision theory literature in the past couple of generations can be generated from very familiar games, the kinds of games you find in the first one or two chapters of a game theory textbook, this way. 
 
-The second point is that most of the simple games you find in those introductory chapters turn out to result, once you transform them this way, in demonic decision problems that have been widely discussed. But there is just one exception here. There hasn't been a huge amount of discussion of the demonic decision problem you get when you start with Stag Hunt. Let's turn to that in the next section. 
+The second point is that most of the simple games you find in those introductory chapters turn out to result, once you transform them this way, in demonic decision problems that have been widely discussed. But there is just one exception here. There hasn't been a huge amount of discussion of the demonic decision problem you get when you start with Stag Hunt. I'll turn to that in the next subsection. 
 
 In later parts of the book, I'll be frequently appealing to decision problems that are generated from other games that have been widely discussed by economic theorists. Most of these discussions are not particularly recent; the bulk of the work I'll be citing is from the 1980s and 1990s, and I don't take myself to be making a significant contribution to contemporary economic theorising. But what I want to point out is that there is a vast source of examples in the economic theory literature that decision theorists could be, and should be, discussing. And I've spent so long here on the translation between the two literatures in part because I think there are huge gains to be had from bringing these literatures into contact.
 
@@ -715,9 +829,9 @@ The name comes from a thought experiment in Rousseau's _Discourse on Inequality_
 
 > They were perfect strangers to foresight, and were so far from troubling themselves about the distant future, that they hardly thought of the morrow. If a deer was to be taken, every one saw that, in order to succeed, he must abide faithfully by his post: but if a hare happened to come within the reach of any one of them, it is not to be doubted that he pursued it without scruple, and, having seized his prey, cared very little, if by so doing he caused his companions to miss theirs.  [@Rousseau1913 209--10]
 
-Normally, option $a$ is called Hunting, and option $b$ is called Gathering. The game has two equilibria - both players Hunt, or both players Gather. So it's unlike Prisoners' Dilemma, which only has one equilibria. And the more cooperative equilibria, where both players Hunt, is better. But, and this is crucial, it's a risky equilibria. To connect it back to Rousseau, the thought is that the players would both be better off if they both cooperated to catch the stag (or deer in this translation). But cooperating is risky; if the players do different things, it is best to go off gathering berries (or bunnies) on one's own than trying in vain to catch a stag single-handed.
+Normally, option $a$ is called hunting, and option $b$ is called gathering. The game has two equilibria - both players Hunt, or both players Gather. So it's unlike Prisoners' Dilemma, which only has one equilibria. And the more cooperative equilibria, where both players hunt, is better. But, and this is crucial, it's a risky equilibria. To connect it back to Rousseau, the thought is that the players would both be better off if they both cooperated to catch the stag (or deer in this translation). But cooperating is risky; if the players do different things, it is best to go off gathering berries (or bunnies) on one's own than trying in vain to catch a stag single-handed.
 
-And that's what we see in the game. The first two constraints imply that the game is in equilibrium if the players do the same thing. The third constraint says that if they both Hunt, option $a$, they are better off than if they both Gather, option $b$. But the fourth constraint codifies the thought that this is a risky equilibrium. Even though the equilibrium where everyone Hunts is better, there are multiple reasons we might end up at the equilibrium where everyone Gathers.
+And that's what we see in the game. The first two constraints imply that the game is in equilibrium if the players do the same thing. The third constraint says that if they both hunt, option $a$, they are better off than if they both gather, option $b$. But the fourth constraint codifies the thought that this is a risky equilibrium. Even though the equilibrium where everyone hunts is better, there are multiple reasons we might end up at the equilibrium where everyone gathers.
 
 One reason for this is that the players might want to minimise regret. Each play is a guess that the other player will do the same thing. If one plays $a$ and guesses wrong, one loses $w - y$ compared to what one could have received. If one plays $b$ and guesses wrong, one loses $x - z$. And the last constraint entails that $x - z \< w - y$. So playing $b$ minimises possible regret.
 
@@ -739,17 +853,17 @@ In order to have less algebra, I'm going to often focus mostly on a particular v
 ```{r,stag-decision-particular, cache=TRUE}
 stag_decision_particular <- tribble(
 	   ~"", ~pa, ~pb,
-	   "a", "6", "0",
-	   "b", "4", "3"
+	   "a", "10", "0",
+	   "b", "6", "8"
 	)
 gameformat(stag_decision_particular, "A particular version of a demonic decision problem based on Stag Hunt")
 ```
 
 These kinds of decisions are important in the history of game theory because they illustrate in the one game the two most prominent theories of equilibrium selection: risk dominance and payoff dominance [@HarsanyiSelten1988]. Risk dominance recommends gathering; payoff dominance recommends hunting. And most contemporary philosophical proponents of decisive decision theories (in the sense of decisiveness described back in section \@ref(procdef))  fall into one of these two camps.
 
-In principle, there are three different views that a decisive theory could have about Stag Decisions: always Hunt, always Gather, or sometimes do one and sometimes the other. A decisive theory has to give a particular recommendation on any given Stag Decision, but it could say that the four constraints don't settle what that decision should be. Still, in practice all existing decisive theories fall into one or other of the first two categories.
+In principle, there are three different views that a decisive theory could have about Stag Decisions: always hunt, always gather, or sometimes do one and sometimes the other. A decisive theory has to give a particular recommendation on any given Stag Decision, but it could say that the four constraints don't settle what that decision should be. Still, in practice all existing decisive theories fall into one or other of the first two categories.
 
-One approach, endorsed for rather different reasons by Richard @Jeffrey1983 and Frank @Arntzenius2008, says to Hunt because it says in decisions with multiple equilibria, one should choose the equilibria with the best payout. Evidential Decision Theorists also say to Hunt in these situations, because the all-Hunt outcome is better than the all-Gather outcome, and it doesn't even matter whether these are equilibria. Another family of approaches says to always Gather in Stag Decisions. For very different reasons, this kind of view is endorsed by Ralph @Wedgwood2013, Dmitri @Gallow2020 and Abelard @Podgorski2022. These three views differ from each other in how they motivate Gathering, and in how they extend the view to other choices, but they all agree that one should Gather in any Stag Decision.
+One approach, endorsed for rather different reasons by Richard @Jeffrey1983 and Frank @Arntzenius2008, says to hunt because it says in decisions with multiple equilibria, one should choose the equilibria with the best payout. Evidential Decision Theorists also say to Hunt in these situations, because the all-Hunt outcome is better than the all-Gather outcome, and it doesn't even matter whether these are equilibria. Another family of approaches says to always gather in Stag Decisions. For very different reasons, this kind of view is endorsed by Ralph @Wedgwood2013, Dmitri @Gallow2020 and Abelard @Podgorski2022. These three views differ from each other in how they motivate gathering, and in how they extend the view to other choices, but they all agree that one should gather in any Stag Decision.
 
 I'm going to argue that all of these views are mistaken. Decision Theory should not say what to do in these cases - either choice is rational.
 
@@ -758,19 +872,31 @@ Now I should note here that I'm slightly cheating in setting out the problem thi
 ```{r,not-stag-decision, cache=TRUE}
 not_stag_decision <- tribble(
 	   ~"", ~pa, ~pb,
-	   "a", "6", "0",
-	   "b", "2", "3"
+	   "a", "10", "0",
+	   "b", "2", "4"
 	)
 gameformat(not_stag_decision, "A multiple equilibrium decision problem that is not a Stag Hunt")
 ```
 
-I certainly don't want to lean too hard on the intuition that either option is rational in Stag Hunts - though I do in fact think that it's intuitive that either option is rational in Stag Hunts. But if we were just leaning on intuitions, then this example would be devastating to my theory, since it really isn't particularly intuitive here that either option is rational. Thankfully, the argument, which I'll set out in some detail in chapter \@ref(decisive), doesn't appeal to these kinds of intuitions. Still, I think it's useful to focus on Stag Hunts because, as Skyrms shows, they are so philosophically important. And they will be my canonical example of a problem where the right decision theory is Indecisive.
+I certainly don't want to lean too hard on the intuition that either option is rational in a Stag Hunt—though I do in fact think that it's intuitive that either option is rational in a Stag Hunt. But if we were just leaning on intuitions, then this last example would be devastating to my theory, since it really isn't particularly intuitive here that either option is rational. Thankfully, the argument, which I'll set out in some detail in chapter \@ref(decisive), doesn't appeal to these kinds of intuitions. Still, I think it's useful to focus on Stag Hunts because, as Skyrms shows, they are so philosophically important. And they will be my canonical example of a problem where the right decision theory is Indecisive.
 
 ### An Example of a Dilemma {#firstdilemma}
 
 - Rock Paper Scissors
 
 ### The ABC Game {#abcgameintroduce}
+
+**READ OVER AND MAYBE EDIT DOWN A LOT**
+
+The central arguments of this book are going to concern what I'll call the ABC game. This subsection sets out the abstract form of the game, and describes the two main theoretical claims I'm going to make about it. The basic version of the game, what I'll sometimes call the _long version_ of the game to distinguish it from two variants I'll get to below, goes through the following steps.
+
+1. Demon chooses between three options: $A, B, C$.
+2. If Demon chooses $A$, the game ends, and Chooser gets $e_1$ while Demon gets $e_2$. Playing $A$ is intuitively exiting the game, and these are the exit payments, hence using $e$ in each case.
+3. If Demon chooses $B$ or $C$, Chooser is informed that Demon did not choose $A$, but is not told which of $B$ or $C$ Demon chose.
+4. In this case, Chooser chooses either $U$ (intuitively Up) or $D$ (intuitively Down).
+5. Then the game ends and the payouts are made, with the payouts being a function of which of $B$ or $C$ Demon chose, and which of $U$ or $D$ Chooser chose.
+
+Here is the game in tree form, noting that if Chooser gets to move, they are in an information set with two nodes in it, because they know that Demon has chosen $B$ or $C$, but do not know which one is chosen.
 
 ```{tikz, abc-game-generic-long, fig.cap = "Generic version of the (long version of the) ABC Game", fig.ext = 'png', cache=TRUE}
 \usetikzlibrary{calc}
@@ -811,6 +937,63 @@ edge from parent node[right,xshift = 3]{C}
 \end{tikzpicture}
 ```
 
+I am mostly going to talk about versions of the game where $y_1 > y_3$, and $y_4 > y_2$. That's to say, if we get to the right hand side of the game, we can treat $B$ as Demon predicting that Chooser will choose $U$, and $C$ as Demon predicting that Chooser will choose $D$.
+
+There are ten variables on this tree, so there is a lot of flexibility in how the ABC game is described. But to specify a particular game, a little more is needed. In particular, we need to say precisely how Demon is going to behave. Demon follows the following rules in making a choice.
+
+- Demon always makes a probabilistic prediction about Chooser's strategy. Note that a strategy here is a function from choice points to probabilities of making one or other choice at that point. So in this case it's a probability function that assigns probability $u$ to choosing $U$, and probability $d = 1 - u$ to choosing $D$.
+- This prediction is, from Chooser's perspective, arbitrarily likely to be correct.
+- Demon maximises expected utility given this prediction.
+- If there are possible strategies that are tied in expected utility given a possible by Demon, the game has to specify the probability that Demon will make in that case.
+
+To illustrate the last clause, consider the case, or actually cases, where Demon and Chooser have the following game tree.
+
+```{tikz, abc-game-tie-example, fig.cap = "An ABC game where Demon has to use a tie-breaker.", fig.ext = 'png', cache=TRUE}
+\usetikzlibrary{calc}
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzset{
+% Two node styles for game trees: solid and hollow
+solid node/.style={circle,draw,inner sep=1.5,fill=black},
+hollow node/.style={circle,draw,inner sep=1.5},
+square node/.style={rectangle,draw, inner sep = 1, fill = black}
+}
+% Specify spacing for each level of the tree
+\tikzstyle{level 1}=[level distance=20mm]
+\tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+% The Tree
+\node(0)[hollow node,label=above:{$Demon$}]{}
+
+child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$3, 1$}]{}
+edge from parent node[above]{A}
+}
+child[grow=225]{node(3)[solid node]{}
+child[grow=240]{node[square node,label=below:{$1,1$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$0,0$}]{} edge from parent node[right]{D}}
+edge from parent node[left, xshift = -3]{B}}
+child[grow=315]{node(4)[solid node]{}
+child[grow=240]{node[square node,label=below:{$0,0$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$2,2$}]{} edge from parent node[right]{D}}
+edge from parent node[right,xshift = 3]{C}
+}
+;
+% information set
+\draw[dashed](3) to (4);
+% specify mover at 2nd information set
+\node at ($(3)!.5!(4)$) [above] {$Chooser$};
+\end{tikzpicture}
+```
+
+If Demon predicts that Chooser will play $D$, then Demon will play $C$. That will get Demon 2, while playing $A$ will get 1, and playing $B$ will get 0. But if Demon predicts that Chooser will play $U$, then Demon predicts that they will get 1 whether they play $A$ or $B$, and 0 if they play $C$. So to specify what Demon will do, we need to add in the probability that they will break the tie by playing $A$ or playing $B$. And the key point here is that different specifications of that probability will result in different games. The probability of Demon using one tie-breaking procedure or another will be taken to be partially individuating of versions of the ABC game.
+
+Note that I'm not saying here that Demon will be perfectly rational. So this is not like the standard setup in epistemic game theory where we specify the game structure and payouts, and ask which moves are possible given common knowledge of rationality. It's true that Demon has (arbitrarily) accurate beliefs, and is a utility maximiser. But Demon will sometimes choose weakly dominated options. For instance, it's consistent with the way I've described the ABC game immediately above to say that Demon has positive probability of choosing $B$, even though it is weakly dominated by $A$. If it is part of rationality that one not choose weakly dominated options, and I'm going to somewhat tentatively argue that it is throughout this book, then Demon is not perfectly rational. This is not a major deviation from standard practice in philosophical decision theory. It isn't part of the normal story in Newcomb's Problem that Demon is rational at all, let alone that they are perfectly rational. But it is worth noting here that I'm assuming Demon will sometimes play weakly dominated strategies.
+
+So that's the long version of the ABC game. There is a two-stage game; although that Demon might end it after stage one. The game is specified by setting out the ten possible payouts, and the probability that Demon will choose one or other option if their prediction suggests two options are tied for expected value.
+
+What I'll call the _early_ version of the game has just one variation. Chooser has to move whatever Demon does, and they are not told whether or not Demon has chosen $A$. Here is the game tree for it.
 
 ```{tikz, abc-game-generic-early, fig.cap = "Generic version of the early version of the ABC Game", fig.ext = 'png', cache=TRUE}
 \usetikzlibrary{calc}
@@ -852,6 +1035,142 @@ edge from parent node[right,xshift = 4]{C}
 \end{tikzpicture}
 ```
 
+We can picture this game the following way. Chooser was scheduled to play the long version of the game. But they have to run to perform an errand, and can't wait for Demon to make a prediction. So the game organiser lets Chooser write their choice of $U$ or $D$ in an envelope, and hides it from Demon. Demon is not better, and no worse, at figuring out what Chooser wrote than at predicting what Chooser will do in the long version of the game. After Demon makes a move, the game organiser will open the envelope. If Demon chose $A$, it won't matter what Chooser wrote; the payouts will be $e_1, e_2$ either way. But if Demon chose $B$ or $C$, Chooser's move will determine the payouts, in exactly the same way as in the long game.
+
+I've presented this as a tree, but it's effectively a simultaneous move game. Both players have a single move, and while they don't necessarily make them at the same time, they make them without having the other move in evidence. So we could just as well show this game with a table, like this one:
+
+```{r,abc-early-strategic, cache=TRUE}
+generic_abc_strategic <- tribble(
+	   ~"", ~A, ~B, ~C,
+	   "U", "$e_1, e_2$", "$x_1, y_1$", "$x_2, y_2$",
+	   "D", "$e_1, e_2$", "$x_3, y_3$", "$x_4, y_4$"
+	)
+gameformat(generic_abc_strategic, "A strategic representation of the early form of the ABC game.")
+```
+
+This is a representation of the early version of the game, where the moves are as good as simultaneous. But it's also the strategic form representation of the long version of the game. In game theory, we say that a strategy for a game is a plan for what to do at every point one might have to make a choice at.^[It's occasionally important to note that 'every point' really does mean every point. A strategy should say what to do at nodes that are ruled out by earlier moves in the strategy. This becomes important when thinking about backwards induction. I will mostly be discussing strategic games where each player moves at most once, so this technical point won't often be relevant, but I will occasionally come back to it.] The strategic form of a game is a table where we list the possible strategies for each player, and note the payouts that each player gets. The contrast is with the extensive form, which is the tree setting out which moves are made in which order. Once we have this table, we can think about what strategies would make sense were the game a simultaneous move game, where players simultaneously revealed their strategies. In general, moving to a strategic form changes the game, since playing a strategy gives players a power they don't have in real life: the power to bind the actor making their future moves.[^At least, this is the consensus view of game theorists, and I'm mostly not going to raise questions about it here. But see @Stalnaker1999 for an important dissent.]. I'll argue that the ABC game is different; in games where each player moves at most once, the strategic form and extensive form are equivalent.
+
+As well as these two games, we can think about two simpler games that are embedded in them. What I'll call the short form of the game is the decision problem that is reached if Demon does not play $A$. In that case, we get the following table:
+
+```{r,abc-short, cache=TRUE}
+generic_abc_short <- tribble(
+	   ~"", ~B, ~C,
+	   "U", "$x_1, y_1$", "$x_2, y_2$",
+	   "D", "$x_3, y_3$", "$x_4, y_4$"
+	)
+gameformat(generic_abc_short, "A generic version of the short form of the ABC game.")
+```
+
+If, as I'm usually going to assume, $y_1 > y_3$, $y_4 > y_2$, and Demon is a utility maximiser, then we could just as easily write $PU$ for $B$, and $PD$ for $C$. That's because Demon will play $B$ iff they predict $U$, and $C$ iff they predict $C$. Let's actually write this out, calling it the predictive-short version, and dropping Demon's payouts since the relevant information in them is now encoded in the column names.
+
+```{r,abc-predictive, cache=TRUE}
+generic_abc_predictive <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "$x_1$", "$x_2$",
+	   "D", "$x_3$", "$x_4$"
+	)
+gameformat(generic_abc_predictive, "A generic version of the predictive-short form of the ABC game.")
+```
+
+The other decision problem we can generate is from the early form of the game. Demon has three moves, but the probability that Demon will make each of them is determined entirely by whether Demon predicts $U$ or $D$. It's a little trickier to write out the payouts though. I'll state this form of the game, what I'll call the reduced-early version of game, very generically, then explain it a bit.
+
+```{r,abc-reduced-early, cache=TRUE}
+generic_abc_reduced_early <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "$f_1(e_1,x_1)$", "$f_2(e_1,x_2)$",
+	   "D", "$f_1(e_1,x_3)$", "$f_2(e_1,x_4)$"
+	)
+gameformat(generic_abc_reduced_early, "A generic version of the reduced-early form of the ABC game.")
+```
+
+I've used yet more terminology here: $f_1$ and $f_2$. These admit of relatively simple, if cumbersome, definition. I'm assuming here that $y_1 > y_3$, $y_4 > y_2$, and Demon is a utility maximiser; the definitions get more unwieldy without those assumptions.
+
+- If $e_2 > y_1$, then $f_1(e_1,x_1) = e_1$.
+- If $e_2 < y_1$, then $f_1(e_1,x_1) = x_1$.
+- If $e_2 = y_1$, then $f_1(e_1,x_1) = ke_1 + (1-k)x_1$, where $k$ is the probability that Demon will choose $A$ if $A$ and $B$ have the same expected return for Demon.
+
+Intuitively, the first line says that if after predicting $U$, Demon will prefer exiting to giving Chooser a choice, the payout for $U, PU$ is the exit payout $e_1$. The second line says that if after predicting $U$, Demon will prefer giving Chooser a choice, and expecting them to choose $U$, the payouts in this column is the payout for the short game. And if Demon is indifferent between exiting and playing, the payouts are a linear mix of the payouts between the two choices, with the weights given by Demon's dispositions to exit or play.
+
+For completeness, here is the definition of $f_2$:
+
+- If $e_2 > y_4$, then $f_2(e_1,x_4) = e_1$.
+- If $e_2 < y_4$, then $f_2(e_1,x_4) = x_4$.
+- If $e_2 = y_4$, then $f_2(e_1,x_4) = ke_4 + (1-k)x_4$, where $k$ is the probability that Demon will choose $A$ if $A$ and $B$ have the same expected return for Demon.
+
+Note that in both cases though I've used the variable names from the cases where Demon's predictions are correct, the definitions of $f_1$ and $f_2$ are perfectly general, so those definitions can be used to work out Chooser's expected payouts in cases where the Demon's predictions are incorrect.
+
+With all that setup, here is the big argument that I'm going to make using this game.^[In this argument I'm using the term _matches_ a lot. A decision of playing $U$ _matches_ in one form of the game matches a decision to play $U$ in other forms, and similarly for decisions to play $D$, and similarly for mixed strategies of the form play $U$ with probability $k$ and $D$ with probability $1-k$. The argument presupposes that being a matching decision is transitive, which it clearly is given this definition.]
+
+1. A decision for Chooser is rational in the predictive-short form of the game iff the matching decision is rational in the short form of the game. (2. A decision for Chooser is rational in the short form of the game iff the matching decision is rational in the long form of the game.
+3. A decision for Chooser is rational in the long form of the game iff the matching decision is rational in the early form of the game.
+4. A decision for Chooser is rational in the early form of the game iff the matching decision is rational in the reduced-early form of the game.
+5. Therefore, a decision for Chooser is rational in the predictive-short form of the game iff the matching decision is rational in the reduced-early form of the game.
+
+I'll argue for each of these premises much more extensively in chapter \@ref(decisive). For now I'm just going to note what transpires if I'm right, and these premises are all true. Consider the following version of the game.
+
+```{tikz, abc-game-main-example, fig.cap = "The main example of the ABC game.", fig.ext = 'png', cache=TRUE}
+\usetikzlibrary{calc}
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzset{
+% Two node styles for game trees: solid and hollow
+solid node/.style={circle,draw,inner sep=1.5,fill=black},
+hollow node/.style={circle,draw,inner sep=1.5},
+square node/.style={rectangle,draw, inner sep = 1, fill = black}
+}
+% Specify spacing for each level of the tree
+\tikzstyle{level 1}=[level distance=20mm]
+\tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+% The Tree
+\node(0)[hollow node,label=above:{$Demon$}]{}
+
+child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$12, 1$}]{}
+edge from parent node[above]{A}
+}
+child[grow=225]{node(3)[solid node]{}
+child[grow=240]{node[square node,label=below:{$10,2$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$6,0$}]{} edge from parent node[right]{D}}
+edge from parent node[left, xshift = -3]{B}}
+child[grow=315]{node(4)[solid node]{}
+child[grow=240]{node[square node,label=below:{$0,0$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$8,1$}]{} edge from parent node[right]{D}}
+edge from parent node[right,xshift = 3]{C}
+}
+;
+% information set
+\draw[dashed](3) to (4);
+% specify mover at 2nd information set
+\node at ($(3)!.5!(4)$) [above] {$Chooser$};
+\end{tikzpicture}
+```
+
+If Demon predicts that Chooser will play $D$, they are indifferent between $A$ and $C$; in each case they get 1. So Demon's dispositions have to be specified in this case. I'll stipulate that Demon has a 0.75 chance of playing $A$, and an 0.25 chance of playing $C$ if that happens.
+
+I'll come back to this example at some length in chapter \@ref(decisive); for now I'll skip to the punchline. If premises 1 to 4 of the argument are correct, then a choice of $U$ or $D$ is rational in \@ref(tab:abc-main-predictive) iff the matching choice is rational in \@ref(tab:???)
+
+```{r,abc-main-predictive, cache=TRUE}
+generic_abc_predictive <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "10", "0",
+	   "D", "6", "8"
+	)
+gameformat(generic_abc_predictive, "The predictive-short version of the game in figure \\@ref(fig:abc-game-main-example).")
+```
+
+```{r,abc-main-reduced, cache=TRUE}
+generic_abc_reduced <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "10", "9",
+	   "D", "6", "11"
+	)
+gameformat(generic_abc_reduced, "The predictive-short version of the game in figure \\@ref(fig:abc-game-main-example).")
+```
+
+
+
 **NOT COMPLETE**
 
 - Short game as 2\*2 strategic form
@@ -865,41 +1184,33 @@ Big argument
 - So same moves are rational in Short Game as Early Game
 - This turns out to rule out approximately all theories of decision currently on the market.
 
-## Plan for the Book {#Plan}
-
-**NOT COMPLETE**
-
-- Talk about appendices
-- Talk about each chapter
-- This is literally the last thing to write
-
 # Why So Defensive? {#defensive}
 
-I'm arguing for causal defensivism. And much of the argument will come in the next three chapters, when I argue in turn against three of the component parts of of proceduralism. But in this chapter I want to first address an argument that proceduralism must be right, because only procedural theories can deliver what decision theory promises: a rule for making decisions. And the main argument of this chapter is going to be that decision theory cannot, and should not, be in the business of providing such a rule. Such a rule would have to be sensitive to resource constraints, and this kind of sensitivity isn't compatible with doing the kind of theorising that decision theorists do.
+I'm arguing for causal ratificationism. And much of the argument will come in the next three chapters, when I argue in turn against three of the component parts of of proceduralism. But in this chapter I want to first address an argument that proceduralism must be right, because only procedural theories can deliver what decision theory promises: a rule for making decisions. And the main argument of this chapter is going to be that decision theory cannot, and should not, be in the business of providing such a rule. Such a rule would have to be sensitive to resource constraints, and this kind of sensitivity isn't compatible with doing the kind of theorising that decision theorists do.
 
 ## Decision Theory and Making Decisions {#algorithm}
 
-We'll get to why I think decision theory isn't, and shouldn't be, used to help humans make decisions. First I want to argue against something that is perhaps less widely believed, but it probably more plausible: that decision theory will be a helpful way for machines who are not subject to serious resource constraints to make decisions.
+I'll get to why I think decision theory isn't, and shouldn't be, used to help humans make decisions. First I want to argue against something that is perhaps less widely believed, but it probably more plausible: that decision theory will be a helpful way for machines who are not subject to serious resource constraints to make decisions.
 
-We're currently engaging in a massive project of making machines that make decisions, from 'smart' thermostats to self-driving cars. Now one might have hoped that decision theory would have something useful to contribute to this project. That hope I think can be realised, but it's complicated. One might have further hoped that decision theory would be helpful in a way that only a proceduralist theory can be helpful, by providing an algorithm to program into the machines. And that hope that some might have won't be, and shouldn't be, met. That's because sometimes we want the machines to be irrational. Here is one simple case of this, based in part on David Lewis's work on nuclear deterrence [@Lewis1989c], and in part on _Dr. Strangelove_ [@Kubrick1964].
+We are, collectively, currently engaged in a massive project of making machines that make decisions, from 'smart' thermostats to self-driving cars. Now one might have hoped that decision theory would have something useful to contribute to this project. That hope I think can be realised, but it's complicated. One might have further hoped that decision theory would be helpful in a way that only a proceduralist theory can be helpful, by providing an algorithm to program into the machines. And that hope that some might have won't be, and shouldn't be, met. That's because sometimes we want the machines to be irrational. Here is one simple case of this, based in part on David Lewis's work on nuclear deterrence [@Lewis1989c], and in part on _Dr. Strangelove_ [@Kubrick1964].
 
-Chooser is President of a relatively small country. Due to an unfortunate machine translation incident with their larger neighbor during widget tariff negotiations, the neighbor has become an Enemy. And this Enemy now plans to express their displeasure by launching a nuclear missile at chooser's largest city. Chooser doesn't have many ways to respond to this; any normal attempt at retaliation would just launch a larger war that would go very badly for Chooser's country.
+Chooser is President of a relatively small country. Due to an unfortunate machine translation incident with their larger neighbor during widget tariff negotiations, the neighbor has become an enemy. (The fact that they are called Enemy should have been a clue that this would happen, but Chooser has the worst advisors and no one noticed this until it was too late.) And Enemy now plans to express their displeasure by launching a nuclear missile at chooser's largest city. Chooser doesn't have many ways to respond to this; any normal attempt at retaliation would just launch a larger war that would go very badly for Chooser's country.
 
 Fortunately, Chooser's military has just developed a doomsday device. If launched, the doomsday device will kill everyone in Enemy's country. And Enemy is smart enough, or at least self-interested enough, to not do anything that will lead to the doomsday device being launched. Probably. Unfortunately, the doomsday device will not just kill everyone in Enemy's country, it will also kill everyone in Chooser's country. Fortunately, Chooser also has the ability to tie an automated launcher to the doomsday device, so it will launch if any nuclear missile hits their major city. And they have the ability to let Enemy know that they have tied an automated launcher to the doomsday device. So they can make a very credible threat to Enemy.
 
 If it is likely enough that Enemy will back down when threatened this way, Chooser should install the automated launcher. And, and this is very important, they should make sure Enemy knows that they have done so. Even if there is some small probability $\varepsilon$ that Enemy will launch anyway, if $\varepsilon$ is small enough, and the probability of having everyone in the largest city killed high enough, it is a risk worth taking.
 
-I'd originally thought of making the doomsday device kill not just everyone in chooser's country and Enemy's country, but everyone in the world. (As was the case for the doomsday device in _Dr. Strangelove_.) But this complicates the decision making in ways I'd rather avoid. For one thing we have to account for the loss of future generations. For another, as Jonathan @Knutzen2022 points out, we have to account for the loss of humanity in general, on top of the loss of all those individual humans. Maybe there is no realistic probability of failure small enough that this could be a reasonable risk. But there surely is a probability of failure small enough that the risk of losing a whole country is worth trading off against the certainty of losing the largest city. And that's the risk I'm asking chooser to take in this particular example. And I think in the right circumstances, it's a risk to take.
+I'd originally thought of making the doomsday device kill not just everyone in Chooser's country and Enemy's country, but everyone in the world. (As was the case for the doomsday device in _Dr. Strangelove_.) But this complicates the decision making in ways I'd rather avoid. For one thing we have to account for the loss of future generations. For another, as Jonathan @Knutzen2022 points out, we have to account for the loss of humanity in general, on top of the loss of all those individual humans. Maybe there is no realistic probability of failure small enough that this could be a reasonable risk. But there surely is a probability of failure small enough that the risk of losing a whole country is worth trading off against the certainty of losing the largest city. And that's the risk I'm asking Chooser to take in this particular example. And I think in the right circumstances, it's a risk to take.
 
 But now change the example in a few ways. Chooser still has the doomsday device, but they don't have the automated launcher. Fortunately, Enemy is now blessed, or cursed, with a Demon, who can predict with very high probability how Chooser will react if the largest city is destroyed. In particular, the Demon can predict, with very high probability, whether Chooser will react by launching the doomsday device, killing everyone in both countries. Unfortunately, the Demon seems to have predicted that Chooser will not do that, because the nuclear missile is now headed towards the largest city. What should Chooser do?
 
 I think it's very plausible that Chooser should not respond by launching the doomsday device. Even if Chooser wants to punish Enemy country for launching the nuclear missile, which is a reasonable enough wish, the punishment would not be proportionate, and the damage to Chooser's own citizens would be intolerable. If Chooser's only options are the doomsday device or nothing, Chooser has to do nothing. Or so I think; I'll just note that this is an appeal to intuition about a case and that some people may feel differently. But let's explore what happens if you agree that it would be wrong to kill everyone in two countries to try and prevent a nuclear missile launch that's already happened.
 
-So rational choice is not the same thing as the choice a well designed machine would make. And, conversely, a well designed machine will not do just what the rational choice is. We just said that the right way to program the machine, if it is available, is to launch the doomsday device as soon as the nuclear missile is detected. But Chooser, if they are rational, will not launch the doomsday device in response to the nuclear missile. This is a counterexample to Functional Decision Theory (FDT), which says that the rational choice in a situation is the manifestation in that situation of the optimal algorithm [@LevinsteinSoares2020]. The optimal algorithm is the one the machine runs: automatically launch the doomsday device. But that's not what is rational.
+One thing that follows from this view about Chooser is that rational choice is not the same thing as the choice a well designed machine would make. And, conversely, a well designed machine will not do just what the rational choice is. We just said that the right way to program the machine, if it is available, is to launch the doomsday device as soon as the nuclear missile is detected. But Chooser, if they are rational, will not launch the doomsday device in response to the nuclear missile. This is a counterexample to Functional Decision Theory (FDT), which says that the rational choice in a situation is the manifestation in that situation of the optimal algorithm [@LevinsteinSoares2020]. The optimal algorithm is the one the machine runs: automatically launch the doomsday device. But that's not what is rational.
 
 The problem here is that launching the doomsday device is what game theorists call a non-credible threat. And you can't make a non-credible threat credible by loudly insisting that you'll really really do it this time, or even that it would be the rational thing to do.
 
-There is another problem for FDT concerning pairs of cases. Change the second example so that Enemy's Demon is actually not very reliable. In this variant, they are better than chance, but not a lot better. Now Chooser certainly wouldn't set up the doomsday machine to automatically launch; the risk of a false positive is too high. So FDT says that in the variant where chooser has to decide what to do after learning the launch was made, chooser will do nothing. And while this is the right thing to do, it is made for the wrong reasons. Once Enemy has launched the missile, Chooser's best estimate yesterday of how reliable the demon is becomes irrelevant to what chooser should do. But according to FDT it could be decisive.
+There is another problem for FDT concerning pairs of cases. Change the second example so that Enemy's Demon is actually not very reliable. In this variant, they are better than chance, but not a lot better. Now Chooser certainly wouldn't set up the doomsday machine to automatically launch; the risk of a false positive is too high. So FDT says that in the variant where chooser has to decide what to do after learning the launch was made, chooser will do nothing. And while this is the right thing to do, it is made for the wrong reasons. Once Enemy has launched the missile, Chooser's best estimate yesterday of how reliable Demon in general was becomes irrelevant to what chooser should do. But according to FDT it could be decisive.
 
 So if decision theory is relevant to building machines that make decisions, it's not because the right decision theory should be built into those machines. And hence it's not because decision theory must be proceduralist in order to make it possible to build it into these machines. It's rather because the people who make the machines face a very hard decision problem about what kinds of machines to build, and decision theory could be relevant to that problem. But how is decision theory relevant to that problem, or indeed any problem? The next section looks at that question in more detail.
 
@@ -907,13 +1218,13 @@ So if decision theory is relevant to building machines that make decisions, it's
 
 What are we trying to do when we produce a decision theory? I think some of the disputes within the field come from different theorists having different motivations, and hence different answers to this question. My answer is going to be that decision theory plays a key role in a certain kind of explanatory project. And I think defensivism is well suited to play that role. But to see what I mean by playing a key role in an explanatory project, it helps to compare that with other possible views about the aim of decision theory.
 
-One thing you might hope decision theory would do, and certainly one thing students often expect it will do, is provide advice on how to make decisions. I think decision theory is very ill-suited to this task, and it shouldn't really be the aim of the theory. The primary reason for this is that in any real life situation, the inputs are too hard to identify. To use decision theory as a guide to action, I need to know the utility of the possible states. And I need to know not just what's better and worse, but how much they are better or worse. At least speaking for myself, the only way I can tell the magnitudes of the differences in utilities between states is to ask about various gambles, and think about which of them I'd be indifferent between. That's to say, the only way I can tell that the utility of $A$ is half way between that of $B$ and $C$ is to ask whether I'd be indifferent between $A$ and a 50/50 chance of getting $B$ or $C$. So I have to know what decisions I'd (rationally) make before I can work out the utilities. And that means I have to know what decisions to make before I can even apply decision theory, which is inconsistent with thinking that decision theory should be the guide to what decisions to make. This isn't such a pressing problem when decisions can be made using purely ordinal utilities, but those cases are rare. So in general there is little use for decision theory in advising decisions.
+One thing you might hope decision theory would do, and certainly one thing students often expect it will do, is provide advice on how to make decisions. I think decision theory is very ill-suited to this task, and it shouldn't really be the aim of the theory. The primary reason for this is that in any real life situation, the inputs are too hard to identify. To use decision theory as a guide to action, I need to know the utility of the possible states. And I need to know not just what's better and worse, but how much they are better or worse. At least speaking for myself, the only way I can tell the magnitudes of the differences in utilities between states is to ask about various gambles, and think about which of them I'd be indifferent between. That's to say, the only way I can tell that the utility of $a$ is half way between that of $b$ and $c$ is to ask whether I'd be indifferent between $a$ and a 50/50 chance of getting $b$ or $c$. So I have to know what decisions I'd (rationally) make before I can work out the utilities. And that means I have to know what decisions to make before I can even apply decision theory, which is inconsistent with thinking that decision theory should be the guide to what decisions to make. This isn't such a pressing problem when decisions can be made using purely ordinal utilities, but those cases are rare. So in general there is little use for decision theory in advising decisions.
 
 A somewhat better use for decision theory is in evaluation. Using decision theory, we can look at someone else's actions and ask whether they were rational. This is particularly pressing in cases where the person has harmed another, perhaps due to possible carelessness, or in defense of another, and we're interested in whether their actions were rational. Now one immediate complication in these cases is that we don't know the actor's value function. Even if the action doesn't maximise value as we see it, we don't know whether they have a different value function (perhaps one that puts low weight on harms to others), or they were doing a bad job maximising value. We don't know whether they were a knave or a fool. But it's often charitable to assume that they do have a decent enough value function, and we can ask whether what they were doing was rational if they did indeed have a decent value function.
 
 This is a task decision theory is useful for, but it alone wouldn't justify the existence of books like this one. For one thing, the theory of how to act around Demons isn't usually relevant to whether an act was careless, or a permissible kind of self/other-defense. It is sometimes relevant. Sometimes we should think game-theoretically about whether a person was acting properly, and that will bring up issues that are similar to issues involved in making decisions around Demons. But usually the kind of decision theory we need in these cases is fairly elementary. 
 
-A bigger problem is that rationality is too high a bar in these cases. (I'm indebted here to Jonathan Sarnoff.) Imagine that $a$ puts up a ladder somewhat sloppily, and it falls and injures $b$. The question at hand is whether $a$ is morally responsible for the injury to $b$ due to their carelessness. Ladders are tricky things, and sometimes one can take reasonable precautions and bad things happen anyway. Sometimes an injury is correctly attributed to bad luck even if a super-cautious person would have avoided it. We aren't in general obliged to take every possible precaution to avoid injuring others. (If we were, we wouldn't be able to go out in public.) So what's the test we should use for whether this particular injury was just a case of bad luck or a case of carelessness? It is tempting to use decision theory here. The injury is a case of bad luck iff it was decision-theoretically rational for $a$ to act as they did, assuming they had a decent value function. The problem is that this is a really high bar. Imagine that $a$ did what any normal person would do in setting up the ladder, but there was a clever way to secure it for minimal cost that $a$ didn't notice, and most people wouldn't have noticed. Then there is a good sense in which what $a$ did was not decision-theoretically rational; the value maximising thing to do was the clever trick. But we don't want people to be morally responsible every time they fail to notice a clever option that only a handful of people would ever spot. And this is the general case. Decision-theoretic rationality is a maximising notion, and as such it's a kind of hard norm to satisfy. We don't want every failure to satisfy it in cases of unintentional injury to others, or intentional injury to others in the pursuit of a justifiable end like self-defence, to incur moral liability. So this isn't actually a place where decision theory is useful.
+A bigger problem is that rationality is too high a bar in these cases. (I'm indebted here to Jonathan Sarnoff.) Imagine that $d$ puts up a ladder somewhat sloppily, and it falls and injures $v$. The question at hand is whether $d$ is morally responsible for the injury to $v$ due to their carelessness. Ladders are tricky things, and sometimes one can take reasonable precautions and bad things happen anyway. Sometimes it is correct to attribute an injury to bad luck even if a super-cautious person would have avoided it. We aren't in general obliged to take every possible precaution to avoid injuring others. (If we were, we wouldn't be able to go out in public.) So what's the test we should use for whether this particular injury was just a case of bad luck or a case of carelessness? It is tempting to use decision theory here. The injury is a case of bad luck iff it was decision-theoretically rational for $d$ to act as they did, assuming they had a decent value function. The problem is that this is a really high bar. Imagine that $d$ did what any normal person would do in setting up the ladder, but there was a clever way to secure it for minimal cost that $d$ didn't notice, and most people wouldn't have noticed. Then there is a good sense in which what $d$ did was not decision-theoretically rational; the value maximising thing to do was the clever trick. But we don't want people to be morally responsible every time they fail to notice a clever option that only a handful of people would ever spot. And this is the general case. Decision-theoretic rationality is a maximising notion, and as such it's a kind of hard norm to satisfy. We don't want every failure to satisfy it in cases of unintentional injury to others, or intentional injury to others in the pursuit of a justifiable end like self-defence, to incur moral liability. So this isn't actually a place where decision theory is useful.
 
 And if decision theory isn't useful in these cases, then it's value as an evaluative tool is somewhat limited. We can still use it for going around judging people, and saying that was rational, that was irrational. And that's a fine pastime, being judgmental can be fun, especially if the people being judged are in charge of institutions we care about. But we might hope for a little more out of our theory.
 
@@ -947,19 +1258,19 @@ And they turn to their resident decision theorist to ask how much this will impr
 
 In the original game, it's pretty clear what the unique equilibrium of the game is. Each player plays each option with probability $\frac{1}{3}$. If either player had any deviation from that, then they would in the long run be exploitable. So that's what they will do, over a long enough run. And that means that a combination where one player chooses Rock and the other chooses Paper will occur in $\frac{2}{9}$ of games.
 
-But what's the equilibrium of the new game? It's symmetric, each player uses the same mixed strategy. And in that mixed strategy, a player chooses Paper with probability $\frac{5}{12}$, Rock with probability $\frac{1}{3}$, and Scissors with probability $\frac{1}{4}$. So the combination where one player chooses Rock and the other chooses Paper will occur in $\frac{1}{6}$ of games, a considerable reduction from what we previously had.
+But what's the equilibrium of the new game? It's symmetric, each player uses the same mixed strategy. And in that mixed strategy, a player chooses Paper with probability $\frac{5}{12}$, Rock with probability $\frac{1}{3}$, and Scissors with probability $\frac{1}{4}$. So the combination where one player chooses Rock and the other chooses Paper will occur in $\frac{1}{6}$ of games, a considerable reduction from what it previously was.
 
-It is very easy to share the intuition that if you reward a certain kind of behavior, you'll see more of it. But that doesn't always work in the context of competitive games. Here rewarding Rock doesn't result in any change to how often Rock is played, but does result in a reduction of how often one plays the strategy that Rock defeats. What it actually incentivises is behavior that is outside this Rock-Scissors interaction, i.e., Paper. Now this doesn't require a huge amount of decision theory to work out - it's pretty simple linear algebra. But the intuition that rewarding a kind of behavior causes it to be more common is widespread enough that I think a theory that predicts it won't happen isn't completely trivial.
+It is very easy to share the intuition that if you reward a certain kind of behavior, you'll see more of it. (Some politicians, whose knowledge of economics starts and ends with supply-and-demand graphs, rely on nothing but this intuition in economic policy making.) But that intuition doesn't always work in the context of competitive games. Here rewarding Rock doesn't result in any change to how often Rock is played, but does result in a reduction of how often one plays the strategy that Rock defeats. What it actually incentivises is behavior that is outside this Rock-Scissors interaction, i.e., Paper. Now this doesn't require a huge amount of decision theory to work out - it's pretty simple linear algebra. But the intuition that rewarding a kind of behavior causes it to be more common is widespread enough that I think a theory that predicts it won't happen isn't completely trivial.
 
 So cases like these are cases where, I think, decision theory has a useful predictive function. And this means it has practical advantages to the institutional designer, i.e., the chooser in this case. Knowing a bit of decision theory will tell them not to literally waste their money on this plan to reward players who win playing rock. Does it also have practical advantages to the players? Perhaps it has some, though it's a little less clear. After all, if every other player finds the new equilibrium quickly enough, then the expected return of each strategy in a given game will be equal. Decision theory itself says that in a particular play it doesn't matter what a player does. So it kind of undermines its own claim to being practically significant to the players. But this shouldn't reduce how useful the theory is at predicting how players will react to changes in the institutional design, and hence how valuable the theory could be to institutional designers.
 
-But while decision theory can be predictively useful, the main role it plays is in explaining human behavior. Think about the explanation George Akerlof offers of why used cars lose value so quickly, i.e., why people don't pay nearly as much for lightly used cars as they play for new cars [@Akerlof1970]. Or about the explanation Michael Spence offers for why employers might pay more to hire college graduates even if college does not make employees more productive [@Spence1973]. In each case carefully thinking about the decision problem each actor faces can give us a story about how behavior that looks surprising at first actually makes sense.
+But while decision theory can be predictively useful, the main role it plays is in explaining human behavior. Think about the explanation George Akerlof offers of why used cars lose value so quickly, i.e., why people don't pay nearly as much for lightly used cars as they play for new cars [@Akerlof1970]. Or think about the explanation Michael Spence offers for why employers might pay more to hire college graduates even if college does not make employees more productive [@Spence1973]. In each case carefully thinking about the decision problem each actor faces can give us a story about how behavior that looks surprising at first actually makes sense.
 
 The point is not that these explanations always work. Both of them make substantive assumptions about the kind of situation that actors are in. I'm inclined to think that the assumptions in Akerlof's model are close enough to true that his explanation works, and the ones in Spence's model are not. But whether you think that's true or not, what you should think is that models like these show how decision theory can play a role in simple but striking explanations of otherwise mysterious behaviour.
 
 A key assumption in each such explanation is that actors are basically rational. Or, at least, that their behaviour is close enough to what it would be if they were rational that rationality is a good enough assumption for explanatory purposes. A long tradition in philosophy of economics is that this is a fatal weakness in these explanations. After all, we know that people are not in fact perfectly rational. But I'm inclined to think it is a strength, in fact an important strength of decision theoretic explanations of behavior.
 
-The fact that people are not perfectly rational does not mean that we cannot explain their behaviour using models that assume rationality. All that we need for that is that in a particular situation, the behaviour is as it would be if they were rational. And that can be true in certain domains. For example, people who prefer vanilla ice cream to strawberry ice cream buy more vanilla ice cream than strawberry ice cream. Now wheeling out a belief-desire model of action, combined with an assumption that ice-cream purchases are made by practically rational actors, to explain that pattern of purchases would be overkill. But it wouldn't be wrong. In some cases people collectively do act as they would if they were all rational. Not all cases, of course, but some. In each case, we have to look.
+The fact that people are not perfectly rational does not mean that we cannot explain their behaviour using models that assume rationality. All that we need for that is that in a particular situation, the behaviour is as it would be if they were rational. And that can be true in certain domains. For example, people who prefer vanilla ice cream to strawberry ice cream buy more vanilla ice cream than strawberry ice cream. Now wheeling out a belief-desire model of action, combined with an assumption that ice-cream purchases are made by practically rational actors, to explain that pattern of purchases would be overkill. But it wouldn't be wrong. In some cases people collectively do act as they would if they were all rational. Not in all cases, of course, but in some. And to tell whether we are in such a case, we have to look.
 
 To know whether people are acting rationally, we sometimes need to have a sophisticated theory of decision. At first glance, it might look irrational to have a very strong preference for new cars over lightly used cars. It takes some work to see that it might be, as Akerlof argued, a rational reaction to epistemic asymmetries. This work is a project that decision theory can contribute to, and indeed has contributed to.
 
@@ -979,7 +1290,9 @@ For what it's worth, I think the kind of decision theory I'm defending, where th
 
 ## Why Do Ideal Decision Theory {#ideal}
 
-The previous section was on why philosophers should care about decision theory. But what we're doing here isn't just decision theory, it's a very specific kind of decision theory. What we're doing might be called ideal decision theory. It's the theory of how idealised agents make decisions. And I'm going to appeal to those idealisations a fair bit in what follows. This section is about why we should care about such an idealised theory, and in particular about why a defensivist decision theory should care about it.
+The previous section was on why philosophers should care about decision theory. But what I'm doing in this book isn't just decision theory, it's a very specific kind of decision theory. What I'm doing might be called ideal decision theory. It's the theory of how idealised agents make decisions. And I'm going to appeal to those idealisations a fair bit in what follows. This section is about why we should care about such an idealised theory, and in particular about why a ratificationist decision theory should care about it.
+
+**COMPARE BACK TO CHAPTER ONE DISCUSSION - IS THIS TOO REPETITIVE**
 
 I'm hardly alone in focussing on the ideal case. Every theory of decision in the philosophical literature does the same thing. This is surprising because focussing on the ideal case is even less intuitive for the proceduralist than the defensivist, and most decision theorists are proceduralists. But they do indeed focus on the ideal case. We can see that they do by thinking about how they handle cases involving bets on mathematical propositions. Since these will play a bit of a role in what follows, particularly in chapter \@ref(dilemma), I want to set up a particular bet carefully.
 
@@ -1006,7 +1319,7 @@ Let's start with some things that idea theory cannot do. It can't give people a 
 1. The ideal is X.
 2. So, Chooser should be as much like X as they can be.
 
-We know that isn't right for reasons set out by @LipseyLancaster1956. If one can't be like the ideal, it is often best to do other things that the ideal chooser would not do to offset these failings. Here's one simple example. The ideal chooser, in decision theory, can do all reasoning instantaneously. So it's a bad idea for them to stop and have a think about it before making a big decision. Since they have thought all the thoughts that are needed, that would just be a waste of time. But it's often a very good idea for Chooser to stop and have a think about it before making a big decision. Not doing that, in order to be more like the ideal, is a mistake.
+We know that isn't right for reasons set out by @LipseyLancaster1956. If one can't be like the ideal, it is often best to do other things that the ideal chooser would not do to offset these failings. Here's one simple example. The ideal chooser, in decision theory, can do all the reasoning that is needed for a problem instantaneously. So it's a bad idea for them to stop and have a think about it before making a big decision. Since they have thought all the thoughts that are needed, that would just be a waste of time. But it's often a very good idea for Chooser to stop and have a think about it before making a big decision. Not doing that, in order to be more like the ideal, is a mistake.
 
 The following argument isn't as bad, but it isn't right either.
 
@@ -1065,6 +1378,12 @@ To do
 - Say what's really good - sorting the cliches into good and bad ones, developing better cliches etc. And defensivism is just as useful for that, maybe better, than proceduralism
 
 # Against Decisiveness {#decisive}
+
+At the heart of causal ratificationism is the claim that in many decision problems, there is no uniquely rational solution. And this isn't because the options are tied. Rather, it is because each of them is acceptable once it is made. Causal ratificationism is _indecisive_; it doesn't always provide a verdict on what to do.
+
+This chapter argues that the right decision theory, whatever it is, is indecisive. Or, to be a little more precise, it will be an argument that the right theory, whatever it is, is _weakly indecisive_. As I'll define the terms, causal ratificationism is _strongly indecisive_, and the argument of this chapter won't entail that the right theory should be strongly indecisive. In fact, in the whole book I'm not going to offer any kind of proof that the right theory is strongly indecisive. Instead, I'll argue for a number of constraints, including weak indecisiveness, and argue that causal ratificationism is the best way to satisfy those constraints. The most distinctive of these constraints is weak indecisiveness, and the point of this chapter is to motivate that constraint.
+
+The last two paragraphs used a lot of terminology, and section \@ref(decisive-terms) clarifies and defines the key terms. Then in sections \@ref(decisive-games)–\@ref(decisive-examples), I'll argue that the right theory, whatever it is, is weakly indecisive. In section \@ref(decisive-theories) I'll show how this causes problems for most existing decision theories in philosophy, and compare it to existing objections to some of those theories. Finally in section \@ref(decisive-further), I'll discuss how these considerations 
 
 # Against Rational Possibility {#dilemma}
 
@@ -1209,8 +1528,7 @@ Any argument against dilemmas overgenerates, because of infinite cases.
 
 Ahmed 2012 disagrees, for reasons that are completely unclear to me: (This is from "Push the Button", Philosophy of Science 2012)
 
-It is the catastrophic conclusion that whatever you do in ABZ is irrational: which- ever option you take, some other option is (and always was) rationally preferable to it.4
-It may be fair to say this about an agent whose beliefs or preferences are insane or incoherent and also about one whose options are infinite. But we are not facing either case here. Your beliefs and preferences in ABZ are, despite their science-fictional character, plainly sane and coherent.5 And it is equally clear that ABZ does not offer an infinitude of options but only three.
+> It is the catastrophic conclusion that whatever you do in ABZ is irrational: whichever option you take, some other option is (and always was) rationally preferable to it. It may be fair to say this about an agent whose beliefs or preferences are insane or incoherent and also about one whose options are infinite. But we are not facing either case here. Your beliefs and preferences in ABZ are, despite their science-fictional character, plainly sane and coherent. And it is equally clear that ABZ does not offer an infinitude of options but only three.
 
 Really, why is the infinitude relevant here? Any argument that it's 'catastrophic' should apply in all cases or in none, and it is bound to overgenerate
 
@@ -1781,35 +2099,107 @@ I think the conclusion to draw from these cases of symmetric interactions this i
 
 # Puzzles about Weak Dominance
 
-## Why Weak Dominance
+The account causal ratificationism gives of what makes a decision rational has two clauses. The first is that the decision has to make sense once it is made. That is, it has to maximize expected utility given some credal distribution that is rational once the decision is made. The second is that the decision must not be weakly dominated. That is, given the states and choices that are possible (given that the decision is made), no other option must have the status that it could do better, and couldn't do worse. The first clause seems very intuitive to me, and is backed up by plausible principles about choices like the ABC game. The second clause seems less intuitive. But it, or something like it, is required to make sense of those same plausible principles, and so I've included it as part of causal ratificationism.
+
+This chapter has four aims, corresponding to its four sections. In section \@ref(whyweak) I'll show why the ABC game supports the idea that rational choosers do not select weakly dominated options. In section \@ref(boundaries) I'll note one reason that weak dominance unintuitive; it suggests that seemingly insignificant boundaries are in fact significant. If it weren't for the argument of the previous section, this would be enough to convince me to do without weak dominance. In section \@ref(redgreen) I'll discuss how weak dominance interacts with some hard puzzles about a simple symmetric game. I've had two previous attempts to say something sensible about this game [@Weatherson201x; Weatherson201y]; hopefully third time's the charm. Finally, in section \@ref(iwd), I'll argue that it can be rational to choose options which are ruled out by iterated weak dominance. The argument will primarily turn on an analysis of the money-burning game [cite], and I'm going to endorse Stalnaker's [cite] criticism of the standard treatment of that game.
+
+## Why Weak Dominance {#whyweak}
 
 Consider the following version of the ABC game.
 
-- Demon chooses A, B or C
-- If Demon chooses A then game ends and payouts are made. 
-- If Demon chooses B or C then Chooser is told that Demon did not choose A, but not which choice was made. 
-- Then Chooser chooses L or R. 
-- That’s the last move, and the payouts are a function of what each player chose. 
-- In this case Demon gets 1 if they choose A, 0 otherwise. 
-- Chooser gets 1 if either Demon chooses A or they choose L, otherwise they get 0. 
+```{tikz, abc-game-weak-dominance, fig.cap = "A version of the ABC game that supports weak dominance.", fig.ext = 'png', cache=TRUE}
+\usetikzlibrary{calc}
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzset{
+% Two node styles for game trees: solid and hollow
+solid node/.style={circle,draw,inner sep=1.5,fill=black},
+hollow node/.style={circle,draw,inner sep=1.5},
+square node/.style={rectangle,draw, inner sep = 1, fill = black}
+}
+% Specify spacing for each level of the tree
+\tikzstyle{level 1}=[level distance=20mm]
+\tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+% The Tree
+\node(0)[hollow node,label=above:{$Demon$}]{}
 
-Here is the game tree, with Chooser’s payouts listed first. 
+child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$2, 2$}]{}
+edge from parent node[above]{A}
+}
+child[grow=225]{node(3)[solid node]{}
+child[grow=240]{node[square node,label=below:{$1, 1$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$0, 0$}]{} edge from parent node[right]{D}}
+edge from parent node[left, xshift = -3]{B}}
+child[grow=315]{node(4)[solid node]{}
+child[grow=240]{node[square node,label=below:{$1, 0$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$0, 1$}]{} edge from parent node[right]{D}}
+edge from parent node[right,xshift = 3]{C}
+}
+;
+% information set
+\draw[dashed](3) to (4);
+% specify mover at 2nd information set
+\node at ($(3)!.5!(4)$) [above] {$Chooser$};
+\end{tikzpicture}
+```
 
-**Insert Tree**
+Given what I've said already about the ABC game, I'm committed to the following two claims. First, in this game the only rational choice is $U$. That's the only rational choice at the only information set where Chooser might move, and that determines the rational strategy. Second, a choice is rational in this game iff it is rational in the following simultaneous move game.
 
-Obviously if Chooser gets to choose, they should choose L; that way they get 1 not 0. But what precisely Is wrong with the following belief/strategy pair. 
+```{r,abc-weak-dominance-strategic, cache=TRUE}
+generic_abc_strategic <- tribble(
+	   ~"", ~A, ~B, ~C,
+	   "U", "$2, 2$", "$1, 1$", "$1, 0$",
+	   "D", "$2, 2$", "$0, 0$", "$0, 1$"
+	)
+gameformat(generic_abc_strategic, "A strategic representation of this ABC game.")
+```
 
-- Chooser believes that Demon will play A because it strictly dominates B and C
+From these claims, it follows that the only rational move in the game in \@(tab:abc-weak-dominance-strategic) is $U$. But that's hard for the causal ratificationist to explain, since it seems that $D$ is ratifiable. If Chooser believes, after choosing $D$, that the probability that Demon will play $A$ is 1, then playing $D$ will maximise expected utility. Is that a rational credence to have? Maybe! After all, Chooser knows that Demon is a utility maximiser, and for Demon, $A$ strictly dominates $B$ and $C$. So if causal ratificationism was just restricted to the view that choices must be ratifiable, it would not be consistent with what I've said about the ABC game, since it would say that $D$ is impermissible in the extensive form version of the game, but permissible in the strategic form.
 
-Basic ABC example. Demon might not give a choice but if they do Up beats Down
+This shows that I need to add something to causal ratificationism to make it consistent with what I've said about the ABC game. Adding weak dominance would solve this problem. While $D$ is ratifiable in the strategic form of the game, it is weakly dominated. So adding the weak dominance clause restores the key constraint that the two forms of the game are treated the same way. And that's the primary reason that I added this clause to causal ratificationism.
 
-This doesn’t require weak dominance but that’s the simplest explanation
+Note that this argument is well short of a proof that weak dominance is needed. It shows something is needed, and weak dominance would be sufficient, but it doesn't rule out weaker constraints. But I can't see any weaker constraint that would suffice to bring these two problems back into alignment, and would be nearly as intuitive as weak dominance. So I've added it as the second clause.
 
-Also fits with the “can you defend this”
+There is one intuitive motivation for weak dominance. The core idea behind causal ratificationism is that choices should be defensible. The chooser should be able to say "This is what I'm doing, and this is why I'm doing it," in a way that makes sense. And there is something strange about a speech defending choosing $D$ in \@(tab:abc-weak-dominance-strategic). It looks like the person who chooses $D$ is taking a risk for which they are not receiving any compensation. And it's irrational to take uncompensated risks. That intuition, if it is correct, generalises to all cases of choosing weakly dominated options, and so supports a general bar on choosing weakly dominated strategies.
 
-But two puzzles for the next two sections
+Weak dominance has some problems though, and I'll turn to them next.
 
-## Three Kinds of Demon
+## The Boundaries of Games {#boundaries}
+
+The definition of weak dominance involves quantifying over possible ways the world might be. In the cases that have been most central to this book, those states have been moves made by another agent, typically a demon. So we could say, equivalently, that the definition of weak dominance involves quantifying over moves available to the other player. Indeed, the usual definition of weak dominance in game theory does quantify over moves available to the other player. A consequence of that is that the boundary between the available and the unavailable moves becomes very significant. That's a problem, because often this boundary seems to be insignificant.
+
+The importance of this boundary is a key difference between the two clauses in causal ratificationism. The definition of expected utility maximization also makes an appeal to the boundary between possible and impossible states. But whether one treats a state as impossible, or as possible but with probability zero, doesn't affect the expected utility of an action. The difference between treating a state as impossible, and as possible but with probability zero, does matter to determining which states are weakly dominant.
+
+It's easier to think about this boundary with some concrete examples. So let's get away from the simple games that have been the focus of this book, and imagine that Chooser is playing chess with Demon. In this game, Chooser has the black pieces. The game starts in a fairly traditional manner: 1. e4 e5, 2. Nf3. Now it is Chooser's turn to move, and they are thinking about Qh4. This is obviously a bad move, but I want us to think for a minute about why it is a bad move.
+
+The causal ratificationist says that when evaluating a move, one thing to check is whether it is weakly dominated. To do that, one must know what the possible states are, i.e., what the possible moves for Demon are. Now pretty clearly Qh4 is not going to be utility maximizing, so the answer to this question won't affect what the causal ratificationist ultimately says about whether one should play Qh4. But it is important to figure out just what the theory says, so it is important to figure out just what these 'possible moves' are.
+
+In particular, which of the following two 'moves' should be in the domain of quantification when we are asking whether a choice by Chooser is weakly dominated?
+
+1. Demon moves Ng5.
+2. Demon knocks over the board and walks away.
+
+There is an important sense in which 1 is in the domain, and 2 is not. The rules of chess allow for Ng5, and they do not allow for knocking the board over. When I appealed to weak dominance earlier, I assumed that all and only the moves specified in the rules of the game went into the domain of quantification, and I suspect most readers went along with that. The same principle here would include Ng5, and exclude knocking the board over, as possible moves.
+
+This division is hard to motivate from a traditional philosophical perspective. There is no relevant epistemic difference between the two options. Given very weak assumptions, Chooser knows that Demon will take neither of these options. There is no relevant difference between the options in terms of ability. Demon can move Ng5, and can also (given some assumptions about Demon's corporal form) knock the board over. The difference between the options is essentially a legal one. Ng5 is a legal move, and knocking the board over is not. That matters when one is playing a formal game. But game theory isn't just meant to be about formal games like chess. It is meant to include human interactions, notably including wars, that don't have these kinds of clear rules. And in those settings, it is unclear what counts as a possible move, and hence unclear what counts as a weakly dominant move.
+
+Let's bring this all back to decision theory involving demons. Chooser is playing the following game. They have to choose $U$ or $D$; if they choose something else, they get nothing. Demon is very good at predicting them, and will either turn to the left, if they predict $U$, or turn to the right, if they predict $D$. The turn will be after Chooser writes down their choice, but before it is revealed. If Chooser writes $U$, they get 1 whichever way Demon chooses, but if Chooser writes $D$, they get 1 if Demon turns right, and 0 if Demon turns left. So far, this looks like a case where weak dominance matters. The expected return of each move is 1, but $U$ weakly dominates $D$. Let's add something to the game though. Demon will turn one way or the other; Chooser knows that. But if Demon instead drinks a beer, Chooser will get 1 if they have chosen $D$, and 0 if they have chosen $U$. Demon won't drink a beer; Demon is allergic to beer, and there isn't any beer around. But these are the payoffs if beer drinking happens. Which it won't. Question: Does $U$ still weakly dominate $D$? And this suggests a further question: Is $D$ permissible?
+
+The problem for using weak dominance in a theory of choice, and it's a problem wherever weak dominance is used, not just in causal ratificationism, is this. Given that Demon definitely won't drink beer, it seems like it shouldn't matter whether we exclude beer from the decision table, or include it while marking it as maximally unlikely to happen. But given that weak dominance is one of our constraints, it turns out this makes all the difference in the world. That seems unfortunate.
+
+Here is how I think we should deal with this problem. I've said _deal with_ rather than _solve_ advisedly. It is a problem; it's why I'm not happy having to include a weak dominance clause. But there are ways to deal with it.
+
+In the first instance, causal ratificationism is a theory of decision not in real world decision problems, but in the kind of formalized problems we discuss in decision theory and game theory textbooks. Solving a real world problem is a two-step process. First, the real world problem has to be translated into a formal problem. Causal ratificationism has something to say about this—it says that the states must be causally independent of the options—but it doesn't have a lot to say. Second, the formal problem has to be solved. Causal ratificationism has a lot to say about this stage, and I've been spelling out what it has to say at some length in this book.
+
+Usually, there are multiple acceptable ways to translate a real world problem into a formal problem. Sometimes, the different translations will have different solutions. In those cases, it is indeterminate what is rational to do. Arguably, that's the case in the case I described a few paragraphs back, about turning and beer-drinking. It's acceptable to model this as a problem where Demon's only options are to turn left or to turn right. On that model, the only rational move is $U$. It's also acceptable to model it as a problem where Demon could (but won't) drink beer. On that model, both $U$ and $D$ are rationally permissible. So it is determinately true that $U$ is rationally permissible, but indeterminate whether $D$ is rationally permissible. That is a plausible enough response to the problem, I think.
+
+I said earlier that to solve a real world problem, one has to do two things: translate the problem into a formal problem, and solve the formal problem. There is a way that might be misleading. It might suggest that the two steps are analytically distinct from each other, and that the plausibility of an answer to one problem should be assessed independently of the answer to the other. That's not right. Whether a formal model of a real world problem is acceptable is a function, in part, of whether the solutions to the formal problem are reasonable solutions to the real world problem. It's perfectly sensible to reason as follows. If it is clear that $D$ is an unreasonable move in the real world game (I don't think this is clear, but someone might), then it follows that modeling the game as a formal game where Demon has three possible moves—turn left, turn right, drink beer—is to model the game incorrectly. There is no such thing as an absolutely correct or incorrect model of a game, or of any other real world situation; the quality of a model is dependent on what the model is being used for. And this also helps us avoid some of the most troublesome consequences of the fact that weak dominance is dependent on just how a game is modeled. Sometimes, the fact that rational choices are not weakly dominated is evidence for or against modeling the game a particular way.
+
+
+## Three Kinds of Demon {#redgreen}
 
 Set up red green game and properly cite
 
@@ -1823,7 +2213,50 @@ Third demon, can not fail.  Then not in fact weak dominance post choice bc alter
 
 Same goes for symmetric humans but third is really impossible. 
 
-## Iterated Weak Dominance
+## Benefits of Weak Dominance
+
+Chooser and Demon pick an integer between 0 and 1,000,000.
+
+Demon gets 1 if same, 0 if otherwise, and Demon is very good
+
+Chooser gets lower of two numbers unless they pick the same positive number, in which case Chooser gets that minus two.
+
+Only ratifiable outcome is 0,0
+
+But that's weakly dominated by just about everything else, and so should be rejected.
+
+Weak dominance helps here.
+
+Question: What equilibria are there? Feels like there should be a mixed strategy one.
+
+****
+
+Note to self: Think about case where game is capped at 10. Is there an equilibrium where Chooser plays 1/2 9, 1/2 10.
+
+Need expected return of 9 and 10 to be the same.
+
+Demon plays 9 with prob x, 10 with prob 1-x.
+
+If Chooser plays 9, gets 7x + 10(1-x) = 10 - 3x.
+
+If Chooser plays 10, gets 9x + 8(1-x) = 8 + x
+
+Haha, it's 50/50.
+
+****
+
+Another sort of benefit. Think about the following three option case.
+
+PU   PM   PD
+U   0    5    2
+M   5    0    2
+D   2    2    2
+
+Is D acceptable? No, I say, it's weakly dominated by 1/2 U, 1/2 M. That's good enough. Ideally, Chooser would play that. Even if they can't play it, they should.
+
+The same helps if you take the earlier problem, and say that if 0, 0, Chooser gets payout epsilon. It's still weakly dominated by this mixture. Oh that's not right - Hmm come back to this.
+
+## Iterated Weak Dominance {#iwd}
 
 Sometimes thought that if WD then committed to IWD. Cite HH and Stalnaker in reply. 
 
@@ -1922,4 +2355,3 @@ What I'm using
 Joyce's review of Ahmed for why it matters
 The strong version I'm not using (or maybe that I am using)
 Stalnaker on why it shouldn't be used
-
