@@ -77,23 +77,27 @@ rownames(city_matrix) <- filter(city_numbers, used_city == 1)$thecities
 ## Best tour
 load("tour_line.RData")
 
-## Turn tour to map path
-# paths <- tribble(
-#   ~step, ~property, ~rowid, ~long, ~lat
-# )
-# 
-# for (i in 1:nrow(our_gps)){
-#   x <- tour_line[i]
-#   first_city <- our_gps %>% slice(x)
-#   next_city <- our_gps %>% slice(x %% 31)
-#   paths <- paths %>% 
-#     add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>% 
-#   #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
-# }
-# 
-# x <- tour_line[1]
-# 
-# paths <- paths %>% add_row(step = 24, property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+tour_line <- TOUR(bad_path, tsp = as.TSP(city_matrix))
+#tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
+tour_length(tour_line)
+
+# Turn tour to map path
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+paths <- paths %>% add_row(step = 24, property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
 
 
 state_map_data <- map_data("state") %>%
@@ -103,8 +107,10 @@ state_map_data <- map_data("state") %>%
 tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
   geom_polygon(fill = "white", colour = "grey90") + 
   geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
-#  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
-  coord_quickmap()
+  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
+  coord_quickmap() +
+  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+  theme(axis.title.x = element_text())
 #tour_length(tour_line)
 tour_map
 

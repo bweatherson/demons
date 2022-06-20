@@ -180,7 +180,7 @@ tour_map
 #str_c(our_gps$name, sep = "; ", collapse = "; ")
 ```
 
-Since there are ~$256!$~ possible paths, Chooser has a few options here.^[The 256 cities are the cities in the lower 48 states from the 312 cities in North America that John Burkardt mapped in his dataset Cities, available at [people.sc.fsu.edu/~jburkardt/datasets/cities/cities.html](https://people.sc.fsu.edu/~jburkardt/datasets/cities/cities.html).]
+Since there are $256!$ possible paths, Chooser has a few options here.^[The 256 cities are the cities in the lower 48 states from the 312 cities in North America that John Burkardt mapped in his dataset Cities, available at [people.sc.fsu.edu/~jburkardt/datasets/cities/cities.html](https://people.sc.fsu.edu/~jburkardt/datasets/cities/cities.html).]
 
 Question: What makes a particular choice of path a good one? Answer: It's no longer than the other $256!-1$ options.
 
@@ -188,7 +188,7 @@ Question: How should Chooser make a good choice here? Answer: Read a lot of the 
 
 These answers are quite different, and that means the questions are different to. The first question is asking something almost metaphysical - in virtue of what is the right answer the right one? The second question is practical - how do we go about finding that right answer, or at least getting close to it?
 
-It would be really terrible to answer the second question by saying "choose the shortest route". This wouldn't be obviously incorrect. But it would be useless, which in context is almost as bad. The second question is asking a question in what we might call non-ideal decision theory.^[I'm borrowing the term 'non-ideal' from work in political philosophy. See @Valentini2012 for a good survey of some relevant work, and @Mills2005 for an important critique of the centrality of ideal theory in political philosophy. Critics of ideal theory, like Mills and @Sen2006, argue that we shouldn't base non-ideal theory on ideal theory. I'm going to agree, but my focus is primarily in the other direction. I'm going to argue that it isn't a constraint on ideal theory that it is useful in constructing a non-ideal theory.] And a constraint on a non-ideal theory is that it is useful, in a way that "choose the shortest route" is useless.
+It would be really terrible to answer the second question by saying "choose the shortest route". This wouldn't be obviously incorrect. But it would be useless, which in context is almost as bad. The second question is asking a question in what we might call non-ideal decision theory.^[I'm borrowing the term 'non-ideal' from work in political philosophy. See @Valentini2012 for a good survey of some relevant work, and @Mills2005 for an important critique of the centrality of ideal theory in political philosophy. Critics of ideal theory, such as Mills, and @Sen2006, argue that we shouldn't base non-ideal theory on ideal theory. I'm going to agree, but my focus is primarily in the other direction. I'm going to argue that it isn't a constraint on ideal theory that it is useful in constructing a non-ideal theory.] And a constraint on a non-ideal theory is that it is useful, in a way that "choose the shortest route" is useless.
 
 But this is the right answer to the first question. The shortest route is, kind of by definition in this case, the best choice. That's the ideal. An ideal decision theory should say to choose it.^[The full list of cities in the Salesman problem is: `r str_c(our_gps$name, sep = "; ", collapse = "; ")`.]
 
@@ -884,306 +884,6 @@ I certainly don't want to lean too hard on the intuition that either option is r
 
 - Rock Paper Scissors
 
-### The ABC Game {#abcgameintroduce}
-
-**READ OVER AND MAYBE EDIT DOWN A LOT**
-
-The central arguments of this book are going to concern what I'll call the ABC game. This subsection sets out the abstract form of the game, and describes the two main theoretical claims I'm going to make about it. The basic version of the game, what I'll sometimes call the _long version_ of the game to distinguish it from two variants I'll get to below, goes through the following steps.
-
-1. Demon chooses between three options: $A, B, C$.
-2. If Demon chooses $A$, the game ends, and Chooser gets $e_1$ while Demon gets $e_2$. Playing $A$ is intuitively exiting the game, and these are the exit payments, hence using $e$ in each case.
-3. If Demon chooses $B$ or $C$, Chooser is informed that Demon did not choose $A$, but is not told which of $B$ or $C$ Demon chose.
-4. In this case, Chooser chooses either $U$ (intuitively Up) or $D$ (intuitively Down).
-5. Then the game ends and the payouts are made, with the payouts being a function of which of $B$ or $C$ Demon chose, and which of $U$ or $D$ Chooser chose.
-
-Here is the game in tree form, noting that if Chooser gets to move, they are in an information set with two nodes in it, because they know that Demon has chosen $B$ or $C$, but do not know which one is chosen.
-
-```{tikz, abc-game-generic-long, fig.cap = "Generic version of the (long version of the) ABC Game", fig.ext = 'png', cache=TRUE}
-\usetikzlibrary{calc}
-\begin{tikzpicture}[scale=1.5,font=\footnotesize]
-\tikzset{
-% Two node styles for game trees: solid and hollow
-solid node/.style={circle,draw,inner sep=1.5,fill=black},
-hollow node/.style={circle,draw,inner sep=1.5},
-square node/.style={rectangle,draw, inner sep = 1, fill = black}
-}
-% Specify spacing for each level of the tree
-\tikzstyle{level 1}=[level distance=20mm]
-\tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
-\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
-\tikzstyle arrowstyle=[scale=1]
-\tikzstyle directed=[postaction={decorate,decoration={markings,
-mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
-% The Tree
-\node(0)[hollow node,label=above:{$Demon$}]{}
-
-child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$e_1,e_2$}]{}
-edge from parent node[above]{A}
-}
-child[grow=225]{node(3)[solid node]{}
-child[grow=240]{node[square node,label=below:{$x_1,y_1$}]{}edge from parent node[left]{U} }
-child[grow=300]{node[square node,label=below:{$x_3,y_3$}]{} edge from parent node[right]{D}}
-edge from parent node[left, xshift = -3]{B}}
-child[grow=315]{node(4)[solid node]{}
-child[grow=240]{node[square node,label=below:{$x_2,y_2$}]{}edge from parent node[left]{U} }
-child[grow=300]{node[square node,label=below:{$x_4,y_4$}]{} edge from parent node[right]{D}}
-edge from parent node[right,xshift = 3]{C}
-}
-;
-% information set
-\draw[dashed](3) to (4);
-% specify mover at 2nd information set
-\node at ($(3)!.5!(4)$) [above] {$Chooser$};
-\end{tikzpicture}
-```
-
-I am mostly going to talk about versions of the game where $y_1 > y_3$, and $y_4 > y_2$. That's to say, if we get to the right hand side of the game, we can treat $B$ as Demon predicting that Chooser will choose $U$, and $C$ as Demon predicting that Chooser will choose $D$.
-
-There are ten variables on this tree, so there is a lot of flexibility in how the ABC game is described. But to specify a particular game, a little more is needed. In particular, we need to say precisely how Demon is going to behave. Demon follows the following rules in making a choice.
-
-- Demon always makes a probabilistic prediction about Chooser's strategy. Note that a strategy here is a function from choice points to probabilities of making one or other choice at that point. So in this case it's a probability function that assigns probability $u$ to choosing $U$, and probability $d = 1 - u$ to choosing $D$.
-- This prediction is, from Chooser's perspective, arbitrarily likely to be correct.
-- Demon maximises expected utility given this prediction.
-- If there are possible strategies that are tied in expected utility given a possible by Demon, the game has to specify the probability that Demon will make in that case.
-
-To illustrate the last clause, consider the case, or actually cases, where Demon and Chooser have the following game tree.
-
-```{tikz, abc-game-tie-example, fig.cap = "An ABC game where Demon has to use a tie-breaker.", fig.ext = 'png', cache=TRUE}
-\usetikzlibrary{calc}
-\begin{tikzpicture}[scale=1.5,font=\footnotesize]
-\tikzset{
-% Two node styles for game trees: solid and hollow
-solid node/.style={circle,draw,inner sep=1.5,fill=black},
-hollow node/.style={circle,draw,inner sep=1.5},
-square node/.style={rectangle,draw, inner sep = 1, fill = black}
-}
-% Specify spacing for each level of the tree
-\tikzstyle{level 1}=[level distance=20mm]
-\tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
-\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
-\tikzstyle arrowstyle=[scale=1]
-\tikzstyle directed=[postaction={decorate,decoration={markings,
-mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
-% The Tree
-\node(0)[hollow node,label=above:{$Demon$}]{}
-
-child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$3, 1$}]{}
-edge from parent node[above]{A}
-}
-child[grow=225]{node(3)[solid node]{}
-child[grow=240]{node[square node,label=below:{$1,1$}]{}edge from parent node[left]{U} }
-child[grow=300]{node[square node,label=below:{$0,0$}]{} edge from parent node[right]{D}}
-edge from parent node[left, xshift = -3]{B}}
-child[grow=315]{node(4)[solid node]{}
-child[grow=240]{node[square node,label=below:{$0,0$}]{}edge from parent node[left]{U} }
-child[grow=300]{node[square node,label=below:{$2,2$}]{} edge from parent node[right]{D}}
-edge from parent node[right,xshift = 3]{C}
-}
-;
-% information set
-\draw[dashed](3) to (4);
-% specify mover at 2nd information set
-\node at ($(3)!.5!(4)$) [above] {$Chooser$};
-\end{tikzpicture}
-```
-
-If Demon predicts that Chooser will play $D$, then Demon will play $C$. That will get Demon 2, while playing $A$ will get 1, and playing $B$ will get 0. But if Demon predicts that Chooser will play $U$, then Demon predicts that they will get 1 whether they play $A$ or $B$, and 0 if they play $C$. So to specify what Demon will do, we need to add in the probability that they will break the tie by playing $A$ or playing $B$. And the key point here is that different specifications of that probability will result in different games. The probability of Demon using one tie-breaking procedure or another will be taken to be partially individuating of versions of the ABC game.
-
-Note that I'm not saying here that Demon will be perfectly rational. So this is not like the standard setup in epistemic game theory where we specify the game structure and payouts, and ask which moves are possible given common knowledge of rationality. It's true that Demon has (arbitrarily) accurate beliefs, and is a utility maximiser. But Demon will sometimes choose weakly dominated options. For instance, it's consistent with the way I've described the ABC game immediately above to say that Demon has positive probability of choosing $B$, even though it is weakly dominated by $A$. If it is part of rationality that one not choose weakly dominated options, and I'm going to somewhat tentatively argue that it is throughout this book, then Demon is not perfectly rational. This is not a major deviation from standard practice in philosophical decision theory. It isn't part of the normal story in Newcomb's Problem that Demon is rational at all, let alone that they are perfectly rational. But it is worth noting here that I'm assuming Demon will sometimes play weakly dominated strategies.
-
-So that's the long version of the ABC game. There is a two-stage game; although that Demon might end it after stage one. The game is specified by setting out the ten possible payouts, and the probability that Demon will choose one or other option if their prediction suggests two options are tied for expected value.
-
-What I'll call the _early_ version of the game has just one variation. Chooser has to move whatever Demon does, and they are not told whether or not Demon has chosen $A$. Here is the game tree for it.
-
-```{tikz, abc-game-generic-early, fig.cap = "Generic version of the early version of the ABC Game", fig.ext = 'png', cache=TRUE}
-\usetikzlibrary{calc}
-\begin{tikzpicture}[scale=1.5,font=\footnotesize]
-\tikzset{
-% Two node styles for game trees: solid and hollow
-solid node/.style={circle,draw,inner sep=1.5,fill=black},
-hollow node/.style={circle,draw,inner sep=1.5},
-square node/.style={rectangle,draw, inner sep = 1, fill = black}
-}
-% Specify spacing for each level of the tree
-\tikzstyle{level 1}=[level distance=15mm,sibling distance=25mm]
-\tikzstyle{level 2}=[level distance=10mm,sibling distance=13mm]
-\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
-\tikzstyle arrowstyle=[scale=1]
-\tikzstyle directed=[postaction={decorate,decoration={markings,
-mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
-% The Tree
-\node(0)[hollow node,label=above:{$Demon$}]{}
-
-child{node(2)[solid node]{}
-child{node[square node,label=below:{$e_1,e_2$}]{}edge from parent node[left]{U} }
-child{node[square node,label=below:{$e_1,e_2$}]{} edge from parent node[right]{D}}
-edge from parent node[left, xshift = -4]{A}}
-child{node(3)[solid node]{}
-child{node[square node,label=below:{$x_1,y_1$}]{}edge from parent node[left]{U} }
-child{node[square node,label=below:{$x_3,y_3$}]{} edge from parent node[right]{D}}
-edge from parent node[left, xshift = 0]{B}}
-child{node(4)[solid node]{}
-child{node[square node,label=below:{$x_2,y_2$}]{}edge from parent node[left]{U} }
-child{node[square node,label=below:{$x_4,y_4$}]{} edge from parent node[right]{D}}
-edge from parent node[right,xshift = 4]{C}
-}
-;
-% information set
-\draw[dashed](2) to (4);
-% specify mover at 2nd information set
-\node at ($(3)!.3!(4)$) [above] {$Chooser$};
-\end{tikzpicture}
-```
-
-We can picture this game the following way. Chooser was scheduled to play the long version of the game. But they have to run to perform an errand, and can't wait for Demon to make a prediction. So the game organiser lets Chooser write their choice of $U$ or $D$ in an envelope, and hides it from Demon. Demon is not better, and no worse, at figuring out what Chooser wrote than at predicting what Chooser will do in the long version of the game. After Demon makes a move, the game organiser will open the envelope. If Demon chose $A$, it won't matter what Chooser wrote; the payouts will be $e_1, e_2$ either way. But if Demon chose $B$ or $C$, Chooser's move will determine the payouts, in exactly the same way as in the long game.
-
-I've presented this as a tree, but it's effectively a simultaneous move game. Both players have a single move, and while they don't necessarily make them at the same time, they make them without having the other move in evidence. So we could just as well show this game with a table, like this one:
-
-```{r,abc-early-strategic, cache=TRUE}
-generic_abc_strategic <- tribble(
-	   ~"", ~A, ~B, ~C,
-	   "U", "$e_1, e_2$", "$x_1, y_1$", "$x_2, y_2$",
-	   "D", "$e_1, e_2$", "$x_3, y_3$", "$x_4, y_4$"
-	)
-gameformat(generic_abc_strategic, "A strategic representation of the early form of the ABC game.")
-```
-
-This is a representation of the early version of the game, where the moves are as good as simultaneous. But it's also the strategic form representation of the long version of the game. In game theory, we say that a strategy for a game is a plan for what to do at every point one might have to make a choice at.^[It's occasionally important to note that 'every point' really does mean every point. A strategy should say what to do at nodes that are ruled out by earlier moves in the strategy. This becomes important when thinking about backwards induction. I will mostly be discussing strategic games where each player moves at most once, so this technical point won't often be relevant, but I will occasionally come back to it.] The strategic form of a game is a table where we list the possible strategies for each player, and note the payouts that each player gets. The contrast is with the extensive form, which is the tree setting out which moves are made in which order. Once we have this table, we can think about what strategies would make sense were the game a simultaneous move game, where players simultaneously revealed their strategies. In general, moving to a strategic form changes the game, since playing a strategy gives players a power they don't have in real life: the power to bind the actor making their future moves.[^At least, this is the consensus view of game theorists, and I'm mostly not going to raise questions about it here. But see @Stalnaker1999 for an important dissent.]. I'll argue that the ABC game is different; in games where each player moves at most once, the strategic form and extensive form are equivalent.
-
-As well as these two games, we can think about two simpler games that are embedded in them. What I'll call the short form of the game is the decision problem that is reached if Demon does not play $A$. In that case, we get the following table:
-
-```{r,abc-short, cache=TRUE}
-generic_abc_short <- tribble(
-	   ~"", ~B, ~C,
-	   "U", "$x_1, y_1$", "$x_2, y_2$",
-	   "D", "$x_3, y_3$", "$x_4, y_4$"
-	)
-gameformat(generic_abc_short, "A generic version of the short form of the ABC game.")
-```
-
-If, as I'm usually going to assume, $y_1 > y_3$, $y_4 > y_2$, and Demon is a utility maximiser, then we could just as easily write $PU$ for $B$, and $PD$ for $C$. That's because Demon will play $B$ iff they predict $U$, and $C$ iff they predict $C$. Let's actually write this out, calling it the predictive-short version, and dropping Demon's payouts since the relevant information in them is now encoded in the column names.
-
-```{r,abc-predictive, cache=TRUE}
-generic_abc_predictive <- tribble(
-	   ~"", ~PU, ~PD,
-	   "U", "$x_1$", "$x_2$",
-	   "D", "$x_3$", "$x_4$"
-	)
-gameformat(generic_abc_predictive, "A generic version of the predictive-short form of the ABC game.")
-```
-
-The other decision problem we can generate is from the early form of the game. Demon has three moves, but the probability that Demon will make each of them is determined entirely by whether Demon predicts $U$ or $D$. It's a little trickier to write out the payouts though. I'll state this form of the game, what I'll call the reduced-early version of game, very generically, then explain it a bit.
-
-```{r,abc-reduced-early, cache=TRUE}
-generic_abc_reduced_early <- tribble(
-	   ~"", ~PU, ~PD,
-	   "U", "$f_1(e_1,x_1)$", "$f_2(e_1,x_2)$",
-	   "D", "$f_1(e_1,x_3)$", "$f_2(e_1,x_4)$"
-	)
-gameformat(generic_abc_reduced_early, "A generic version of the reduced-early form of the ABC game.")
-```
-
-I've used yet more terminology here: $f_1$ and $f_2$. These admit of relatively simple, if cumbersome, definition. I'm assuming here that $y_1 > y_3$, $y_4 > y_2$, and Demon is a utility maximiser; the definitions get more unwieldy without those assumptions.
-
-- If $e_2 > y_1$, then $f_1(e_1,x_1) = e_1$.
-- If $e_2 < y_1$, then $f_1(e_1,x_1) = x_1$.
-- If $e_2 = y_1$, then $f_1(e_1,x_1) = ke_1 + (1-k)x_1$, where $k$ is the probability that Demon will choose $A$ if $A$ and $B$ have the same expected return for Demon.
-
-Intuitively, the first line says that if after predicting $U$, Demon will prefer exiting to giving Chooser a choice, the payout for $U, PU$ is the exit payout $e_1$. The second line says that if after predicting $U$, Demon will prefer giving Chooser a choice, and expecting them to choose $U$, the payouts in this column is the payout for the short game. And if Demon is indifferent between exiting and playing, the payouts are a linear mix of the payouts between the two choices, with the weights given by Demon's dispositions to exit or play.
-
-For completeness, here is the definition of $f_2$:
-
-- If $e_2 > y_4$, then $f_2(e_1,x_4) = e_1$.
-- If $e_2 < y_4$, then $f_2(e_1,x_4) = x_4$.
-- If $e_2 = y_4$, then $f_2(e_1,x_4) = ke_4 + (1-k)x_4$, where $k$ is the probability that Demon will choose $A$ if $A$ and $B$ have the same expected return for Demon.
-
-Note that in both cases though I've used the variable names from the cases where Demon's predictions are correct, the definitions of $f_1$ and $f_2$ are perfectly general, so those definitions can be used to work out Chooser's expected payouts in cases where the Demon's predictions are incorrect.
-
-With all that setup, here is the big argument that I'm going to make using this game.^[In this argument I'm using the term _matches_ a lot. A decision of playing $U$ _matches_ in one form of the game matches a decision to play $U$ in other forms, and similarly for decisions to play $D$, and similarly for mixed strategies of the form play $U$ with probability $k$ and $D$ with probability $1-k$. The argument presupposes that being a matching decision is transitive, which it clearly is given this definition.]
-
-1. A decision for Chooser is rational in the predictive-short form of the game iff the matching decision is rational in the short form of the game. (2. A decision for Chooser is rational in the short form of the game iff the matching decision is rational in the long form of the game.
-3. A decision for Chooser is rational in the long form of the game iff the matching decision is rational in the early form of the game.
-4. A decision for Chooser is rational in the early form of the game iff the matching decision is rational in the reduced-early form of the game.
-5. Therefore, a decision for Chooser is rational in the predictive-short form of the game iff the matching decision is rational in the reduced-early form of the game.
-
-I'll argue for each of these premises much more extensively in chapter \@ref(decisive). For now I'm just going to note what transpires if I'm right, and these premises are all true. Consider the following version of the game.
-
-```{tikz, abc-game-main-example, fig.cap = "The main example of the ABC game.", fig.ext = 'png', cache=TRUE}
-\usetikzlibrary{calc}
-\begin{tikzpicture}[scale=1.5,font=\footnotesize]
-\tikzset{
-% Two node styles for game trees: solid and hollow
-solid node/.style={circle,draw,inner sep=1.5,fill=black},
-hollow node/.style={circle,draw,inner sep=1.5},
-square node/.style={rectangle,draw, inner sep = 1, fill = black}
-}
-% Specify spacing for each level of the tree
-\tikzstyle{level 1}=[level distance=20mm]
-\tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
-\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
-\tikzstyle arrowstyle=[scale=1]
-\tikzstyle directed=[postaction={decorate,decoration={markings,
-mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
-% The Tree
-\node(0)[hollow node,label=above:{$Demon$}]{}
-
-child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$12, 1$}]{}
-edge from parent node[above]{A}
-}
-child[grow=225]{node(3)[solid node]{}
-child[grow=240]{node[square node,label=below:{$10,2$}]{}edge from parent node[left]{U} }
-child[grow=300]{node[square node,label=below:{$6,0$}]{} edge from parent node[right]{D}}
-edge from parent node[left, xshift = -3]{B}}
-child[grow=315]{node(4)[solid node]{}
-child[grow=240]{node[square node,label=below:{$0,0$}]{}edge from parent node[left]{U} }
-child[grow=300]{node[square node,label=below:{$8,1$}]{} edge from parent node[right]{D}}
-edge from parent node[right,xshift = 3]{C}
-}
-;
-% information set
-\draw[dashed](3) to (4);
-% specify mover at 2nd information set
-\node at ($(3)!.5!(4)$) [above] {$Chooser$};
-\end{tikzpicture}
-```
-
-If Demon predicts that Chooser will play $D$, they are indifferent between $A$ and $C$; in each case they get 1. So Demon's dispositions have to be specified in this case. I'll stipulate that Demon has a 0.75 chance of playing $A$, and an 0.25 chance of playing $C$ if that happens.
-
-I'll come back to this example at some length in chapter \@ref(decisive); for now I'll skip to the punchline. If premises 1 to 4 of the argument are correct, then a choice of $U$ or $D$ is rational in \@ref(tab:abc-main-predictive) iff the matching choice is rational in \@ref(tab:???)
-
-```{r,abc-main-predictive, cache=TRUE}
-generic_abc_predictive <- tribble(
-	   ~"", ~PU, ~PD,
-	   "U", "10", "0",
-	   "D", "6", "8"
-	)
-gameformat(generic_abc_predictive, "The predictive-short version of the game in figure \\@ref(fig:abc-game-main-example).")
-```
-
-```{r,abc-main-reduced, cache=TRUE}
-generic_abc_reduced <- tribble(
-	   ~"", ~PU, ~PD,
-	   "U", "10", "9",
-	   "D", "6", "11"
-	)
-gameformat(generic_abc_reduced, "The predictive-short version of the game in figure \\@ref(fig:abc-game-main-example).")
-```
-
-
-
-**NOT COMPLETE**
-
-- Short game as 2\*2 strategic form
-- Early game as 2\*3 strategic form
-- Note that a game includes a specification of probability of Demon action in case of ties
-
-Big argument
-
-- Same moves are rational in Long Game as in Short Game (by backward induction)
-- Same moves are rational in Long Game as in Early Game (by intuition that these are just the same game)
-- So same moves are rational in Short Game as Early Game
-- This turns out to rule out approximately all theories of decision currently on the market.
-
 # Why So Defensive? {#defensive}
 
 I'm arguing for causal ratificationism. And much of the argument will come in the next three chapters, when I argue in turn against three of the component parts of of proceduralism. But in this chapter I want to first address an argument that proceduralism must be right, because only procedural theories can deliver what decision theory promises: a rule for making decisions. And the main argument of this chapter is going to be that decision theory cannot, and should not, be in the business of providing such a rule. Such a rule would have to be sensitive to resource constraints, and this kind of sensitivity isn't compatible with doing the kind of theorising that decision theorists do.
@@ -1383,16 +1083,422 @@ At the heart of causal ratificationism is the claim that in many decision proble
 
 This chapter argues that the right decision theory, whatever it is, is indecisive. Or, to be a little more precise, it will be an argument that the right theory, whatever it is, is _weakly indecisive_. As I'll define the terms, causal ratificationism is _strongly indecisive_, and the argument of this chapter won't entail that the right theory should be strongly indecisive. In fact, in the whole book I'm not going to offer any kind of proof that the right theory is strongly indecisive. Instead, I'll argue for a number of constraints, including weak indecisiveness, and argue that causal ratificationism is the best way to satisfy those constraints. The most distinctive of these constraints is weak indecisiveness, and the point of this chapter is to motivate that constraint.
 
-The last two paragraphs used a lot of terminology, and section \@ref(decisive-terms) clarifies and defines the key terms. Then in sections \@ref(decisive-games)–\@ref(decisive-examples), I'll argue that the right theory, whatever it is, is weakly indecisive. In section \@ref(decisive-theories) I'll show how this causes problems for most existing decision theories in philosophy, and compare it to existing objections to some of those theories. Finally in section \@ref(decisive-further), I'll discuss how these considerations 
+The last two paragraphs used a lot of terminology, and section \@ref(decisive-terms) clarifies and defines the key terms. Then in sections \@ref(decisive-games)–\@ref(decisive-examples), I'll argue that the right theory, whatever it is, is weakly indecisive. In section \@ref(decisive-theories) I'll show how this causes problems for most existing decision theories in philosophy, and compare it to existing objections to some of those theories. Finally in section \@ref(decisive-further), I'll discuss how these considerations relate to the defence of the view I really believe: that the right decision theory is strongly indecisive.
+
+## What Is Decisiveness {#decisiveness-terms}
+
+I will say a decision theory is **decisive** iff for any decision problem, it says either:
+
+1. There is a uniquely best choice, and rationality requires choosing it.; or
+2. There is a non-singleton set of choices each of which is tied for being best, and each of which can be permissibly chosen.
+
+A decision theory is **decisive over binary choices** iff it satisfies this condition for all decision problems where there are just two choices. Most decision theories in the literature are decisive, and of those that are not, most of them are at least decisive over binary choices. I'm going to argue that the correct decision theory, whatever it is, is indecisive. It is not, I'll argue, even decisive over binary choices.
+
+That definition, unfortunately, relies on two more terms that are not easy to define: _decision problem_ and _tie_. I'll deal with these in reverse order.
+
+For decisiveness to be anything other than a trivial truth, it can't just be that options are tied if each is rationally permissible. If that is what it meant for options to be tied, a decisive theory would just be one that either says one option is mandatory or many options are permissible. To make decisiveness a substantive claim, a different account of what it is for options to be tied is needed. I'll borrow a technique from Ruth @Chang2002 to provide such an account Some options are **tied** iff either is permissible, but this permissibility is sensitive to sweetening. That is, if options $X$ and $Y$ are tied, then for any positive $\varepsilon$, the agent prefers $X + \varepsilon$ to $Y$. If both $X$ and $Y$ are permissible, and this dual permissibility persists if either is 'sweetened', i.e., replaced by an option that is improved by $varepsilon$, then they aren't tied. My thesis, the thesis that the right theory is indecisive, is that the right decision theory says that sometimes there are multiple permissible options, and each of them would still be permissible if one of them was sweetened.
+
+I'm going to provide two notions of a decision problem, one concrete and one abstract. These will correspond to the two notions of decisiveness, weak and strong, that I've already mentioned.
+
+First, the abstract sense. It suffices to specify an abstract decision problem to describe the following four values. (Note that this is stipulative; I'm hereby defining what I mean by _abstract decision problem_.)
+
+- What choices the chooser has;
+- What possible states of the world there are (where it is understood that the choices of the chooser make no causal impact on which state is actual);
+- What the probability is of being in any state conditional on making each choice; and
+- What return the chooser gets for each choice-state pair.
+
+Most recent papers on decision theory do not precisely specify what they count as a decision problem, but they seem to implicitly use an account like this. It is very common in philosophical work on decision theory to see a vignette that settles nothing beyond these four things, and then the writer assumes that this or that decision theory should have something to say about the problem. (Commonly they will also make firm pronouncements about the intuitively right answer to this problem, and wield this as evidence that said decision theory is false.) So while this is stipulative, I don't think it's particularly distinctive; most theorists think of decision problems as something like this.
+
+But look how much it leaves out! It says nothing about what time of day it is, what the weather is, how happy the chooser is feeling (unless this impacts the _returns_ in the relevant sense), or many other things. Maybe those matter to decision theory. Maybe the right decision theory is CDT in the seminar room, and EDT in the pub, plus I guess a classification of possible situations into being more pub-like or seminar-room-like. Then a decision problem needs a fifth clause, which specifies whether the chooser is in a pub or a seminar room. At the very least, I think we should have a language for discussing decision theory that lets CDT-in-the-seminar-room/EDT-in-the-pub be a statable theory.
+
+To that end, say a concrete decision problem is a centered world that has a chooser at its center. The centered world will determine an abstract decision problem. The function from concrete decision problems to abstract decision problems is not trivial. What, for instance, does it mean to say that these are, and these are not, the choices available to a concrete chooser? But I assume there is some function. There is no function in the reverse direction; every abstract decision problem corresponds to many, many concrete decision problems.
+
+A decision theory is strongly decisive iff it is decisive over abstract decision problems. That is, it is strongly decisive iff for any abstract decision problem, it says that either there is a unique rational choice in the problem, or that some options are tied. A decision theory is weakly decisive iff it is decisive over concrete decision problems. That is, it is strongly decisive iff for any concrete decision problem, it says that either there is a unique rational choice in the problem, or that some options are tied. A decision theory is weakly indecisive iff it is not strongly decisive, and strongly indecisive iff it is not weakly indecisive.
+
+Any strongly indecisive theory is weakly indecisive, but the converse is false. The CDT-in-the-seminar-room/EDT-in-the-pub theory is weakly indecisive. If it is presented Newcomb's Problem, it does not issue a verdict. It says both options are rationally consistent with the abstract structure of the problem. So it is not strongly decisive, which is to say it is weakly indecisive. But it is weakly decisive. In any concrete instance of Newcomb's Problem, the chooser is either in the seminar room (or a seminar-room-like space) or the pub (or a pub-like-space), and so there is only one rational choice. So it is not strongly indecisive.
+
+The example I've used so far of a weakly but not strongly indecisive theory is not, I suspect, one that will appeal to many readers. There are, however much more interesting weakly decisive but not strongly indecisive theories. They will have to wait; for the next few sections, the focus will be on strongly decisive theories, and the development of an argument against them.
+
+## Six Decision Problems {#decisive-games}
+
+The core of this chapter, and indeed the core of this book, is an argument that whichever moves are acceptable in one of the two problems below are also acceptable in the other, for any real values of $x_1, x_2, x_3, x_4, e_1$, and any value of $p \in (0, 1)$. (The names are because they are going to be the first and sixth members of a sequence of problems that I'll present shortly.)
+
+```{r,abc-v1, cache=TRUE}
+generic_abc_v1 <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "$x_1$", "$x_2$",
+	   "D", "$x_3$", "$x_4$"
+	)
+gameformat(generic_abc_v1, "Problem 1.")
+```
+
+```{r,abc-v6, cache=TRUE}
+generic_abc_v6 <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "$px_1 + (1-p)e_1$", "$x_2$",
+	   "D", "$px_3 + (1-p)e_1$", "$x_4$"
+	)
+gameformat(generic_abc_v6, "Problem 6.")
+```
+
+Once I've argued that these problems should be treated the same way, I'll then argue that no strongly decisive theory does treat them the same way, so all strongly decisive theories are false. But what are these problems? What do these tables mean?
+
+In each case, Chooser has two options: $U$ for Up, and $D$ for Down. There is a demon, called Demon, who is arbitrarily good at predicting Chooser's choices, but who is not causally influenced by what Chooser does.^[For simplicity, I'm going to assume that the probability that Demon predicts correctly is 1. If you don't want to allow that this probability can be 1 without having a causal connection, it won't make a huge difference to make it $1 - \varepsilon$. It's just important to note in Problems 4-6 that Demon acts as if the probability is 1. Even if there is some chance of Demon being wrong, Demon acts as if this isn't possible. This is not a distinctive assumption; in most equilibrium concepts in game theory, an equilibrium involves the players believing that their predictions of the other players are correct with probability 1.] Demon will select either $PU$, meaning they predict Chooser will play $U$, or $PD$, meaning they predict Chooser will play $D$. The two two-way choices produce four possible outcomes, and the payouts to Chooser in each of those four possibilities are shown in the table. So these are just the kinds of problems that are familiar in the modern decision theory literature. What's not familiar is the claim that Problem 1 and Problem 6 should be treated the same way. The argument for that goes via four more problems, and this section introduces them.
+
+**Problem 2** is just like Problem 1, except it provides more backstory about why Demon is so likely to correctly predict Chooser correctly. It is a game with two players: Chooser and Demon. Chooser's payouts are just as before, Demon gets zero payout for an incorrect prediction, and a positive payout for predicting correctly. And Demon is a very good predictor and an expected utility maximiser, so they will almost certainly make correct predictions. But note that Demon's payouts are not the same in each case of a correct prediction. Because Demon is playing a game not making a prediction, I've relabeled their moves. They are called $B$ and $C$; option $A$ will come in at the next step. Here's the game table for Problem 2.
+
+```{r,abc-v2, cache=TRUE}
+generic_abc_v2 <- tribble(
+	   ~"", ~B, ~C,
+	   "U", "$x_1, 1$", "$x_2, 0$",
+	   "D", "$x_3, 0$", "$x_4, 2$"
+	)
+gameformat(generic_abc_v2, "Problem 2 (table version).")
+```
+
+In standard presentations of problems like Problem 1, it is assumed that Demon moves first, but the move isn't revealed until after Chooser moves. So while these problems are evidentially like simultaneous move games, there is a sense in which it is more accurate to represent them as game trees. So let's include the game tree version of Problem 2 as well.
+
+```{tikz, abc-v2-tree, fig.cap = "Problem 2 (tree version).", fig.ext = 'png', cache=TRUE, fig.width = 4, fig.height = 4, fig.align="center"}
+\usetikzlibrary{calc}
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzset{
+% Two node styles for game trees: solid and hollow
+solid node/.style={circle,draw,inner sep=1.5,fill=black},
+hollow node/.style={circle,draw,inner sep=1.5},
+square node/.style={rectangle,draw, inner sep = 1, fill = black}
+}
+% Specify spacing for each level of the tree
+\tikzstyle{level 1}=[level distance=20mm]
+\tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+% The Tree
+\node(0)[hollow node,label=above:{$Demon$}]{}
+
+%child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$e_1,e_2$}]{}
+%edge from parent node[above]{A}
+%}
+child[grow=225]{node(3)[solid node]{}
+child[grow=240]{node[square node,label=below:{$x_1,1$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$x_3,0$}]{} edge from parent node[right]{D}}
+edge from parent node[left, xshift = -3]{B}}
+child[grow=315]{node(4)[solid node]{}
+child[grow=240]{node[square node,label=below:{$x_2,0$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$x_4,2$}]{} edge from parent node[right]{D}}
+edge from parent node[right,xshift = 3]{C}
+}
+;
+% information set
+\draw[dashed](3) to (4);
+% specify mover at 2nd information set
+\node at ($(3)!.5!(4)$) [above] {$Chooser$};
+\end{tikzpicture}
+```
+
+I don't know of any argument for treating the table version and tree version of Problem 2 differently, so I will follow the standard assumption that these are two representations of essentially the same problem. 
+
+**Problem 3** is just like Problem 2, except Demon is offered an exit strategy. When Demon moves, they can now choose $A$, $B$ or $C$. If they choose $B$ or $C$, the game continues as before. Chooser is told that Demon chose $B$ or $C$, but not which one they chose, and knows all the payouts, and has to choose $U$ or $D$. If Demon chooses $A$, however, the game ends, and Chooser gets payout $e_1$, while Demon gets payout 1. Here is the tree for that game.
+
+```{tikz, abc-v3, fig.cap = "Problem 3.", fig.ext = 'png', cache=TRUE, fig.width = 5, fig.height = 5, fig.align="center"}
+\usetikzlibrary{calc}
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzset{
+% Two node styles for game trees: solid and hollow
+solid node/.style={circle,draw,inner sep=1.5,fill=black},
+hollow node/.style={circle,draw,inner sep=1.5},
+square node/.style={rectangle,draw, inner sep = 1, fill = black}
+}
+% Specify spacing for each level of the tree
+\tikzstyle{level 1}=[level distance=20mm]
+\tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+% The Tree
+\node(0)[hollow node,label=above:{$Demon$}]{}
+
+child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$e_1,1$}]{}
+edge from parent node[above]{A}
+}
+child[grow=225]{node(3)[solid node]{}
+child[grow=240]{node[square node,label=below:{$x_1,1$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$x_3,0$}]{} edge from parent node[right]{D}}
+edge from parent node[left, xshift = -3]{B}}
+child[grow=315]{node(4)[solid node]{}
+child[grow=240]{node[square node,label=below:{$x_2,0$}]{}edge from parent node[left]{U} }
+child[grow=300]{node[square node,label=below:{$x_4,2$}]{} edge from parent node[right]{D}}
+edge from parent node[right,xshift = 3]{C}
+}
+;
+% information set
+\draw[dashed](3) to (4);
+% specify mover at 2nd information set
+\node at ($(3)!.5!(4)$) [above] {$Chooser$};
+\end{tikzpicture}
+```
+
+That would be enough to specify a game, but decision theorists typically want something more. If Demon predicts Chooser will play $D$, then Demon will clearly play $C$. But what will happen if Demon predicts Chooser will play $U$? In that case, Chooser will get payout 1 from either $A$ or $B$, and all we've been told is that Demon maximises expected utility. So let's add one specification to the game. If Demon predicts that Chooser will play $U$, they will play $B$ with probability $p$, and $A$ with probability $1-p$.
+
+Note that this suggests Demon might not be ideally rational. From Demon's perspective, $A$ weakly dominates $B$. But they have some probability of choosing $B$. If one thinks that ideal rationality requires eschewing weakly dominated options, this means Demon is not ideally rational. It was, however, never part of the story that Demon is ideal; just that they are a utility maximiser. And they can be, even if they choose $B$.
+
+**Problem 4** is just like Problem 3, except Chooser must select before being told whether Demon has adopted the exit strategy of $A$. Imagine, to make it vivid, that the game-master is impatiently waiting for Demon's selection, but Demon is stuck in their room, taking their time. Chooser has to run, so the game-master says that Chooser should write their move in an envelope. If Demon chooses $A$, the envelope will be burned, since it doesn't matter . If Demon chooses $B$ or $C$, the envelope will be opened and what's written in it will be Chooser's move. Because Chooser doesn't know which move Demon has made, the tree looks a little different.
+
+```{tikz, abc-v4, fig.cap = "Problem 4 (tree version).", fig.ext = 'png', cache=TRUE, fig.width = 6, fig.height = 6, fig.align="center"}
+\usetikzlibrary{calc}
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzset{
+% Two node styles for game trees: solid and hollow
+solid node/.style={circle,draw,inner sep=1.5,fill=black},
+hollow node/.style={circle,draw,inner sep=1.5},
+square node/.style={rectangle,draw, inner sep = 1, fill = black}
+}
+% Specify spacing for each level of the tree
+\tikzstyle{level 1}=[level distance=15mm,sibling distance=25mm]
+\tikzstyle{level 2}=[level distance=10mm,sibling distance=13mm]
+\tikzstyle{level 3}=[level distance=15mm,sibling distance=15mm]
+\tikzstyle arrowstyle=[scale=1]
+\tikzstyle directed=[postaction={decorate,decoration={markings,
+mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
+% The Tree
+\node(0)[hollow node,label=above:{$Demon$}]{}
+
+child{node(2)[solid node]{}
+child{node[square node,label=below:{$e_1,1$}]{}edge from parent node[left]{U} }
+child{node[square node,label=below:{$e_1,1$}]{} edge from parent node[right]{D}}
+edge from parent node[left, xshift = -4]{A}}
+child{node(3)[solid node]{}
+child{node[square node,label=below:{$x_1,1$}]{}edge from parent node[left]{U} }
+child{node[square node,label=below:{$x_3,0$}]{} edge from parent node[right]{D}}
+edge from parent node[left, xshift = 0]{B}}
+child{node(4)[solid node]{}
+child{node[square node,label=below:{$x_2,0$}]{}edge from parent node[left]{U} }
+child{node[square node,label=below:{$x_4,2$}]{} edge from parent node[right]{D}}
+edge from parent node[right,xshift = 4]{C}
+}
+;
+% information set
+\draw[dashed](2) to (4);
+% specify mover at 2nd information set
+\node at ($(3)!.3!(4)$) [above] {$Chooser$};
+\end{tikzpicture}
+```
+
+Since Demon has no evidence of Chooser's move when Demon makes their one move, and Chooser has no evidence of Demon's move when Chooser makes their move, this is effectively a one-shot simultaneous move game. So we can represent it just as well with a table as a tree.
+
+```{r,abc-v4-tree, cache=TRUE}
+generic_abc_v4 <- tribble(
+	   ~"", ~A, ~B, ~C,
+	   "U", "$e_1, 1$", "$x_1, 1$", "$x_2, 0$",
+	   "D", "$e_1, 1$", "$x_3, 0$", "$x_4, 2$"
+	)
+gameformat(generic_abc_v4, "Problem 4 (table version).")
+```
+
+Since Demon is an external force that produces states of the world which Chooser has no causal influence over, we can just as well treat Demon's moves as states. That will get us **Problem 5**. In that problem, the three moves from Problem 4 become three states. And Chooser knows that $Pr(C | D) = 1, Pr(B | U) = p, Pr(A | U) = 1-p$, and all the other conditional probabilities of states given choices are set to zero. 
+
+```{r,abc-v5, cache=TRUE}
+generic_abc_v5 <- tribble(
+	   ~"", ~A, ~B, ~C,
+	   "U", "$e_1$", "$x_1$", "$x_2$",
+	   "D", "$e_1$", "$x_3$", "$x_4$"
+	)
+gameformat(generic_abc_v4, "Problem 5.")
+```
+
+In this problem, the two states $A$ and $B$ are separated out. But these are just two possible ways that the state $PU$ could be realised. We could collapse these states into one, and replace the listed payouts with Chooser's expected payouts, given that $PU$ is realised and they make a particular choice. That will give us **Problem 6**, with the following familiar looking table.
+
+```{r,abc-v6, cache=TRUE}
+```
+
+So those are our six problems. In the next section, I'll argue that as theorists, we should think of all these problems the same way.
 
 # Against Rational Possibility {#dilemma}
 
+## Four Puzzle Cases
+
+
+### Outguess the Demon
+
+0, 2, 1, 0
+
+Alternative version
+
+1, 3, 2, 0
+
+- Some intuition for U, I don't really share
+- Orthodox game theory doesn't either; only equilibrium is 50/50
+- But if you can't mix, it's  dilemma
+
+### Open Ended Good
+
+The $[0, 1)$ example.
+
+
+### Heaven
+
+The heaven example!
+
+### The Salesman
+
+The last example is the Salesman problem from section \@ref(deccertainty). The aim is to find as short a path as possible through these cities, assuming that it is possible to travel between any two cities in a straight line.
+
+```{r salesman-points, fig.cap="The 257 cities that must be visited in the Salesman problem."}
+```
+
+ Just about the least thoughtful path possible orders the cities alphabetically. The resulting tour looks like this.
+
+```{r drawmap-definition, cache=FALSE}
+drawmap <- function(tour_line){
+  paths <- tribble(
+    ~step, ~property, ~rowid, ~long, ~lat
+  )
+  
+  for (i in 1:nrow(our_gps)){
+    x <- tour_line[i]
+    first_city <- our_gps %>% slice(x)
+    next_city <- our_gps %>% slice(x %% 31)
+    paths <- paths %>%
+      add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+    #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+  }
+  
+  x <- tour_line[1]
+  
+  paths <- paths %>% add_row(step = 24, property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+  
+  
+  state_map_data <- map_data("state") %>%
+    #  filter(subregion != "north" | is.na(subregion)) %>%
+    filter(region %in% long_states) 
+  
+  tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+    geom_polygon(fill = "white", colour = "grey90") + 
+    geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+    geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
+    coord_quickmap() +
+    labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+    theme(axis.title.x = element_text())
+  #tour_length(tour_line)
+  tour_map
+  
+}
+```
+
+```{r alpha-tour, cache=TRUE, fig.cap="A solution to the salesman problem that orders the cities alphabetically."}
+tour_line <- solve_TSP(as.TSP(city_matrix), method="identity")
+drawmap(tour_line)
+```
+
+It's only slightly more thoughtful to order the cities from west-to-east, but it does reduce the length by nearly two-thirds.
+
+```{r longit-tour, cache=TRUE, fig.cap="A solution to the salesman problem that orders the cities by longtitude."}
+tour_line <- TOUR(arrange(our_gps, long)$rowid, tsp = as.TSP(city_matrix))
+drawmap(tour_line)
+```
+
+Let's try something slightly more thoughtful. Start in an arbitrary city, I'll use New York, and then at each step go to the nearest city that isn't yet on the path. The result looks like this.
+
+```{r newyork-tour, cache=TRUE, fig.cap="A solution to the salesman problem that chooses the nearest remaining city."}
+bad_path <- c(153)
+
+for (i in 1:256){
+  latest_city <- bad_path[i]
+
+    lengths <- our_cities %>% 
+    select(all_of(latest_city)) %>% 
+    rowid_to_column() %>% 
+    filter(!rowid %in% bad_path)
+    
+    lengths <- lengths %>% 
+    arrange(across(names(lengths)[2]))
+  
+bad_path <- c(bad_path, lengths$rowid[1])
+}
+tour_line <- TOUR(bad_path, tsp = as.TSP(city_matrix))
+drawmap(tour_line)
+```
+
+It's better, but it still looks not so great in a few respects. For one thing, it crosses over itself too many times. For another, those long lines seem like mistakes. And they are somewhat inevitable consequences of this approach. Always choosing the nearest city will mean sometimes the path leaves a region without clearing it, and has to come back. So in this map there is a single step from Wyoming to New Jersey, as the map goes back to clean up the cities near the start that were missed.
+
+Here's a much better idea, in two stages. For both stages I've used the implementation in the TSP package by Michael Hashler and Kurt Hornik, and what follows is from their description [-@HashlerHornik2007].
+
+The first stage uses the _farthest-insertion_ method. The idea is to build the path in stages. At each stage, the algorithm identifies the city that is farthest from the existing path. It then inserts that city into the path at the spot where it will make the least addition to the path length. These kind of insertion algorithms are common. What makes the farthest-insertion algorithm work well is that it forces the path to start with something like a loop around the edges of the map, and this is a generally good approach.
+
+The second stage uses the _two-optimization_ method. This takes a completed path as input, and tries to improve it by seeing if the path would be shortened by flipping adjacent points. It does this repeatedly until it finds a local minimum. One way to turn this into an algorithm is to start with a random path. But what I did here was start with the path that a particular run of the farthest-insertion method generated. The farthest-insertion algorithm needs a start city, or it will choose one randomly. So for reproducibility purposes, I used New York again. And I set the _seed_ for the random number generator in R to 1. And the result was this elegant path.
+
+```{r two-stage-tour, cache=TRUE, fig.cap="A solution to the salesman problem that uses two algorithms."}
+set.seed(1)
+tour_line <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start=153)
+tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
+drawmap(tour_line)
+```
+
+That map has a lot of virtues. There aren't any obvious missteps on the map, where it's easy to see just by looking that it could be shortened. The theory behind it makes sense. It was generated very quickly. It took my computer more time to draw the map than to find the path. And it is very short compared to the other maps we've seen.
+
+But it isn't optimal. I'm not sure what is optimal, but here's the shortest one I found after trying a few methods.
+
+```{r two-stage-optimal, cache=TRUE, fig.cap="The best solution I found to the salesman problem."}
+set.seed(33)
+tour_line <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start=68)
+tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
+drawmap(tour_line)
+```
+
+This used the same idea, but with a bit more brute force. The algorithm was the same two-step approach as the last map. But I had the computer cycle through all the different possible starting cities, and varied the seed for the randomisation. (The algorithm isn't quite deterministic, since it uses random numbers to break ties when it is asked to find the farthest city, or the shortest insertion.) And setting the start city to Dubuque, Iowa, and the seed to 33, generated that map.
+
+### Characteristics of the Puzzles
+
+- Multiple standards
+- Stake Sensitivity
+- Might be no available ideal play
+- Especially if there are cognitive limits
+
+### Multiple Standards
+
+- Tempting to have a binary split into ideal/non-ideal
+- The big point of this chapter is that this is a bad way to do things
+- Talk about Salesman at length, including the maps
+- Key point: Not just quantitative differences, but qualitative differences
+
+### Stake Sensitivity
+
+- Whether something is ideal is not stake-sensitive (unless something weird happens - e.g., me on evidence)
+- But whether something is _fine_ is stake-sensitive
+- Example from open ended good
+- Example from Salesman
+
+### No Ideals
+
+- Foot on two kinds of dilemmas
+- The best option might be _fine_.
+- Weirich 1985 AJP says that it's absurd to have dilemmas, then says that ideal decision is impossible in these cases! That's what I mean by a dilemma :)
+
+### Cognitive Limits
+
+- If there are limits, salesman could be a dilemma
+- I think, though I'm not relying on it, same is true for assuming can't randomise
+- Why say that someone can't?
+- Stipulation: But then could stipulate that they can't solve salesman
+- Realism (quote Lewis): But we can't solve salesman. In fact, we're better at randomising than salesman
+- Punishment: Then we've given up ideals. Compare my NBA example
+- No good argument really
+- But it doesn't matter, because in Outguess, if Demon does 50/50 if Chooser does 50/50, still a dilemma.
+
 ## The Possibility Assumption in Philosophical Arguments {#badargument}
 
-The bad argument against utility theory - pick a number in [0, 1), every positive is ruled out so 0 huh?!
+A bad argument form, and why it matters
 
 
-## A Recipe for Counterexamples {#recipe}
+
+### An Argument against EDT {#badargument}
+
+- Open Ended Good
+- Of course, this is a bad argument
+
+### A Recipe for Counterexamples {#recipe}
 
 Once you see the idea behind the argument in section \@ref(badargument), it's easy to see how to construct 'counterexamples' to any decision theory that allows for dilemmas. For instance, here is a general purpose recipe for constructing counterexamples to most forms of Causal Decision Theory, causal defensivism included.
 
@@ -1416,7 +1522,11 @@ Step Six
 
 Hopefully the discussion in section @\ref(badargument) will have made it clear that we can run this recipe against just about any theory, so it overgenerates. And not just that, we can identify the misstep - it's step five. 
 
-## Betting Against the Demon {#againstdemon}
+### An Instance of the Recipe
+
+- One of the Frustrator examples
+
+### Betting Against the Demon {#againstdemon}
 
 There is a slight variation on the recipe in an interesting example due to Arif @Ahmed2014 [sect 7.4.3]. Here the plan at step 6 is not to argue that CDT gets the wrong result, in fact Ahmed endorses the conclusion he thinks CDT ends up with, but to argue that CDT undermines its own principles. I'm going to lean a bit on the discussion of the example in the review of Ahmed's book by James @Joyce2016, though I end up drawing a slightly different conclusion to Joyce about the argument. And I'm going to start with a simplified version of the example, where I think it's clearer where things go wrong, and build up to the version Ahmed gives. (I've also relabeled the moves, because I find the labels here more intuitive.)
 
@@ -1518,29 +1628,27 @@ If Chooser can randomise, they should randomise. They should play the one and on
 
 If Chooser can't randomise, then it's a dilemma. What we say here should be similar to what EDT, or any other decision theory, says about the example in section \@ref(recipe). But what is that? Let's come back to that question in a bit - first I'll address some objections to the very idea that there could be dilemmas in decision theory.
 
-## Mixtures and Dilemmas {#mixedavoidance}
+## Why Allow Dilemmas
 
-Various theorems exist proving the existence of equilibria in games. (See @BonannoText
+### Arguments Against Dilemmas
 
-## Infinite Dilemmas {#infinitedilemma}
+- Decision theory assigns values
+	- This doesn't rule out all dilemmas
+	- And we reject the assumption
 
-Any argument against dilemmas overgenerates, because of infinite cases.
+- Decision theory should be guiding
+	- Reject the assumption
 
-Ahmed 2012 disagrees, for reasons that are completely unclear to me: (This is from "Push the Button", Philosophy of Science 2012)
+- Shouldn' t treat every option the same
+	- This is  better argument, but we can reject it. Some are fine
 
-> It is the catastrophic conclusion that whatever you do in ABZ is irrational: whichever option you take, some other option is (and always was) rationally preferable to it. It may be fair to say this about an agent whose beliefs or preferences are insane or incoherent and also about one whose options are infinite. But we are not facing either case here. Your beliefs and preferences in ABZ are, despite their science-fictional character, plainly sane and coherent. And it is equally clear that ABZ does not offer an infinitude of options but only three.
-
-Really, why is the infinitude relevant here? Any argument that it's 'catastrophic' should apply in all cases or in none, and it is bound to overgenerate
-
-We have reasons for treating some everyday decisions as infinite. For instance, I'm deciding how much force and what angle to throw a paper when I aim at the trash. This doesn't feel like choosing from a discrete set of options - it's a complicated feedback process that is best treated as a choice of a spot in a multi-dimension continuous space
-
-## What Dilemmas are Like
+### What Dilemmas are Like
 
 Be like a smart rationally constrained person
 
 Use heuristics that work much of the time, on average
 
-This might end up looking a lot like EDT
+**This might end up looking a lot like EDT**
 Maybe this is why Newcomb's Problem is so hard
 
 # Against Coherence Norms {#coherence}
@@ -2146,6 +2254,10 @@ edge from parent node[right,xshift = 3]{C}
 \end{tikzpicture}
 ```
 
+**GOTTA CLARIFY WHETHER I'M REALLY ALREADY COMMITTED TO THIS**
+
+**ALSO RAISE WORRY ABOUT WHETHER WEAK DOMINANCE LEADS TO PARADOX IN VERSIONS OF ABC WHERE DEMON HAS PR 1 IN A**
+
 Given what I've said already about the ABC game, I'm committed to the following two claims. First, in this game the only rational choice is $U$. That's the only rational choice at the only information set where Chooser might move, and that determines the rational strategy. Second, a choice is rational in this game iff it is rational in the following simultaneous move game.
 
 ```{r,abc-weak-dominance-strategic, cache=TRUE}
@@ -2173,7 +2285,13 @@ The definition of weak dominance involves quantifying over possible ways the wor
 
 The importance of this boundary is a key difference between the two clauses in causal ratificationism. The definition of expected utility maximization also makes an appeal to the boundary between possible and impossible states. But whether one treats a state as impossible, or as possible but with probability zero, doesn't affect the expected utility of an action. The difference between treating a state as impossible, and as possible but with probability zero, does matter to determining which states are weakly dominant.
 
-It's easier to think about this boundary with some concrete examples. So let's get away from the simple games that have been the focus of this book, and imagine that Chooser is playing chess with Demon. In this game, Chooser has the black pieces. The game starts in a fairly traditional manner: 1. e4 e5, 2. Nf3. Now it is Chooser's turn to move, and they are thinking about Qh4. This is obviously a bad move, but I want us to think for a minute about why it is a bad move.
+It's easier to think about this boundary with some concrete examples. So let's get away from the simple games that have been the focus of this book, and imagine that Chooser is playing chess with Demon. In this game, Chooser has the black pieces. The game starts in a fairly traditional manner: 1. e4 e5, 2. Nf3. 
+
+```{r chessboard, echo=FALSE, fig.align='center', fig.height = 5, fig.width = 5}
+include_graphics("chessboard.png")
+```
+
+Now it is Chooser's turn to move, and they are thinking about Qh4. This is obviously a bad move, but I want us to think for a minute about why it is a bad move.
 
 The causal ratificationist says that when evaluating a move, one thing to check is whether it is weakly dominated. To do that, one must know what the possible states are, i.e., what the possible moves for Demon are. Now pretty clearly Qh4 is not going to be utility maximizing, so the answer to this question won't affect what the causal ratificationist ultimately says about whether one should play Qh4. But it is important to figure out just what the theory says, so it is important to figure out just what these 'possible moves' are.
 
