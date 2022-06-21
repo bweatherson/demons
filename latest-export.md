@@ -513,7 +513,7 @@ Let's start with an interesting variant of Newcomb's Puzzle, one which is used t
 
 We can model this problem using the following decision tree.
 
-```{tikz, transparent-Newcomb, fig.cap = "Newcomb's Problem with both boxes transparent", fit.ext = 'png', cache=TRUE}
+```{tikz, transparent-Newcomb, fig.cap = "Newcomb's Problem with both boxes transparent", fit.ext = 'png', fig.width = 4, fig.height = 4, fig.align = 'center', cache=TRUE}
 \begin{tikzpicture}[scale=1.5,font=\footnotesize]
 \tikzset{
 % Two node styles for game trees: solid and hollow
@@ -550,7 +550,7 @@ The game starts at the hollow node, which in this case is at the top of the tree
 
 But here we only listed the payouts to Chooser. To make something really into a game, there should be payouts for both players. What are Demon's payouts? Well, what makes something the payout function for a player is that it takes higher values the more they get what they want. Since Demon is trying to predict player, they want situations where they predict them well. So we can simply say that their payout is 1 for a correct prediction, and 0 for an incorrect prediction. That suggests the tree for Arntzenius's 'transparent box' version of Newcomb's Problem should look like this.
 
-```{tikz, transparent-Newcomb-two-payouts, fig.cap = "Newcomb's Problem with both boxes transparent, and Demon's payouts listed", fit.ext = 'png', cache=TRUE}
+```{tikz, transparent-Newcomb-two-payouts, fig.cap = "Newcomb's Problem with both boxes transparent, and Demon's payouts listed", fit.ext = 'png', fig.width = 4, fig.height = 4, fig.align = 'center', cache=TRUE}
 \begin{tikzpicture}[scale=1.5,font=\footnotesize]
 \tikzset{
 % Two node styles for game trees: solid and hollow
@@ -600,7 +600,7 @@ gameformat(general_newcomb, "Newcomb's Problem as a Game")
 
 Or, at least, that's the so-called strategic form of the game. We can also represent it as a game that takes place over time, like this.
 
-```{tikz, hidden-Newcomb-two-payouts, fig.cap = "Newcomb's Problem with first box hidden, and Demon's payouts listed", fit.ext = 'png', cache=TRUE}
+```{tikz, hidden-Newcomb-two-payouts, fig.cap = "Newcomb's Problem with first box hidden, and Demon's payouts listed", fit.ext = 'png', fig.width = 4, fig.height = 4, fig.align = 'center', cache=TRUE}
 \usetikzlibrary{calc} 
 \begin{tikzpicture}[scale=1.5,font=\footnotesize]
 \tikzset{
