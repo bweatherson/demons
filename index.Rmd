@@ -13,6 +13,7 @@ indent: true
 output: 
   bookdown::pdf_book:
     keep_tex: yes
+    template: float-template.tex
   bookdown::gitbook:
     md_extensions: +example_lists+fancy_lists+startnum+line_blocks+pipe_tables
     split_bib: no

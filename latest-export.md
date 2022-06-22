@@ -13,32 +13,45 @@ require(grid)
 knitr::opts_chunk$set(echo = FALSE, results = "asis")
 
 gameformat <- function(game, caption){
-  gg <- as_hux(game) %>%
-    set_width(ncol(game)/10) %>%
-	  set_markdown() %>% 
-    set_caption(caption) %>%
-    set_bold(1, everywhere) %>%
-    set_bold(everywhere, 1) %>%
-    set_align(everywhere, everywhere, "center") %>%
-    set_right_border(everywhere, 1, 0.5) %>%
-    set_bottom_border(1, everywhere, 0.5) %>%
-    set_right_border_color(everywhere, 1, "grey60") %>%
-    set_bottom_border_color(1, everywhere, "grey60") %>%
-    set_caption_pos("bottom") %>%
-    set_row_height(everywhere, 0.6) %>%
-  print_html(gg)
-  # kbl(game, 
-  #     booktabs = F, 
-  #     escape = FALSE,
-  #     align = paste0("r",strrep("c", ncol(game)-1)),
-  #     linesep = "",
-  #     caption = caption) %>%
-  #   column_spec(1, 
-  #               border_right = T,
-  #               bold = T) %>%
-  #   row_spec(0, bold = T, extra_css = "border-bottom: solid 0.5px;") %>%
-  #   cell_spec(df[1, 2], extra_css = "border_left = solid 0.5px;") %>%
-  #   kable_styling(full_width = F)  
+#   gg <- as_hux(game) %>%
+#     set_width(ncol(game)/10) %>%
+# 	  set_markdown() %>% 
+#     set_caption(caption) %>%
+#     set_bold(1, everywhere) %>%
+#     set_bold(everywhere, 1) %>%
+#     set_align(everywhere, everywhere, "center") %>%
+# #    set_right_border(everywhere, 1, 0.5) %>%
+# #    set_bottom_border(1, everywhere, 0.5) %>%
+#     set_right_border_color(everywhere, 1, "grey60") %>%
+#     set_bottom_border_color(1, everywhere, "grey60") %>%
+#     set_caption_pos("bottom") %>%
+#     set_row_height(everywhere, 0.6) %>%
+#   print_html(gg)
+  kable(game,
+     format = 'latex',
+   booktabs = T,
+   escape = FALSE,
+   align = paste0("r",strrep("c", ncol(game)-1)),
+   linesep = "",
+   caption = caption) %>%
+  column_spec(0:ncol(game), border_right = F) %>%
+  column_spec(1,
+             border_right = T,
+             bold = T) %>%
+  row_spec(0, bold = T) %>%
+  sub("\\\\toprule", "", .) %>%
+  sub("\\\\bottomrule", "", .) %>%
+  sub("\\\\midrule", "\\\\hline", .)
+
+
+# Have to add space between caption and table
+# Do a sub command to replace \centring with a \vspace maybe?
+# The forcing isn't working, and may not work for press anyway.
+# Got to make references to each of the tables.
+# Also something going weird with the chessboard; not sure what's up with that.
+# Would be nice if I could just generate it
+# It needs a fig.cap, and the other captions need periods.
+# Maybe add row_spec(0, bold = T), and get rid of the $ in row names
 }
 ```
 
@@ -177,6 +190,8 @@ tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
 #tour_length(tour_line)
 tour_map
 
+tour_map_points_only <- tour_map
+
 #str_c(our_gps$name, sep = "; ", collapse = "; ")
 ```
 
@@ -209,8 +224,11 @@ Now there are three theories on the table: Outcome Evaluation Theory, Ideal Deci
 
 We can distinguish these three theories by what they say to do in two examples introduced so far: Salesman and Basketball.
 
-          Theory          Salesman            Basketball
---------------------  ---------------------- -----------------
+
+Table: (\#tab:three-theories) How three kinds of theories handle two problems.
+
+      **Theory**          **Salesman**          **Basketball**
+--------------------  ---------------------- --------------------
  Outcome Evaluation     Shortest route         Bet on winner
      Ideal Decision     Shortest route         Pass
  Non-Ideal Decision     Study optimization     Pass
@@ -343,45 +361,46 @@ The next three sections spell out the points made in each of the last three para
 
 ### Simple Decision Problems {#simpledecision}
 
-A simple decision problem starts with a table like this.
+A simple decision problem starts with a table like \@ref(tab:simple-table).
 
 ```{r, simple-table, cache=TRUE}
 simple_table <- tribble(
-	   ~"", ~`$S_1$`, ~`$S_2$`,
-	   "$O_1$", "$v_{11}$", "$v_{12}$",
-	   "$O_2$", "$v_{21}$", "$v_{22}$"
+	   ~"", ~L, ~R,
+	   "U", "$v_{11}$", "$v_{12}$",
+	   "D", "$v_{21}$", "$v_{22}$"
 	)
-gameformat(simple_table, "A generic 2*2 decision table")
+gameformat(simple_table, "A generic two-by-two decision table.")
 ```
 
-On the rows we list the options that the chooser, who I'll mostly call Chooser from now on, has. On the columns we list the possible states of the world. And in the cells we list the value to Chooser of each of these option-state pairs. Just to make the notation easier to remember, I've written $v_{ij}$ for the value of the outcome when Chooser selects option $O_i$ and the world is in state $S_j$.
+The rows we the options that the chooser, who I'll mostly call Chooser from now on, has. The columns list the possible states of the world. And in the cells set out the value to Chooser of each of these option-state pairs. Just to make the notation easier to remember, I've written $v_{ij}$ for the value of the outcome when Chooser selects option in row $i$, and the world is in state $j$.
 
-Now there are a lot of questions you could have about that last paragraph, and I'll spend section \@ref(tables) going over five such questions at some length. But for now let's start with that basic picture. In general there are more than two possible options and more than two possible states, but let's start with this simple case for now and work up to the more complicated cases.
+Now there are a lot of questions one could have about that last paragraph, and I'll spend section \@ref(tables) going over five such questions at some length. But for now let's start with that basic picture. In general there are more than two possible options and more than two possible states, but let's start with this simple case for now and work up to the more complicated cases.
 
-In order to make a decision, Chooser typically needs one more piece of information - how likely are the states $S_1$ and $S_2$? Let's add that information in: the probability of $S_1$ is $p_1$ and the probability of $S_2$ is $y$. What do we mean by 'probability' here? Good question, and one that I'll spend a lot of time on in chapter \@ref(coherence). For now, just use its colloquial meaning.
+In order to make a decision, Chooser typically needs one more piece of information - how likely are the states $L$ and $R$? Let's add that information in: the probability of $L$ is $p_1$ and the probability of $R$ is $p_2$. What do we mean by 'probability' here? Good question, and one that I'll spend a lot of time on in chapter \@ref(coherence). For now, just use its colloquial meaning.
 
 ### Defining Basic Decision Theory {#bdtdefine}
 
-Given all these facts, Chooser can assign a value to an option $O_i$ using the following formula:
+Given all these facts, Chooser can assign a value to an option  using the following formulae:
 
-$$
-V(O_i) = p_1 v_{i1} + p_2v_{i2}
-$$
+\begin{align*}
+V(U) &= p_1 v_{11} + p_2v_{12} \\
+V(D) &= p_1 v_{21} + p_2v_{22} 
+\end{align*}
 
 And Chooser is rational iff they choose an option with maximal value.
 
-In the more general case where there are $k$ possible states, and the probability of state $S_k$ is $p_k$, the value of option 
+In the more general case where $O_i$ is an arbitrary option, there are $k$ possible states, the probability of state $S_k$ is $p_k$, and the value of the combination of option $O_i$ and state is $S_k$, the value of option $O_i$ is given by this formula.
 
 $$
 V(O_i) = \sum_{j=1}^k p_j v_{ij}
 $$
 
-And in the even more general case where there are continuum many options, we need to use integrals to work out the value of each option. But these complexities aren't going to be particularly relevant to our story, so I'll return to the special two choice two option case, and note when the extra generalities are needed.
+And in the even more general case where there are continuum many states, we need to use integrals to work out the value of each option. But these complexities aren't going to be particularly relevant to our story, so I'll return to the special two choice two option case, and note when the extra generalities are needed.
 
-The formulae above are what are usually called the _expected_ values of each option, and the decision theory I've just state is that if Chooser is rational, they maximise the expected value of their choice, given this probability distribution over the states of the world. Let's restate that not using variables, but explicitly using probabilities and values. Here $Pr$ is the probability function relevant to Chooser's decision, and $V$ is the value function. I'll use concatenation for conjunction, so $O_1S_1$ means that both $O_1$ and $S_1$ are true, i.e., that the first option is chosen and the first state is actualised.
+The formulae above are what are usually called the _expected_ values of each option, and the decision theory I've just state is that if Chooser is rational, they maximise the expected value of their choice, given this probability distribution over the states of the world. Let's restate that not using variables, but explicitly using probabilities and values. Here $Pr$ is the probability function relevant to Chooser's decision, and $V$ is the value function. I'll use concatenation for conjunction, so $UL$ means that both $U$ and $L$ are true, i.e., that the first option is chosen and the first state is actualised. And let $O$ be an option, in this case a member of \{U, D\}.
 
 $$
-V(O_i) = Pr(S_1) V(S_1 O_i) + Pr(S_2) V(S_2 O_i)
+V(O) = Pr(L) V(OL) + Pr(R) V(OR)
 $$
 
 I'll call the theory that values each option this way, and says that rational choosers maximise value, Basic Decision Theory. It could just as easily be called the Crude Savage Decision Theory. The 'Savage' there is because the formula at the heart of it is the same formula that @Savage1954 puts at the heart of his decision theory. But the 'Crude' is there because Basic Decision Theory leaves off all that Savage says about the nature of options and states. @SteeleSEP [sect 3.1] have a good summary of what Savage says here. I'm not going to go into that. Instead I'll note why something more needs to be said. As it stands, Basic Decision Theory leads to absurd outcomes.
@@ -397,7 +416,7 @@ Consider the St. Crispin's Day speech that Shakespeare has Henry V give before t
   | The fewer men, the greater share of  honor. 
   | God’s will! I pray thee, wish not one man more.
 
-It looks like Henry is suggesting something like the following decision table.
+It looks like Henry is suggesting that table \@ref(tab:agincourt) is the right model for their decision.
 
 ```{r, agincourt, cache=TRUE}
 agincourt <- tribble(
@@ -405,7 +424,7 @@ agincourt <- tribble(
 	   "Attack", "$a$", "$c$",
 	   "Wait", "$b$", "$d$"
 	)
-gameformat(agincourt, "Henry's reasoning on St. Crispin's Day")
+gameformat(agincourt, "Henry's reasoning on St. Crispin's Day.")
 ```
 
 Henry argues, not implausibly, that $a > b$ since they will get more honour, and $c > d$, since they will lose fewer men. Now it doesn't matter what the probabilities of victory and defeat are. To see this, call them $x$ and $y$ respectively, and note that the two facts Henry mentions suffice to guarantee that $ax + cy > bx + dy$, assuming just that the probabilities are non-negative. So great, Henry is right, and they should attack. And they do, and they win, and all's well that end's well.
@@ -437,7 +456,7 @@ The most famous Demonic decision problem is _Newcomb's Problem_ [@Nozick1969]. C
 
 Demon is really good at their job. They are not a time traveller; they are making a prediction that is not causally influenced by what the Chooser actually does. But they are really good. I'll assume that they are arbitrarily good, and come back to just what I mean by that in section \@ref(aboutademon).
 
-I'll write 1 and 2 for the two choices, and P1 and P2 for the predictions. In general, where there is a demon who makes these kinds of predictions, I'll write 'PX' to mean the state of choice X being predicted. So here is the decision problem.
+I'll write 1 and 2 for the two choices, and P1 and P2 for the predictions. In general, where there is a demon who makes these kinds of predictions, I'll write 'PX' to mean the state of choice X being predicted. Table \@ref(tab:general-newcomb) sets out the problem.
 
 ```{r, general-newcomb, cache=TRUE}
 general_newcomb <- tribble(
@@ -511,7 +530,7 @@ This section goes into a bit of detail about the connection between game theory 
 
 Let's start with an interesting variant of Newcomb's Puzzle, one which is used to good effect by Frank @Arntzenius2008. Keep the contents of the boxes the same, including that Demon puts $x$ into the first box iff they predict only one box will be taken. But this time both boxes are clear. Now Chooser can see exactly what is in each box before making a decision. What should they do?
 
-We can model this problem using the following decision tree.
+We can model this problem using the tree in figure \@ref(fig:transparent-Newcomb).
 
 ```{tikz, transparent-Newcomb, fig.cap = "Newcomb's Problem with both boxes transparent", fit.ext = 'png', fig.width = 4, fig.height = 4, fig.align = 'center', cache=TRUE}
 \begin{tikzpicture}[scale=1.5,font=\footnotesize]
@@ -548,7 +567,7 @@ This representation should look familiar from game theory textbooks. It's just a
 
 The game starts at the hollow node, which in this case is at the top of the tree. At each node, we move along a path from wherever we are to a subsequent node. So each node gets labeled with who is making the choice, and the edges get labeled with the choices they can make. This game starts with the Demon predicting either that Chooser takes 1 box - this is the edge labeled P1 - or that Chooser takes 2 boxes. Either way we get to a node where Chooser moves, either by taking 1 box or 2. It's a solid node, which means (in the notation of this book) that it's not where the game starts, and it's not where the game ends. Then whatever happens, we get to a terminal node, here denoted with a square. At each terminal node we list the payouts. 
 
-But here we only listed the payouts to Chooser. To make something really into a game, there should be payouts for both players. What are Demon's payouts? Well, what makes something the payout function for a player is that it takes higher values the more they get what they want. Since Demon is trying to predict player, they want situations where they predict them well. So we can simply say that their payout is 1 for a correct prediction, and 0 for an incorrect prediction. That suggests the tree for Arntzenius's 'transparent box' version of Newcomb's Problem should look like this.
+But here we only listed the payouts to Chooser. To make something really into a game, there should be payouts for both players. What are Demon's payouts? Well, what makes something the payout function for a player is that it takes higher values the more they get what they want. Since Demon is trying to predict player, they want situations where they predict them well. So we can simply say that their payout is 1 for a correct prediction, and 0 for an incorrect prediction. That suggests the tree for Arntzenius's 'transparent box' version of Newcomb's Problem should look like figure \@ref(fig:transparent-Newcomb-two-payouts).
 
 ```{tikz, transparent-Newcomb-two-payouts, fig.cap = "Newcomb's Problem with both boxes transparent, and Demon's payouts listed", fit.ext = 'png', fig.width = 4, fig.height = 4, fig.align = 'center', cache=TRUE}
 \begin{tikzpicture}[scale=1.5,font=\footnotesize]
@@ -587,9 +606,9 @@ In this book I'm mostly going to work with games where Demon's payouts are eithe
 
 That move, of treating Newcomb Problems as games, is taken straight from work by William @Harper1986. And it is going to be the central move in this book.
 
-Here is what the original Newcomb problem looks like when we follow Harper's lead and transform it into a game.
+When we follow Harper's lead and transform the original Newcomb Problem into a game, we get table \@ref(tab:general-newcomb-two).
 
-```{r}
+```{r general-newcomb-two, cache=FALSE}
 general_newcomb <- tribble(
 	   ~"", ~P1, ~P2,
 	   "1", "$x, 1$", "$0, 0$",
@@ -598,7 +617,7 @@ general_newcomb <- tribble(
 gameformat(general_newcomb, "Newcomb's Problem as a Game")
 ```
 
-Or, at least, that's the so-called strategic form of the game. We can also represent it as a game that takes place over time, like this.
+Or, at least, that's the so-called strategic form of the game. We can also represent it, as in figure \@ref(fig:hidden-Newcomb-two-payouts) as a game that takes place over time.
 
 ```{tikz, hidden-Newcomb-two-payouts, fig.cap = "Newcomb's Problem with first box hidden, and Demon's payouts listed", fit.ext = 'png', fig.width = 4, fig.height = 4, fig.align = 'center', cache=TRUE}
 \usetikzlibrary{calc} 
@@ -652,18 +671,18 @@ The second is what I'll call the Smullyan strategy, because it involves a Knight
 
 There are benefits to each approach, and there are slightly different edge cases that are handled better by one or other version. I'm mostly going to stick to cases where Demon is arbitrarily accurate, but I need these on the table to talk about cases others raise where Demon is only 75-80% accurate. And in general either will work for turning a demonic decision problem into a game.
 
-Turning games into demonic decision problems is a bit more interesting. Start with a completely generic two-player, two-option, simultaneous move, symmetric game. We won't only look at symmetric games, but it's a nice way to start.
+Turning games into demonic decision problems is a bit more interesting. Start with a completely generic two-player, two-option, simultaneous move, symmetric game, as shown in table \@ref(tab:basic-sym-game). We won't only look at symmetric games, but it's a nice way to start.
 
 ```{r,basic-sym-game, cache=TRUE}
 symmetric_game <- tribble(
-	   ~"", ~a, ~b,
-	   "a", "$x, x$", "$y, z$",
-	   "b", "$z, y$", "$w, w$"
+	   ~"", ~A, ~B,
+	   "A", "$x, x$", "$y, z$",
+	   "B", "$z, y$", "$w, w$"
 	)
-gameformat(symmetric_game, "A generic symmetric game")
+gameformat(symmetric_game, "A generic symmetric game.")
 ```
 
-In words, what this says is that each player chooses either $a$ or $b$. If they both choose $a$, they both get $x$. If they both choose $b$, they both get $w$. And if one chooses $a$ and the other chooses $b$, the one who chooses $a$ gets $y$ and the one who chooses $b$ gets $z$. (Note that the payouts list row's payment first, if you're struggling to translate between the table and the text.) A lot of famous games can be defined in terms of restrictions on the four payout values. For example, a game like this is a Prisoners' Dilemma if the following constraints are met.
+In words, what this says is that each player chooses either A or B. If they both choose A, they both get $x$. If they both choose B, they both get $w$. And if one chooses A and the other chooses B, the one who chooses A gets $y$ and the one who chooses B gets $z$. (Note that the payouts list row's payment first, if you're struggling to translate between the table and the text.) A lot of famous games can be defined in terms of restrictions on the four payout values. For example, a game like this is a Prisoners' Dilemma if the following constraints are met.
 
 - $x > z$
 - $y > w$
@@ -671,59 +690,59 @@ In words, what this says is that each player chooses either $a$ or $b$. If they 
 
 Some books will also add $2x > y + z$ as a further constraint, but I'll stick with these three.
 
-Now to turn a game into a demonic decision problem, first replace column's payouts with 1s and 0s, with 1s along the main diagonal, and 0s everywhere else. So our generic symmetric game will now look like this.
+Now to turn a game into a demonic decision problem, first replace column's payouts with 1s and 0s, with 1s along the main diagonal, and 0s everywhere else. Table \@ref(tab:demon-sym-game) shows what a generic symmetric game looks like after this transformation.
 
 ```{r,demon-sym-game,cache=TRUE}
 demonic_symmetric_game <- tribble(
-	   ~"", ~a, ~b,
-	   "a", "$x, 1$", "$y, 0$",
-	   "b", "$z, 0$", "$w, 1$"
+	   ~"", ~A, ~B,
+	   "A", "$x, 1$", "$y, 0$",
+	   "B", "$z, 0$", "$w, 1$"
 	)
-gameformat(demonic_symmetric_game, "The demonic version of a generic symmetric game")
+gameformat(demonic_symmetric_game, "The demonic version of a generic symmetric game.")
 ```
 
-And then replace Demon's moves with states that are generated by Demon's predictions. As before, I'll put 'P' in front of a choice name to indicate the state of that choice being predicted. So our generic symmetric game looks like this.
+The next step is to replace Demon's moves with states that are generated by Demon's predictions. As before, I'll put 'P' in front of a choice name to indicate the state of that choice being predicted. The result is table \@ref(tab:gen-dem-problem).
 
 ```{r,gen-dem-problem, cache=TRUE}
 generic_demonic_problem <- tribble(
-	   ~"", ~Pa, ~Pb,
-	   "a", "$x$", "$y$",
-	   "b", "$z$", "$w$"
+	   ~"", ~PA, ~PB,
+	   "A", "$x$", "$y$",
+	   "B", "$z$", "$w$"
 	)
-gameformat(generic_demonic_problem, "The demonic decision problem generated by a generic symmetric game")
+gameformat(generic_demonic_problem, "The demonic decision problem generated by a generic symmetric game.")
 ```
 
-And note if we add the constraints $x > z, y > w, w > x$, this is essentially a Newcomb Problem. I'm a long way from the first to point out the connections between Prisoners' Dilemma and Newcomb's Problem; it's literally in the title of a David Lewis paper [@Lewis1979e]. But what I want to stress here is the recipe for turning a familiar game into a demonic problem.
+If we add the constraints $x > z, y > w, w > x$, this is essentially a Newcomb Problem. I'm a long way from the first to point out the connections between Prisoners' Dilemma and Newcomb's Problem; it's literally in the title of a David Lewis paper [@Lewis1979e]. But what I want to stress here is the recipe for turning a familiar game into a demonic problem.
 
-We can do the same thing with Chicken. The toy story behind Chicken is that two cars are facing off at the end of a road. They will drive straight at each other, and at the last second, each driver will choose to swerve off the road, which we'll call option $a$, or stay on the road, which we'll call option $b$. If one swerves and the other stays, the one who stays is the winner. If they both swerve they both lose and it's boring, and if they both stay it's a fiery crash. So in terms of the payouts in the general symmetric game, the constraints are:
+We can do the same thing with Chicken. The toy story behind Chicken is that two cars are facing off at the end of a road. They will drive straight at each other, and at the last second, each driver will choose to swerve off the road, which we'll call option A, or stay on the road, which we'll call option B. If one swerves and the other stays, the one who stays is the winner. If they both swerve they both lose and it's boring, and if they both stay it's a fiery crash. So in terms of the payouts in the general symmetric game, the constraints are:
 
 - $x < z$
 - $y >> w$
 - $x >> w$
 
-Just what it means for one value to be much more than another, which is what I mean by '$>>$', is obviously vague. But let's put some example numbers in that seem like they should satisfy it.
+Just what it means for one value to be much more than another, which is what I mean by '$>>$', is obviously vague. Table \@ref(tab:basic-chicken) gives an example with some numbers that should satisfy it.
 
 ```{r, basic-chicken, cache=TRUE}
 basic_chicken <- tribble(
-	   ~"", ~a, ~b,
-	   "a", "$0, 0$", "$0, 1$",
-	   "b", "$1, 0$", "$-100, -100$"
+	   ~"", ~A, ~B,
+	   "A", "$0, 0$", "$0, 1$",
+	   "B", "$1, 0$", "$-100, -100$"
 	)
-gameformat(basic_chicken, "A version of Chicken")
+gameformat(basic_chicken, "A version of Chicken.")
 ```
 
-Now replace the other driver, the one who plays column in this version, with a Demon, who only wants to predict row's move.
+Replace the other driver, the one who plays column in this version, with a Demon, who only wants to predict row's move. The result is table \@ref(tab:demon-chicken).
 
 ```{r,demon-chicken, cache=TRUE}
 demon_chicken <- tribble(
-	   ~"", ~a, ~b,
-	   "a", "$0, 1$", "$0, 0$",
-	   "b", "$1, 0$", "$-100, 1$"
+	   ~"", ~A, ~B,
+	   "A", "$0, 1$", "$0, 0$",
+	   "B", "$1, 0$", "$-100, 1$"
 	)
-gameformat(demon_chicken, "A demonic version of Chicken")
+gameformat(demon_chicken, "A demonic version of Chicken.")
 ```
 
-All I've done is replace column's payouts with 1s on the main diagonal, and 0s elsewhere. And the next step is to replace the demonic player with states generated by Demon's choices, which gives us this decision problem.
+All I've done to generate table \@ref(tab:demon-chicken) is replace column's payouts with 1s on the main diagonal, and 0s elsewhere. The next step is to replace the demonic player with states generated by Demon's choices. The result is table \@ref(tab:egan-game).
 
 ```{r,egan-game, cache=TRUE}
 egan_game <- tribble(
@@ -731,23 +750,23 @@ egan_game <- tribble(
 	   "a", "$0$", "$0$",
 	   "b", "$1$", "$-100$"
 	)
-gameformat(egan_game, "A demonic decision problem based on Chicken")
+gameformat(egan_game, "A demonic decision problem based on Chicken.")
 ```
 
-And that's just the Psychopath Button example that Andy @Egan2007 raises as a problem for Causal Decision Theory.
+And table \@ref(tab:egan-game) is just the Psychopath Button example that Andy @Egan2007 raises as a problem for Causal Decision Theory.
 
-Another familiar game from introductory game theory textbooks is Matching Pennies. This is a somewhat simplified version of rock-paper-scissors. Each player has a penny, and they reveal their penny simultaneously. They can either show it with the heads side up (option $a$), or the tails side up (option $b$). We specify in advance who wins if they show the same way, and who wins if they show opposite ways. So let's say column will win if both coins are heads or both are tails, and row will win if they are different. Then we get the following game.
+Another familiar game from introductory game theory textbooks is matching pennies. This is a somewhat simplified version of rock-paper-scissors. Each player has a penny, and they reveal their penny simultaneously. They can either show it with the heads side up (option A), or the tails side up (option B). We specify in advance who wins if they show the same way, and who wins if they show opposite ways. So let's say column will win if both coins are heads or both are tails, and row will win if they are different. The payouts are shown in table \@ref(tab:match-pennies).
 
 ```{r,match-pennies, cache=TRUE}
 matching_pennies <- tribble(
-	   ~"", ~a, ~b,
-	   "a", "$0, 1$", "$1, 0$",
-	   "b", "$1, 0$", "$0, 1$"
+	   ~"", ~A, ~B,
+	   "A", "$0, 1$", "$1, 0$",
+	   "B", "$1, 0$", "$0, 1$"
 	)
-gameformat(matching_pennies, "Matching Pennies")
+gameformat(matching_pennies, "The game matching pennies.")
 ```
 
-This isn't a symmetric game, but it is already demonic. Column's payouts are 1 in the main diagonal and 0 elsewhere. So we can convert it to a demonic decision problem fairly easily.
+This isn't a symmetric game, but it is already demonic. Column's payouts are 1 in the main diagonal and 0 elsewhere. So we can convert it to a demonic decision problem fairly easily, as in table \@ref(tab:death-in-damascus).
 
 ```{r,death-in-damascus, cache=TRUE}
 d_i_d <- tribble(
@@ -758,67 +777,67 @@ d_i_d <- tribble(
 gameformat(d_i_d, "Matching pennies as a decision problem")
 ```
 
-And this the familiar problem Death in Damascus from @GibbardHarper1978.
+And table \@ref(tab:death-in-damascus) is the familiar problem Death in Damascus from @GibbardHarper1978.
 
-Let's do one last one, starting with the familiar game Battle of the Sexes. Row and Column each have to choose whether to do $r$ or $c$. They both prefer doing the same thing to doing different things. But Row would prefer they both do $r$, and Column would prefer they both do $c$. (The original name comes from a version of the story where Row and Column are a heterosexual married couple, and Row wants to do some stereotypically male thing, while Column wants to do some stereotypically female thing. That framing is tiresome at best, but the category of asymmetric coordination games is not, hence my more abstract presentation.) So here's how we might think of the payouts.
+Let's do one last one, starting with the familiar game Battle of the Sexes. Row and Column each have to choose whether to do R or C. They both prefer doing the same thing to doing different things. But Row would prefer they both do R, and Column would prefer they both do C. (The original name comes from a version of the story where Row and Column are a heterosexual married couple, and Row wants to do some stereotypically male thing, while Column wants to do some stereotypically female thing. That framing is tiresome at best, but the category of asymmetric coordination games is not, hence my more abstract presentation.) So table @\ref(tab:bach-stravinsky) is one way we might think of the payouts.
 
 ```{r,bach-stravinsky, cache=TRUE}
 b_o_t_s <- tribble(
-	   ~"", ~r, ~c,
-	   "r", "$4, 1$", "$0, 0$",
-	   "c", "$0, 0$", "$1, 4$"
+	   ~"", ~R, ~C,
+	   "R", "$4, 1$", "$0, 0$",
+	   "C", "$0, 0$", "$1, 4$"
 	)
-gameformat(b_o_t_s, "Battle of the sexes")
+gameformat(b_o_t_s, "A version of battle of the sexes.")
 ```
 
-As it stands, that's not a symmetric game. But we can make it a symmetric game by relabeling the choices. Let option $a$ for each player be doing their favored choice, and option $b$ be doing their less favored choice. Then the table looks like this.
+As it stands, that's not a symmetric game. But we can make it a symmetric game by relabeling the choices. Let option A for each player be doing their favored choice, and option B be doing their less favored choice. That turns table @\ref(tab:bach-stravinsky) into table @\ref(tab:bach-stravinsky-symmetric).
 
 ```{r,bach-stravinsky-symmetric, cache=TRUE}
 b_o_t_s_symmetric <- tribble(
-	   ~"", ~a, ~b,
-	   "a", "$0, 0$", "$4, 1$",
-	   "b", "$1, 4$", "$0, 0$"
+	   ~"", ~A, ~B,
+	   "A", "$0, 0$", "$4, 1$",
+	   "B", "$1, 4$", "$0, 0$"
 	)
-gameformat(b_o_t_s_symmetric, "Battle of the sexes, relabeled")
+gameformat(b_o_t_s_symmetric, "Battle of the sexes, relabeled.")
 ```
 
-Now change column's payouts so that it is a demonic game.
+After making that change, change column's payouts so that it is a demonic game. The result is table @\ref(tab:bach-demon)
 
 ```{r,bach-demon, cache=TRUE}
 b_o_t_s_demonic <- tribble(
-	   ~"", ~a, ~b,
-	   "a", "$0, 1$", "$4, 0$",
-	   "b", "$1, 0$", "$0, 1$"
+	   ~"", ~A, ~B,
+	   "A", "$0, 1$", "$4, 0$",
+	   "B", "$1, 0$", "$0, 1$"
 	)
-gameformat(b_o_t_s_demonic, "A demonic version of battle of the sexes")
+gameformat(b_o_t_s_demonic, "A demonic version of battle of the sexes.")
 ```
 
-And now replace Demon's choices with states generated by (probably accurate) predictions.
+Finally, replace Demon's choices with states generated by (probably accurate) predictions, to get the decision problem in table @\ref(tab:asymm-death-damascus).
 
 ```{r,asymm-death-damascus, cache=TRUE}
 asymm_d_i_d <- tribble(
-	   ~"", ~pa, ~pb,
-	   "a", "$0$", "$4$",
-	   "b", "$1$", "$0$"
+	   ~"", ~PA, ~PB,
+	   "A", "$0$", "$4$",
+	   "B", "$1$", "$0$"
 	)
-gameformat(asymm_d_i_d, "A demonic decision problem based on battle of the sexes")
+gameformat(asymm_d_i_d, "A demonic decision problem based on battle of the sexes.")
 ```
 
-And this is the asymmetric version of Death in Damascus from @Richter1984.
+That decision problem is the asymmetric version of Death in Damascus from @Richter1984.
 
 The point of this section has not just been to show that we can turn games into decision problems by treating one of the players as a predictor. That's true, but not in itself that interesting. Instead I want to make two further points. 
 
-One is that most of the problems that have been the focus of attention in the decision theory literature in the past couple of generations can be generated from very familiar games, the kinds of games you find in the first one or two chapters of a game theory textbook, this way. 
+One is that most of the problems that have been the focus of attention in the decision theory literature in the past couple of generations can be generated from very familiar games, the kinds of games you find in the first one or two chapters of a game theory textbook. And the generation method is fairly similar in each respect. 
 
-The second point is that most of the simple games you find in those introductory chapters turn out to result, once you transform them this way, in demonic decision problems that have been widely discussed. But there is just one exception here. There hasn't been a huge amount of discussion of the demonic decision problem you get when you start with Stag Hunt. I'll turn to that in the next subsection. 
+The second point is that most of the simple games you find in those introductory chapters turn out to result, once you transform them this way, in demonic decision problems that have been widely discussed. But there is just one exception here. There hasn't been a huge amount of discussion of the demonic decision problem you get when you start with the game known as stag hunt. I'll turn to that in the next subsection. 
 
 In later parts of the book, I'll be frequently appealing to decision problems that are generated from other games that have been widely discussed by economic theorists. Most of these discussions are not particularly recent; the bulk of the work I'll be citing is from the 1980s and 1990s, and I don't take myself to be making a significant contribution to contemporary economic theorising. But what I want to point out is that there is a vast source of examples in the economic theory literature that decision theorists could be, and should be, discussing. And I've spent so long here on the translation between the two literatures in part because I think there are huge gains to be had from bringing these literatures into contact.
 
 ### An Indecisive Example {#indecisive}
 
-This subsection is mostly going to be talking about games that are commonly known as Stag Hunts. Brian Skyrms has written extensively on why Stag Hunts are philosophically important [@Skyrms2001, @Skyrms2004], and putting them at the center of the story is one of several ways in which this book is following Skyrms's lead.
+This subsection is mostly going to be talking about games that are commonly known as stag hunts. Brian Skyrms has written extensively on why stag hunts are philosophically important [@Skyrms2001; @Skyrms2004], and putting them at the center of the story is one of several ways in which this book is following Skyrms's lead.
 
-Stag Hunts are symmetric two-player two-option, simultaneous move games. So they can be defined by putting constraints on the values in \@ref(tab:basic-sym-game). In this case, the constraints are
+Stag hunts are symmetric two-player two-option, simultaneous move games. So they can be defined by putting constraints on the values in \@ref(tab:basic-sym-game). In this case, the constraints are
 
 - $x > z$
 - $w > y$
@@ -829,56 +848,58 @@ The name comes from a thought experiment in Rousseau's _Discourse on Inequality_
 
 > They were perfect strangers to foresight, and were so far from troubling themselves about the distant future, that they hardly thought of the morrow. If a deer was to be taken, every one saw that, in order to succeed, he must abide faithfully by his post: but if a hare happened to come within the reach of any one of them, it is not to be doubted that he pursued it without scruple, and, having seized his prey, cared very little, if by so doing he caused his companions to miss theirs.  [@Rousseau1913 209--10]
 
-Normally, option $a$ is called hunting, and option $b$ is called gathering. The game has two equilibria - both players Hunt, or both players Gather. So it's unlike Prisoners' Dilemma, which only has one equilibria. And the more cooperative equilibria, where both players hunt, is better. But, and this is crucial, it's a risky equilibria. To connect it back to Rousseau, the thought is that the players would both be better off if they both cooperated to catch the stag (or deer in this translation). But cooperating is risky; if the players do different things, it is best to go off gathering berries (or bunnies) on one's own than trying in vain to catch a stag single-handed.
+Normally, option A is called hunting, and option B is called gathering. The game has two equilibria - both players hunt, or both players gather. So it's unlike prisoners' dilemma, which only has one equilibria. And the more cooperative equilibria, where both players hunt, is better. But, and this is crucial, it's a risky equilibria. To connect it back to Rousseau, the thought is that the players would both be better off if they both cooperated to catch the stag (or deer in this translation). But cooperating is risky; if the players do different things, it is best to go off gathering berries (or bunnies) on one's own than trying in vain to catch a stag single-handed.
 
-And that's what we see in the game. The first two constraints imply that the game is in equilibrium if the players do the same thing. The third constraint says that if they both hunt, option $a$, they are better off than if they both gather, option $b$. But the fourth constraint codifies the thought that this is a risky equilibrium. Even though the equilibrium where everyone hunts is better, there are multiple reasons we might end up at the equilibrium where everyone gathers.
+And that's what we see in the game. The first two constraints imply that the game is in equilibrium if the players do the same thing. The third constraint says that if they both hunt, option A, they are better off than if they both gather, option B. But the fourth constraint codifies the thought that this is a risky equilibrium. Even though the equilibrium where everyone hunts is better, there are multiple reasons we might end up at the equilibrium where everyone gathers.
 
-One reason for this is that the players might want to minimise regret. Each play is a guess that the other player will do the same thing. If one plays $a$ and guesses wrong, one loses $w - y$ compared to what one could have received. If one plays $b$ and guesses wrong, one loses $x - z$. And the last constraint entails that $x - z \< w - y$. So playing $b$ minimises possible regret.
+One reason for this is that the players might want to minimise regret. Each play is a guess that the other player will do the same thing. If one plays A and guesses wrong, one loses $w - y$ compared to what one could have received. If one plays B and guesses wrong, one loses $x - z$. And the last constraint entails that $x - z < w - y$. So playing B minimises possible regret.
 
-Second, one might want to maximise expected utility, given uncertainty about what the other player will do. Since one has no reason to think the other player will prefer $a$ to $b$ or vice versa - both are equilibria - maybe one should give each of them equal probability. And then it will turn out that $b$ is the option with highest expected utility. Intuitively, $b$ is a risky option and $a$ is a safe option, and when in doubt, perhaps one should go for the safe option.
+Second, one might want to maximise expected utility, given uncertainty about what the other player will do. Since one has no reason to think the other player will prefer A to B or vice versa - both are equilibria - maybe one should give each of them equal probability. And then it will turn out that B is the option with highest expected utility. Intuitively, B is a risky option and A is a safe option, and when in doubt, perhaps one should go for the safe option.
 
-We can turn Stag Hunt into a decision problem by replacing the other player with  Demon in a way that should be familiar by now. So we get this decision problem.
+There are other arguments too for choosing to gather rather than hunt. To use a notion from Skyrms, gathering has a larger _basin of attraction_ than hunting, and its basin of attraction includes the midpoint of the probability space. Those two motivations, plus the two from the previous two paragraphs, give us four motivations for gathering. If one wants to motivate gathering in general, it is actually important to get clear on which of the four one takes to be most important. Because while they are equivalent in the two option game (or problem), they are not in general equivalent. Indeed, all four come apart very soon once more options get added. Since I'm not defending gathering, I think decision theory should say either option is acceptable in stag hunts, I'm not going to continue exploring this line. But there are some interesting technical questions along these paths.
+
+We can turn stag hunt into a decision problem by replacing the other player with  Demon in a way that should be familiar by now. The result is the decision problem in table \ref(tab:stag-decision).
 
 ```{r,stag-decision, cache=TRUE}
 stag_decision <- tribble(
-	   ~"", ~pa, ~pb,
-	   "a", "$x$", "$y$",
-	   "b", "$z$", "$w$"
+	   ~"", ~PA, ~PB,
+	   "A", "$x$", "$y$",
+	   "B", "$z$", "$w$"
 	)
-gameformat(stag_decision, "A demonic decision problem based on Stag Hunt")
+gameformat(stag_decision, "A demonic decision problem based on stag hunt.")
 ```
 
-In order to have less algebra, I'm going to often focus mostly on a particular version of this decision, with the following values. But it's important that the  main conclusions will be true of all decision problems based on Stag Hunt.
+In order to have less algebra, I'm going to often focus mostly on a particular version of this decision, with the values shown in table @\ref(stag-decision-particular). But it's important that the  main conclusions will be true of all decision problems based on stag Hunt.
 
 ```{r,stag-decision-particular, cache=TRUE}
 stag_decision_particular <- tribble(
-	   ~"", ~pa, ~pb,
-	   "a", "10", "0",
-	   "b", "6", "8"
+	   ~"", ~PA, ~PB,
+	   "A", "10", "0",
+	   "B", "6", "8"
 	)
-gameformat(stag_decision_particular, "A particular version of a demonic decision problem based on Stag Hunt")
+gameformat(stag_decision_particular, "A particular version of a demonic decision problem based on stag hunt.")
 ```
 
-These kinds of decisions are important in the history of game theory because they illustrate in the one game the two most prominent theories of equilibrium selection: risk dominance and payoff dominance [@HarsanyiSelten1988]. Risk dominance recommends gathering; payoff dominance recommends hunting. And most contemporary philosophical proponents of decisive decision theories (in the sense of decisiveness described back in section \@ref(procdef))  fall into one of these two camps.
+These kinds of cases are important in the history of game theory because they illustrate in one game the two most prominent theories of equilibrium selection: risk dominance and payoff dominance [@HarsanyiSelten1988]. Risk dominance recommends gathering; payoff dominance recommends hunting. And most contemporary philosophical proponents of decisive decision theories (in the sense of decisiveness described back in section \@ref(procdef)) fall into one of these two camps.
 
-In principle, there are three different views that a decisive theory could have about Stag Decisions: always hunt, always gather, or sometimes do one and sometimes the other. A decisive theory has to give a particular recommendation on any given Stag Decision, but it could say that the four constraints don't settle what that decision should be. Still, in practice all existing decisive theories fall into one or other of the first two categories.
+In principle, there are three different views that a decisive theory could have about stag decisions: always hunt, always gather, or sometimes do one and sometimes the other. A decisive theory has to give a particular recommendation on any given stag decision, but it could say that the four constraints don't settle what that decision should be. Still, in practice all existing decisive theories fall into one or other of the first two categories.
 
-One approach, endorsed for rather different reasons by Richard @Jeffrey1983 and Frank @Arntzenius2008, says to hunt because it says in decisions with multiple equilibria, one should choose the equilibria with the best payout. Evidential Decision Theorists also say to Hunt in these situations, because the all-Hunt outcome is better than the all-Gather outcome, and it doesn't even matter whether these are equilibria. Another family of approaches says to always gather in Stag Decisions. For very different reasons, this kind of view is endorsed by Ralph @Wedgwood2013, Dmitri @Gallow2020 and Abelard @Podgorski2022. These three views differ from each other in how they motivate gathering, and in how they extend the view to other choices, but they all agree that one should gather in any Stag Decision.
+One approach, endorsed for rather different reasons by Richard @Jeffrey1983 and Frank @Arntzenius2008, says to hunt because it says in decisions with multiple equilibria, one should choose the equilibria with the best payout. Proponents of Evidential Decision Theory also say to hunt in these situations, because the all-hunt outcome is better than the all-gather outcome, and it doesn't even matter whether these are equilibria. Another family of approaches says to always gather in stag decisions. For very different reasons, this kind of view is endorsed by Ralph @Wedgwood2013, Dmitri @Gallow2020 and Abelard @Podgorski2022. These three views differ from each other in how they motivate gathering, and in how they extend the view to other choices, but they all agree that one should gather in any stag decision.
 
-I'm going to argue that all of these views are mistaken. Decision Theory should not say what to do in these cases - either choice is rational.
+I'm going to argue that all of these views are mistaken. Decision theory should not say what to do in these cases - either choice is rational.
 
-Now I should note here that I'm slightly cheating in setting out the problem this way. The theory I defend says that in any decision problem like this with two equilibria, either choice can be rational. And that includes games like, say, this one, where everyone I mentioned in the last few paragraphs would agree that $a$ is the uniquely correct choice.
+Now I should note here that I'm slightly cheating in setting out the problem this way. The theory I defend says that in any decision problem like this with two equilibria, either choice can be rational. And that includes games like, say, the one in @\ref(not-stag-decision), where everyone I mentioned in the last few paragraphs would agree that A is the uniquely correct choice.
 
 ```{r,not-stag-decision, cache=TRUE}
 not_stag_decision <- tribble(
-	   ~"", ~pa, ~pb,
-	   "a", "10", "0",
-	   "b", "2", "4"
+	   ~"", ~PA, ~PB,
+	   "A", "10", "0",
+	   "B", "2", "4"
 	)
-gameformat(not_stag_decision, "A multiple equilibrium decision problem that is not a Stag Hunt")
+gameformat(not_stag_decision, "A multiple equilibrium decision problem that is not a stag hunt.")
 ```
 
-I certainly don't want to lean too hard on the intuition that either option is rational in a Stag Hunt—though I do in fact think that it's intuitive that either option is rational in a Stag Hunt. But if we were just leaning on intuitions, then this last example would be devastating to my theory, since it really isn't particularly intuitive here that either option is rational. Thankfully, the argument, which I'll set out in some detail in chapter \@ref(decisive), doesn't appeal to these kinds of intuitions. Still, I think it's useful to focus on Stag Hunts because, as Skyrms shows, they are so philosophically important. And they will be my canonical example of a problem where the right decision theory is Indecisive.
+I certainly don't want to lean too hard on the intuition that either option is rational in a stag hunt—though I do in fact think that it's intuitive that either option is rational in a stag hunt. But if we were just leaning on intuitions, then this last example would be devastating to my theory, since it really isn't particularly intuitive here that either option is rational. Thankfully, the argument, which I'll set out in some detail in chapter \@ref(decisive), doesn't appeal to these kinds of intuitions. Still, I think it's useful to focus on stag hunts because, as Skyrms shows, they are so philosophically important. And they will be my canonical example of a problem where the right decision theory is Indecisive.
 
 ### An Example of a Dilemma {#firstdilemma}
 
@@ -918,19 +939,19 @@ So if decision theory is relevant to building machines that make decisions, it's
 
 What are we trying to do when we produce a decision theory? I think some of the disputes within the field come from different theorists having different motivations, and hence different answers to this question. My answer is going to be that decision theory plays a key role in a certain kind of explanatory project. And I think defensivism is well suited to play that role. But to see what I mean by playing a key role in an explanatory project, it helps to compare that with other possible views about the aim of decision theory.
 
-One thing you might hope decision theory would do, and certainly one thing students often expect it will do, is provide advice on how to make decisions. I think decision theory is very ill-suited to this task, and it shouldn't really be the aim of the theory. The primary reason for this is that in any real life situation, the inputs are too hard to identify. To use decision theory as a guide to action, I need to know the utility of the possible states. And I need to know not just what's better and worse, but how much they are better or worse. At least speaking for myself, the only way I can tell the magnitudes of the differences in utilities between states is to ask about various gambles, and think about which of them I'd be indifferent between. That's to say, the only way I can tell that the utility of $a$ is half way between that of $b$ and $c$ is to ask whether I'd be indifferent between $a$ and a 50/50 chance of getting $b$ or $c$. So I have to know what decisions I'd (rationally) make before I can work out the utilities. And that means I have to know what decisions to make before I can even apply decision theory, which is inconsistent with thinking that decision theory should be the guide to what decisions to make. This isn't such a pressing problem when decisions can be made using purely ordinal utilities, but those cases are rare. So in general there is little use for decision theory in advising decisions.
+One thing you might hope decision theory would do, and certainly one thing students often expect it will do, is provide advice on how to make decisions. I think decision theory is very ill-suited to this task, and it shouldn't really be the aim of the theory. The primary reason for this is that in any real life situation, the inputs are too hard to identify. To use decision theory as a guide to action, I need to know the utility of the possible states. And I need to know not just what's better and worse, but how much they are better or worse. At least speaking for myself, the only way I can tell the magnitudes of the differences in utilities between states is to ask about various gambles, and think about which of them I'd be indifferent between. That's to say, the only way I can tell that the utility of A is half way between that of B and C is to ask whether I'd be indifferent between A and a 50/50 chance of getting B or C. So I have to know what decisions I'd (rationally) make before I can work out the utilities. And that means I have to know what decisions to make before I can even apply decision theory, which is inconsistent with thinking that decision theory should be the guide to what decisions to make. This isn't such a pressing problem when decisions can be made using purely ordinal utilities, but those cases are rare. So in general there is little use for decision theory in advising decisions.
 
 A somewhat better use for decision theory is in evaluation. Using decision theory, we can look at someone else's actions and ask whether they were rational. This is particularly pressing in cases where the person has harmed another, perhaps due to possible carelessness, or in defense of another, and we're interested in whether their actions were rational. Now one immediate complication in these cases is that we don't know the actor's value function. Even if the action doesn't maximise value as we see it, we don't know whether they have a different value function (perhaps one that puts low weight on harms to others), or they were doing a bad job maximising value. We don't know whether they were a knave or a fool. But it's often charitable to assume that they do have a decent enough value function, and we can ask whether what they were doing was rational if they did indeed have a decent value function.
 
 This is a task decision theory is useful for, but it alone wouldn't justify the existence of books like this one. For one thing, the theory of how to act around Demons isn't usually relevant to whether an act was careless, or a permissible kind of self/other-defense. It is sometimes relevant. Sometimes we should think game-theoretically about whether a person was acting properly, and that will bring up issues that are similar to issues involved in making decisions around Demons. But usually the kind of decision theory we need in these cases is fairly elementary. 
 
-A bigger problem is that rationality is too high a bar in these cases. (I'm indebted here to Jonathan Sarnoff.) Imagine that $d$ puts up a ladder somewhat sloppily, and it falls and injures $v$. The question at hand is whether $d$ is morally responsible for the injury to $v$ due to their carelessness. Ladders are tricky things, and sometimes one can take reasonable precautions and bad things happen anyway. Sometimes it is correct to attribute an injury to bad luck even if a super-cautious person would have avoided it. We aren't in general obliged to take every possible precaution to avoid injuring others. (If we were, we wouldn't be able to go out in public.) So what's the test we should use for whether this particular injury was just a case of bad luck or a case of carelessness? It is tempting to use decision theory here. The injury is a case of bad luck iff it was decision-theoretically rational for $d$ to act as they did, assuming they had a decent value function. The problem is that this is a really high bar. Imagine that $d$ did what any normal person would do in setting up the ladder, but there was a clever way to secure it for minimal cost that $d$ didn't notice, and most people wouldn't have noticed. Then there is a good sense in which what $d$ did was not decision-theoretically rational; the value maximising thing to do was the clever trick. But we don't want people to be morally responsible every time they fail to notice a clever option that only a handful of people would ever spot. And this is the general case. Decision-theoretic rationality is a maximising notion, and as such it's a kind of hard norm to satisfy. We don't want every failure to satisfy it in cases of unintentional injury to others, or intentional injury to others in the pursuit of a justifiable end like self-defence, to incur moral liability. So this isn't actually a place where decision theory is useful.
+A bigger problem is that rationality is too high a bar in these cases. (I'm indebted here to Jonathan Sarnoff.) Imagine that D puts up a ladder somewhat sloppily, and it falls and injures V. The question at hand is whether D is morally responsible for the injury to V due to their carelessness. Ladders are tricky things, and sometimes one can take reasonable precautions and bad things happen anyway. Sometimes it is correct to attribute an injury to bad luck even if a super-cautious person would have avoided it. We aren't in general obliged to take every possible precaution to avoid injuring others. (If we were, we wouldn't be able to go out in public.) So what's the test we should use for whether this particular injury was just a case of bad luck or a case of carelessness? It is tempting to use decision theory here. The injury is a case of bad luck iff it was decision-theoretically rational for D to act as they did, assuming they had a decent value function. The problem is that this is a really high bar. Imagine that D did what any normal person would do in setting up the ladder, but there was a clever way to secure it for minimal cost that D didn't notice, and most people wouldn't have noticed. Then there is a good sense in which what D did was not decision-theoretically rational; the value maximising thing to do was the clever trick. But we don't want people to be morally responsible every time they fail to notice a clever option that only a handful of people would ever spot. And this is the general case. Decision-theoretic rationality is a maximising notion, and as such it's a kind of hard norm to satisfy. We don't want every failure to satisfy it in cases of unintentional injury to others, or intentional injury to others in the pursuit of a justifiable end like self-defence, to incur moral liability. So this isn't actually a place where decision theory is useful.
 
 And if decision theory isn't useful in these cases, then it's value as an evaluative tool is somewhat limited. We can still use it for going around judging people, and saying that was rational, that was irrational. And that's a fine pastime, being judgmental can be fun, especially if the people being judged are in charge of institutions we care about. But we might hope for a little more out of our theory.
 
 A third role for decision theory is in predicting what people will do. Sometimes we know people's incentives well enough to be able to predict that they will act as if they are rational. And at least sometimes, that can lead to surprising results. I'll talk through one case that I find surprising, and I suspect other philosophers will find surprising too.
 
-Chooser runs a televised rock-paper-scissors tournament. Ratings are fine, but Chooser is told by the bosses that what the audience really likes is when rock beats scissors. The audience doesn't think rock-paper-scissors is really violent enough, and the implicit violence of rock smashing scissors is a help. So Chooser is thinking about generating more outcomes where rock beats scissors. And their plan is to make a cash payoff to players every time they successfully play rock, on top of the point they get for winning the game. Chooser's hope is that the game payoff will change from the standard payoff table, which looks like this
+Chooser runs a televised rock-paper-scissors tournament. Ratings are fine, but Chooser is told by the bosses that what the audience really likes is when rock beats scissors. The audience doesn't think rock-paper-scissors is really violent enough, and the implicit violence of rock smashing scissors is a help. So Chooser is thinking about generating more outcomes where rock beats scissors. And their plan is to make a cash payoff to players every time they successfully play rock, on top of the point they get for winning the game. Chooser's hope is that the game payoff will change from the standard payoff table, as shown in table \@ref(tab:simple-rps), to table \@ref(tab:adjusted-rps).
 
 ```{r, simple-rps, cache=TRUE}
 rps <- tribble(
@@ -942,8 +963,6 @@ rps <- tribble(
 gameformat(rps, "Rock-Paper-Scissors")
 ```
 
-to this
-
 ```{r, adjusted-rps, cache=TRUE}
 rps_adjust <- tribble(
 	   ~"",         ~Rock,   ~Paper, ~Scissors,
@@ -954,7 +973,7 @@ rps_adjust <- tribble(
 gameformat(rps_adjust, "Rock-Paper-Scissors with Bonus for Rock")
 ```
 
-And they turn to their resident decision theorist to ask how much this will improve ratings. If you haven't worked through this kind of problem before, it's actually a fun little exercise to work out what the effect of this change will be. Because the disappointing news they are going to get from the decision theorist is that this move will backfire. After the change the rock-scissors combination will occur less often than it did before the change.
+They turn to their resident decision theorist to ask how much this will improve ratings. If you haven't worked through this kind of problem before, it's actually a fun little exercise to work out what the effect of this change will be. Because the disappointing news they are going to get from the decision theorist is that this move will backfire. After the change the rock-scissors combination will occur less often than it did before the change.
 
 In the original game, it's pretty clear what the unique equilibrium of the game is. Each player plays each option with probability $\frac{1}{3}$. If either player had any deviation from that, then they would in the long run be exploitable. So that's what they will do, over a long enough run. And that means that a combination where one player chooses Rock and the other chooses Paper will occur in $\frac{2}{9}$ of games.
 
@@ -992,29 +1011,9 @@ For what it's worth, I think the kind of decision theory I'm defending, where th
 
 The previous section was on why philosophers should care about decision theory. But what I'm doing in this book isn't just decision theory, it's a very specific kind of decision theory. What I'm doing might be called ideal decision theory. It's the theory of how idealised agents make decisions. And I'm going to appeal to those idealisations a fair bit in what follows. This section is about why we should care about such an idealised theory, and in particular about why a ratificationist decision theory should care about it.
 
-**COMPARE BACK TO CHAPTER ONE DISCUSSION - IS THIS TOO REPETITIVE**
+One lesson of cases like **Salesman** is that every theory of idealised decision making needs to be complemented with a theory of non-ideal decision making. But this isn't the only lesson one could take from the example. Another lesson could be that ideal decision theory is a pointless enterprise. It should not be supplemented by non-ideal decision theory, but replaced. I don't think that's right, but it takes some argument to say why it isn't right. That longer argument will come in chapter \@ref(dilemma), but for now I'll just say what positive role I think ideal decision theory has to play.
 
-I'm hardly alone in focussing on the ideal case. Every theory of decision in the philosophical literature does the same thing. This is surprising because focussing on the ideal case is even less intuitive for the proceduralist than the defensivist, and most decision theorists are proceduralists. But they do indeed focus on the ideal case. We can see that they do by thinking about how they handle cases involving bets on mathematical propositions. Since these will play a bit of a role in what follows, particularly in chapter \@ref(dilemma), I want to set up a particular bet carefully.
-
-Say that a positive integer is **speven** iff the second digit of its largest prime factor is even. By 'second digit' here, I mean second when reading from left to right. So the second digit of 5743 is 7, and that (prime) number is not speven. But the second digit of 5843 is 8, and that (prime) number is speven. Calculating whether a number is speven gets very hard once the number has more than a few dozen digits. But whether it is speven is necessary and a priori, and invariant across all models for arithmetic. So on any standard conception of probability, the probability that a number is speven is 1 or 0. Still, we don't always act like it is speven.
-
-Let $n$ be some large number, say one whose decimal representation has over 100 digits. And say Chooser is offered a choice between saying "Yes" (meaning $n$ is speven), "No" (meaning it isn't) or "Pass", with the payouts in dollars for each choice given by this table.
-
-```{r, basic-speven, cache=TRUE}
-basic_speven <- tribble(
-	   ~"",     ~`Is Speven`, ~`Is Not Speven`,
-	   "Yes",    1, 0,           
-	   "Pass",   0.8, 0.8,
-	   "No",     0, 1
-	)
-gameformat(basic_speven, "A Basic Example of Betting on Arithmetic")
-```
-
-Any decision theory in the philosophical literature will say that Pass is the wrong option here. The probability that $n$ is speven is either 1 or 0, so either Yes or No maximises expected utility. But intuitively, the right thing to do is to Pass. The alternative is either figuring out whether $n$ is speven, and it isn't worth spending that energy for 20 cents, or guessing, which will on average do worse than playing Pass.
-
-The lesson I take from this example is that every theory of idealised decision making needs to be complemented with a theory of non-ideal decision making. And that latter theory should say that Pass is the right choice in this game. But this isn't the only lesson one could take from the example. Another lesson could be that ideal decision theory is a pointless enterprise. It should not be supplemented by non-ideal decision theory, but replaced. I don't think that's right, but it takes some argument to say why it isn't right. That longer argument will come in chapter \@ref(dilemma), but for now I'll just say what positive role I think ideal decision theory has to play.
-
-Let's start with some things that idea theory cannot do. It can't give people a target they should approximate. That's because the following is a very bad argument.
+Let's start with some things that ideal theory cannot do. It can't give people a target they should approximate. That's because the following is a very bad argument.
 
 1. The ideal is X.
 2. So, Chooser should be as much like X as they can be.
@@ -1035,7 +1034,7 @@ The following two arguments, however, are good arguments. And the two main uses 
 2. The differences between Chooser's situation and the ideal are irrelevant.
 3. So Chooser should do X.
 
-Ideal theory can provide advice, in situations that are like the ideal in suitable ways. It isn't trivial for the ideal theory to provide such advice though. The second premise is often very hard to justify. But in some cases it is not that hard - the computations that have to be made are easy, and the stakes are high, so it is worth spending the resources to make all the computations. And in those cases, we expect Chooser to act like the ideal. "Expect" here has both a normative and a descriptive meaning, and let's make the latter of those explicit with another good argument that uses ideal decision theory.
+Ideal theory can provide advice, in situations that are like the ideal in suitable ways. It isn't trivial for the ideal theory to provide such advice though. The second premise is often very hard to justify. But in some cases it is not that hard—the computations that have to be made are easy, and the stakes are high, so it is worth spending the resources to make all the computations. And in those cases, we expect Chooser to act like the ideal. "Expect" here has both a normative and a descriptive meaning, and let's make the latter of those explicit with another good argument that uses ideal decision theory.
 
 1. The ideal is X.
 2. The differences between Chooser's situation and the ideal are irrelevant.
@@ -1055,11 +1054,11 @@ To conclude this section on an historical note, I want to compare the view I'm a
 
 > It is evident that the rational thing to do is to be irrational, where deliberation and estimation cost more than they are worth. That this is very often true, and that men still oftener (perhaps) behave as if it were, does not vitiate economic reasoning to the extent that might be supposed. For these irrationalities (whether rational or irrational!) tend to offset each other. The applicability of the general "theory" of conduct to a particular individual in a particular case is likely to give results bordering on the grotesque, but _en masse_ and in the long run it is not so. The _market_ behaves _as if_ men were wont to calculate with the utmost precision in making their choices. We live largely, of necessity, by rule and blindly; but the results approximate rationality fairly well on an average. [@Knight1921 67n1]
 
-Like Knight, I think that explanations in social science can treat people as rational even if they are not, even if it would "given results bordering on the grotesque" to imagine them as perfectly rational. And that's because, at least in the right circumstances, the irrationalities are irrelevant, or they cancel out, and the "as if" explanation goes through. Now I do disagree with the somewhat blithe attitude Knight takes towards the possibility that these imperfections will not cancel out, that they will in fact reinforce each other and be of central importance in explaining various phenomena. But that's something to be worked out on a case-by-case basis, not presupposed in advance that the imperfections will either be explanatorily irrelevant or decisive.
+Like Knight, I think that explanations in social science can treat people as rational even if they are not, even if it would "give results bordering on the grotesque" to imagine them as perfectly rational. That's because, at least in the right circumstances, the irrationalities are irrelevant, or they cancel out, and the "as if" explanation goes through. Now I do disagree with the somewhat blithe attitude Knight takes towards the possibility that these imperfections will not cancel out, that they will in fact reinforce each other and be of central importance in explaining various phenomena. But that's something to be worked out on a case-by-case basis. We should not presuppose in advance either that the imperfections be irrelevant or that they will be decisive.
 
 There is one other point of agreement with Knight that I want to emphasise. If we don't act by first drawing Marshallian curves and solving optimisation problems, how do we act? As he says, we typically act "by rule". Our lives are governed, on day-by-day, minute-by-minute basis, by a series of rules we have internalised for how to act in various situations. The rules will typically have some kind of hierarchical structure - do this in this situation unless a particular exception arises, in which case do this other thing, unless of course a further exception arises, in which case, and so on. And the benefit of adopting rules with this structure is that they, typically, produce the best trade off between results and cognitive effort. 
 
-This isn't finished
+One other useful role for ideal decision theory is in the testing and generation of these rules. We don't expect people who have to make split-second decisions to calculate expected utilities. But we can expect them to learn some simple heuristics, and we can expect theorists to use ideal decision theory to test whether those heuristics are right, or whether some other simple heuristic would be better. This kind of approach is very useful in sports, where athletes have to make decisions very fast, and there is enough repetition for theorists to calculate expected utilities with some precision. But it can be used in other parts of life, and it is a useful role for ideal decision theory alongside its roles in institutional design (as in the rock-paper-scissors example), and in explanation (as in the used cars example).
 
 ## Why Not Proceduralism {#whynot}
 
@@ -1068,14 +1067,11 @@ Let's take stock. This chapter has been a response to the following two kinds of
 - The best thing that decision theory could do would be to provide a procedure for making good decisions.
 - If decision theory can't do that, it's a pointless activity.
 
-So far the attention has been primarily on the second point. I've argued that it isn't true - that decision theory can have an important role in explanations of social phenomena even if it doesn't provide a procedure for making good decisions. But what about the first point? Even if this is a role for decision theory, wouldn't a procedure for good decisions be better? In some sense perhaps it would be, but there is no reason to think that anything like decision theory is going to be part of such a procedure for creatures like us.
+So far the attention has been primarily on the second point. I've argued that it isn't true - that decision theory can have an important role in explanations of social phenomena even if it doesn't provide a procedure for making good decisions. But what about the first point? Even if this is a role for decision theory, wouldn't a procedure for good decisions be better? In some sense perhaps it would be, but there is no reason to think that anything like ideal decision theory is going to be part of such a procedure for creatures like us. For just one example, the optimal procedure in cases like **Salesman** will give advice that contradicts what every theory of ideal decision on the market says.
 
-To do
+In practice, the best thing a decision theory can do is be part of a broader project of helping us understand and navigate the world. To do that, it need not provide a procedure that can be followed on any given occasion, and indeed it could not do that. It is better to provide tools that can be used in one or other multi-stage process. For instance, it can provide reasons for thinking that this or that institutional design will fail or succeed in a particular way. Or it can compare heuristics that humans are capable of applying. Neither of these roles require that decision theory be proceduralist. Indeed, a non-proceduralist theory that says that we can't predict how a certain institution will work, because it generates a decision problem for individuals with multiple solutions, might be more useful than one that posits a false certainty about what will happen. So, in short, there is no argument from the purpose to which decision theory can or should be put to the conclusion that decision theory should be proceduralist.
 
-- Discuss the big world not being a small world - cite Binmore 2017
-- Discuss the computational problems
-- Discuss the violations of sure thing in multiple speven games
-- Say what's really good - sorting the cliches into good and bad ones, developing better cliches etc. And defensivism is just as useful for that, maybe better, than proceduralism
+Nothing in this chapter, however, is an argument against proceduralism. It has been a long argument against the necessity of proceduralism, but nothing more. In the next two chapters, I will argue directly that the right decision theory is not proceduralist.
 
 # Against Decisiveness {#decisive}
 
@@ -1096,7 +1092,7 @@ A decision theory is **decisive over binary choices** iff it satisfies this cond
 
 That definition, unfortunately, relies on two more terms that are not easy to define: _decision problem_ and _tie_. I'll deal with these in reverse order.
 
-For decisiveness to be anything other than a trivial truth, it can't just be that options are tied if each is rationally permissible. If that is what it meant for options to be tied, a decisive theory would just be one that either says one option is mandatory or many options are permissible. To make decisiveness a substantive claim, a different account of what it is for options to be tied is needed. I'll borrow a technique from Ruth @Chang2002 to provide such an account Some options are **tied** iff either is permissible, but this permissibility is sensitive to sweetening. That is, if options $X$ and $Y$ are tied, then for any positive $\varepsilon$, the agent prefers $X + \varepsilon$ to $Y$. If both $X$ and $Y$ are permissible, and this dual permissibility persists if either is 'sweetened', i.e., replaced by an option that is improved by $varepsilon$, then they aren't tied. My thesis, the thesis that the right theory is indecisive, is that the right decision theory says that sometimes there are multiple permissible options, and each of them would still be permissible if one of them was sweetened.
+For decisiveness to be anything other than a trivial truth, it can't just be that options are tied if each is rationally permissible. If that is what it meant for options to be tied, a decisive theory would just be one that either says one option is mandatory or many options are permissible. To make decisiveness a substantive claim, a different account of what it is for options to be tied is needed. I'll borrow a technique from Ruth @Chang2002 to provide such an account Some options are **tied** iff either is permissible, but this permissibility is sensitive to sweetening. That is, if options $X$ and $Y$ are tied, then for any positive $\varepsilon$, the agent prefers $X + \varepsilon$ to $Y$. If both $X$ and $Y$ are permissible, and this dual permissibility persists if either is 'sweetened', i.e., replaced by an option that is improved by $\varepsilon$, then they aren't tied. My thesis, the thesis that the right theory is indecisive, is that the right decision theory says that sometimes there are multiple permissible options, and each of them would still be permissible if one of them was sweetened.
 
 I'm going to provide two notions of a decision problem, one concrete and one abstract. These will correspond to the two notions of decisiveness, weak and strong, that I've already mentioned.
 
@@ -1121,7 +1117,7 @@ The example I've used so far of a weakly but not strongly indecisive theory is n
 
 ## Six Decision Problems {#decisive-games}
 
-The core of this chapter, and indeed the core of this book, is an argument that whichever moves are acceptable in one of the two problems below are also acceptable in the other, for any real values of $x_1, x_2, x_3, x_4, e_1$, and any value of $p \in (0, 1)$. (The names are because they are going to be the first and sixth members of a sequence of problems that I'll present shortly.)
+The core of this chapter, and indeed the core of this book, revolves around the decision problems in tables \@ref(tab:abc-v1) and \@ref(tab:abc-v6). I'm going to argue that whichever moves are acceptable in one of those two problems are also acceptable in the other, for any real values of $x_1, x_2, x_3, x_4, e$, and any value of $p \in (0, 1)$. The names of the problems are because they are going to be the first and sixth members of a sequence of problems that I'll present shortly.
 
 ```{r,abc-v1, cache=TRUE}
 generic_abc_v1 <- tribble(
@@ -1135,17 +1131,17 @@ gameformat(generic_abc_v1, "Problem 1.")
 ```{r,abc-v6, cache=TRUE}
 generic_abc_v6 <- tribble(
 	   ~"", ~PU, ~PD,
-	   "U", "$px_1 + (1-p)e_1$", "$x_2$",
-	   "D", "$px_3 + (1-p)e_1$", "$x_4$"
+	   "U", "$px_1 + (1-p)e$", "$x_2$",
+	   "D", "$px_3 + (1-p)e$", "$x_4$"
 	)
 gameformat(generic_abc_v6, "Problem 6.")
 ```
 
 Once I've argued that these problems should be treated the same way, I'll then argue that no strongly decisive theory does treat them the same way, so all strongly decisive theories are false. But what are these problems? What do these tables mean?
 
-In each case, Chooser has two options: $U$ for Up, and $D$ for Down. There is a demon, called Demon, who is arbitrarily good at predicting Chooser's choices, but who is not causally influenced by what Chooser does.^[For simplicity, I'm going to assume that the probability that Demon predicts correctly is 1. If you don't want to allow that this probability can be 1 without having a causal connection, it won't make a huge difference to make it $1 - \varepsilon$. It's just important to note in Problems 4-6 that Demon acts as if the probability is 1. Even if there is some chance of Demon being wrong, Demon acts as if this isn't possible. This is not a distinctive assumption; in most equilibrium concepts in game theory, an equilibrium involves the players believing that their predictions of the other players are correct with probability 1.] Demon will select either $PU$, meaning they predict Chooser will play $U$, or $PD$, meaning they predict Chooser will play $D$. The two two-way choices produce four possible outcomes, and the payouts to Chooser in each of those four possibilities are shown in the table. So these are just the kinds of problems that are familiar in the modern decision theory literature. What's not familiar is the claim that Problem 1 and Problem 6 should be treated the same way. The argument for that goes via four more problems, and this section introduces them.
+In each case, Chooser has two options: U for Up, and D for Down. There is a demon, called Demon, who is arbitrarily good at predicting Chooser's choices, but who is not causally influenced by what Chooser does.^[For simplicity, I'm going to assume that the probability that Demon predicts correctly is 1. If you don't want to allow that this probability can be 1 without having a causal connection, it won't make a huge difference to make it ~$1 - \varepsilon$~. It's just important to note in Problems 4-6 that Demon acts as if the probability is 1. Even if there is some chance of Demon being wrong, Demon acts as if this isn't possible. This is not a distinctive assumption; in most equilibrium concepts in game theory, an equilibrium involves the players believing that their predictions of the other players are correct with probability 1.] Demon will select either PU, meaning they predict Chooser will play U, or PD, meaning they predict Chooser will play D. The two two-way choices produce four possible outcomes, and the payouts to Chooser in each of those four possibilities are shown in the table. So these are just the kinds of problems that are familiar in the modern decision theory literature. What's not familiar is the claim that Problem 1 and Problem 6 should be treated the same way. The argument for that goes via four more problems, and this section introduces them.
 
-**Problem 2** is just like Problem 1, except it provides more backstory about why Demon is so likely to correctly predict Chooser correctly. It is a game with two players: Chooser and Demon. Chooser's payouts are just as before, Demon gets zero payout for an incorrect prediction, and a positive payout for predicting correctly. And Demon is a very good predictor and an expected utility maximiser, so they will almost certainly make correct predictions. But note that Demon's payouts are not the same in each case of a correct prediction. Because Demon is playing a game not making a prediction, I've relabeled their moves. They are called $B$ and $C$; option $A$ will come in at the next step. Here's the game table for Problem 2.
+**Problem 2** is just like Problem 1, except it provides more backstory about why Demon is so likely to correctly predict Chooser correctly. It is a game with two players: Chooser and Demon. Chooser's payouts are just as before, Demon gets zero payout for an incorrect prediction, and a positive payout for predicting correctly. And Demon is a very good predictor and an expected utility maximiser, so they will almost certainly make correct predictions. But note that Demon's payouts are not the same in each case of a correct prediction. Because Demon is playing a game not making a prediction, I've relabeled their moves. They are called B and C; option A will come in at the next step. Table \@ref(tab:abc-v2) is the game table for Problem 2.
 
 ```{r,abc-v2, cache=TRUE}
 generic_abc_v2 <- tribble(
@@ -1156,7 +1152,7 @@ generic_abc_v2 <- tribble(
 gameformat(generic_abc_v2, "Problem 2 (table version).")
 ```
 
-In standard presentations of problems like Problem 1, it is assumed that Demon moves first, but the move isn't revealed until after Chooser moves. So while these problems are evidentially like simultaneous move games, there is a sense in which it is more accurate to represent them as game trees. So let's include the game tree version of Problem 2 as well.
+In standard presentations of problems like Problem 1, it is assumed that Demon moves first, but the move isn't revealed until after Chooser moves. So while these problems are evidentially like simultaneous move games, there is a sense in which it is more accurate to represent them as game trees. So let's include the game tree version of Problem 2 as well, as figure \@ref(fig:abc-v2-tree).
 
 ```{tikz, abc-v2-tree, fig.cap = "Problem 2 (tree version).", fig.ext = 'png', cache=TRUE, fig.width = 4, fig.height = 4, fig.align="center"}
 \usetikzlibrary{calc}
@@ -1177,7 +1173,7 @@ mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
 % The Tree
 \node(0)[hollow node,label=above:{$Demon$}]{}
 
-%child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$e_1,e_2$}]{}
+%child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$e,1$}]{}
 %edge from parent node[above]{A}
 %}
 child[grow=225]{node(3)[solid node]{}
@@ -1199,7 +1195,7 @@ edge from parent node[right,xshift = 3]{C}
 
 I don't know of any argument for treating the table version and tree version of Problem 2 differently, so I will follow the standard assumption that these are two representations of essentially the same problem. 
 
-**Problem 3** is just like Problem 2, except Demon is offered an exit strategy. When Demon moves, they can now choose $A$, $B$ or $C$. If they choose $B$ or $C$, the game continues as before. Chooser is told that Demon chose $B$ or $C$, but not which one they chose, and knows all the payouts, and has to choose $U$ or $D$. If Demon chooses $A$, however, the game ends, and Chooser gets payout $e_1$, while Demon gets payout 1. Here is the tree for that game.
+**Problem 3** is just like Problem 2, except Demon is offered an exit strategy. When Demon moves, they can now choose A, B or C. If they choose B or C, the game continues as before. Chooser is told that Demon chose B or C, but not which one they chose, and knows all the payouts, and has to choose U or D. If Demon chooses A, however, the game ends, and Chooser gets payout $e$, while Demon gets payout 1. Figure \ref(@fig:abc-v3) is the tree for that game.
 
 ```{tikz, abc-v3, fig.cap = "Problem 3.", fig.ext = 'png', cache=TRUE, fig.width = 5, fig.height = 5, fig.align="center"}
 \usetikzlibrary{calc}
@@ -1220,7 +1216,7 @@ mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
 % The Tree
 \node(0)[hollow node,label=above:{$Demon$}]{}
 
-child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$e_1,1$}]{}
+child[grow=left, level distance=25mm]{node(1)[square node, label=left:{$e,1$}]{}
 edge from parent node[above]{A}
 }
 child[grow=225]{node(3)[solid node]{}
@@ -1240,11 +1236,11 @@ edge from parent node[right,xshift = 3]{C}
 \end{tikzpicture}
 ```
 
-That would be enough to specify a game, but decision theorists typically want something more. If Demon predicts Chooser will play $D$, then Demon will clearly play $C$. But what will happen if Demon predicts Chooser will play $U$? In that case, Chooser will get payout 1 from either $A$ or $B$, and all we've been told is that Demon maximises expected utility. So let's add one specification to the game. If Demon predicts that Chooser will play $U$, they will play $B$ with probability $p$, and $A$ with probability $1-p$.
+That would be enough to specify a game, but decision theorists typically want something more. If Demon predicts Chooser will play D, then Demon will clearly play C. But what will happen if Demon predicts Chooser will play U? In that case, Chooser will get payout 1 from either A or B, and all we've been told is that Demon maximises expected utility. So let's add one specification to the game. If Demon predicts that Chooser will play U, they will play B with probability $p$, and A with probability $1-p$.
 
-Note that this suggests Demon might not be ideally rational. From Demon's perspective, $A$ weakly dominates $B$. But they have some probability of choosing $B$. If one thinks that ideal rationality requires eschewing weakly dominated options, this means Demon is not ideally rational. It was, however, never part of the story that Demon is ideal; just that they are a utility maximiser. And they can be, even if they choose $B$.
+Note that this suggests Demon might not be ideally rational. From Demon's perspective, A weakly dominates B. But they have some probability of choosing B. If one thinks that ideal rationality requires eschewing weakly dominated options, this means Demon is not ideally rational. It was, however, never part of the story that Demon is ideal; just that they are a utility maximiser. And they can be, even if they choose B.
 
-**Problem 4** is just like Problem 3, except Chooser must select before being told whether Demon has adopted the exit strategy of $A$. Imagine, to make it vivid, that the game-master is impatiently waiting for Demon's selection, but Demon is stuck in their room, taking their time. Chooser has to run, so the game-master says that Chooser should write their move in an envelope. If Demon chooses $A$, the envelope will be burned, since it doesn't matter . If Demon chooses $B$ or $C$, the envelope will be opened and what's written in it will be Chooser's move. Because Chooser doesn't know which move Demon has made, the tree looks a little different.
+**Problem 4** is just like Problem 3, except Chooser must select before being told whether Demon has adopted the exit strategy of A. Imagine, to make it vivid, that the game-master is impatiently waiting for Demon's selection, but Demon is stuck in their room, taking their time. Chooser has to run, so the game-master says that Chooser should write their move in an envelope. If Demon chooses A, the envelope will be burned, since it doesn't matter . If Demon chooses B or C, the envelope will be opened and what's written in it will be Chooser's move. Because Chooser doesn't know which move Demon has made, the tree (shown in figure \@ref(fig:abc-v4)) looks a little different.
 
 ```{tikz, abc-v4, fig.cap = "Problem 4 (tree version).", fig.ext = 'png', cache=TRUE, fig.width = 6, fig.height = 6, fig.align="center"}
 \usetikzlibrary{calc}
@@ -1266,8 +1262,8 @@ mark=at position .5 with {\arrow[arrowstyle]{stealth}}}}]
 \node(0)[hollow node,label=above:{$Demon$}]{}
 
 child{node(2)[solid node]{}
-child{node[square node,label=below:{$e_1,1$}]{}edge from parent node[left]{U} }
-child{node[square node,label=below:{$e_1,1$}]{} edge from parent node[right]{D}}
+child{node[square node,label=below:{$e,1$}]{}edge from parent node[left]{U} }
+child{node[square node,label=below:{$e,1$}]{} edge from parent node[right]{D}}
 edge from parent node[left, xshift = -4]{A}}
 child{node(3)[solid node]{}
 child{node[square node,label=below:{$x_1,1$}]{}edge from parent node[left]{U} }
@@ -1286,31 +1282,32 @@ edge from parent node[right,xshift = 4]{C}
 \end{tikzpicture}
 ```
 
-Since Demon has no evidence of Chooser's move when Demon makes their one move, and Chooser has no evidence of Demon's move when Chooser makes their move, this is effectively a one-shot simultaneous move game. So we can represent it just as well with a table as a tree.
+Since Demon has no evidence of Chooser's move when Demon makes their one move, and Chooser has no evidence of Demon's move when Chooser makes their move, this is effectively a one-shot simultaneous move game. So we can represent it just as well with table \@ref(tab:abc-v4-table) as a tree.
 
-```{r,abc-v4-tree, cache=TRUE}
+```{r,abc-v4-table, cache=TRUE}
 generic_abc_v4 <- tribble(
 	   ~"", ~A, ~B, ~C,
-	   "U", "$e_1, 1$", "$x_1, 1$", "$x_2, 0$",
-	   "D", "$e_1, 1$", "$x_3, 0$", "$x_4, 2$"
+	   "U", "$e, 1$", "$x_1, 1$", "$x_2, 0$",
+	   "D", "$e, 1$", "$x_3, 0$", "$x_4, 2$"
 	)
 gameformat(generic_abc_v4, "Problem 4 (table version).")
 ```
 
-Since Demon is an external force that produces states of the world which Chooser has no causal influence over, we can just as well treat Demon's moves as states. That will get us **Problem 5**. In that problem, the three moves from Problem 4 become three states. And Chooser knows that $Pr(C | D) = 1, Pr(B | U) = p, Pr(A | U) = 1-p$, and all the other conditional probabilities of states given choices are set to zero. 
+Since Demon is an external force that produces states of the world which Chooser has no causal influence over, we can just as well treat Demon's moves as states. That will get us **Problem 5**, as shown in table \@ref(tab:abc-v5). In that problem, the three moves from Problem 4 become three states. And Chooser knows that $Pr(C | D) = 1, Pr(B | U) = p, Pr(A | U) = 1-p$, and all the other conditional probabilities of states given choices are set to zero. 
 
 ```{r,abc-v5, cache=TRUE}
 generic_abc_v5 <- tribble(
 	   ~"", ~A, ~B, ~C,
-	   "U", "$e_1$", "$x_1$", "$x_2$",
-	   "D", "$e_1$", "$x_3$", "$x_4$"
+	   "U", "$e$", "$x_1$", "$x_2$",
+	   "D", "$e$", "$x_3$", "$x_4$"
 	)
 gameformat(generic_abc_v4, "Problem 5.")
 ```
 
-In this problem, the two states $A$ and $B$ are separated out. But these are just two possible ways that the state $PU$ could be realised. We could collapse these states into one, and replace the listed payouts with Chooser's expected payouts, given that $PU$ is realised and they make a particular choice. That will give us **Problem 6**, with the following familiar looking table.
+In this problem, the two states A and B are separated out. But these are just two possible ways that the state PU could be realised. We could collapse these states into one, and replace the listed payouts with Chooser's expected payouts, given that PU is realised and they make a particular choice. That will give us **Problem 6**, with the following familiar looking table.
 
-```{r,abc-v6, cache=TRUE}
+```{r,abc-v6-reprise, cache=TRUE}
+gameformat(generic_abc_v6, "Problem 6 (reprise).")
 ```
 
 So those are our six problems. In the next section, I'll argue that as theorists, we should think of all these problems the same way.
@@ -1322,33 +1319,86 @@ So those are our six problems. In the next section, I'll argue that as theorists
 
 ### Outguess the Demon
 
-0, 2, 1, 0
+Table \@ref(tab:first-dilemma) is a simple case that can be used to show that causal ratificationism implies the existence of dilemmas, cases where there is no action that is ideally rational.
 
-Alternative version
+```{r, first-dilemma, cache=TRUE}
+first_dilemma <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "0", "2",
+	   "D", "1", "0"
+	)
+gameformat(first_dilemma, "A simple example of a dilemma.")
+```
 
-1, 3, 2, 0
+Assume first, for simplicity, that Chooser can't play any mixed strategy. Chooser simply has to play U or D, and is arbitrarily confident that Demon will guess their choice correctly. Then Chooser will regret their choice whatever they do. But ideally rational choices are not regretted as soon as they are chosen. So no choice is ideally rational.
 
-- Some intuition for U, I don't really share
-- Orthodox game theory doesn't either; only equilibrium is 50/50
-- But if you can't mix, it's  dilemma
+The case I've used here is a somewhat asymmetric version of the _Death in Damascus_ case from @GibbardHarper1978. A slightly more common asymmetric version, as in @Richter1984, would have something like the following table, where there is a benefit to U over D whether Demon is correct or incorrect.
 
-### Open Ended Good
+```{r, second-dilemma, cache=TRUE}
+second_dilemma <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "1", "3",
+	   "D", "2", "0"
+	)
+gameformat(second_dilemma, "A version of asymmetric Death in Damascus.")
+```
 
-The $[0, 1)$ example.
+The cases seem to raise the same philosophical issues as far as I can see, and table \@ref(tab:first-dilemma) is a little simpler, so I'll focus on it.
 
+There is, I gather, a widespread intuition amongst philosophers that decision theory should treat U and D asymmetrically in this case. I don't really share that intuition; they both look like unhappy choices to me. And it isn't shared by orthodox game theory. When table \@ref(tab:first-dilemma) is turned into a game, it becomes \@ref(tab:first-dilemma-game).
 
-### Heaven
+```{r, first-dilemma-game, cache=TRUE}
+first_dilemma_game <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "$0, 1$", "$2, 0$",
+	   "D", "$1, 0$", "$0, 1$"
+	)
+gameformat(first_dilemma_game, "The game version of the simple dilemma.")
+```
 
-The heaven example!
+That game has a unique Nash equilibrium. In equilibrium, Row, or Chooser, plays a 50/50 mix of U and D. The asymmetry in the payouts is reflected in an asymmetry in Column, or Demon's, equilibrium strategy. Their equilibrium strategy is to play $PU$ with probability $\frac{2}{3}$, and $PD$ with probability $\frac{1}{3}$. And that seems intuitively right to me; Chooser should treat the options here symmetrically, and if anyone should treat them asymmetrically, it is Demon.
+
+Thinking about the equilibrium shows us how to drop the assumption that Chooser can't play mixed strategies, while keeping the conclusion that there are dilemmas. In \@ref(tab:first-dilemma) the standard setup is that Demon is an arbitrarily good predictor who is an expected utility maximiser. That settles what Demon will do in all but one case: when Chooser plays a 50/50 mix of U and D. Unfortunately, that's exactly what Chooser will do in equilibrium. So it's an important oversight. To fill it in, let's stipulate that Demon will also play a 50/50 mix of $PU$ and $PD$ if each of them have the same expected utility. That's enough to reinstate the dilemma. 
+
+Every strategy for Chooser is a mixture^[I'm assuming here that the pure strategies U and D are improper mixtures, where Chooser plays one of them with probability 1, and the other with probability 0. This assumption isn't at all needed for the proof; but it simplifies the presentation.] where U is played with probability $p$, and D is played with probability $1-p$. If $p < 0.5$, then Chooser thinks Demon will play $PD$, so they should definitely play U, so they regret any strategy other than U for sure. And that means they regret playing this mixture where $p < 0.5$. If $p > 0.5$, then Chooser thinks Demon will play $PU$, so they should definitely play D, so they regret any strategy other than D for sure. And that means they regret playing this mixture where $p > 0.5$. And if $p = 0.5$, then Chooser thinks Demon will play a 50/50 mixture of $PU$ and $PD$, in which case they think the right strategy is to play U for sure. (This is where the asymmetry in the payoffs matters.) And so they regret the mixed strategy where $p = 0.5$. Whichever strategy, mixed or pure, that Chooser adopts, they regret it. So no strategy, mixed or pure, is ideally rational.
+
+It's easy to think that if mixed strategies are allowed, then the fact that these games have equilibria means they must allow strategies that won't be regretted. The problem with that reasoning is that it assumes more about Demon's dispositions than is known. It isn't stipulated that Demon is perfectly rational, or that they are an equilibrium seeker. It is just stipulated that they are an excellent predictor and a utility maximiser. And that isn't enough to rule out dilemmas, as this example shows.
+
+I'll have much more to say about mixed strategies as this chapter progresses. But I'll leave them here, and turn to dilemmas that are not unique to causal ratificationism.
+
+### Open Ended Good {#openendedgood}
+
+Here is a very familiar example of a case where every theory says there is no ideally rational choice.
+
+> **Open Ended Good**    
+> Chooser must pick a real in $[0, 1)$. The higher the number they pick, the greater their reward will be.
+
+For any $x \in [0, 1)$, if Chooser picks $x$, they could have instead picked $\frac{1+x}{2}$, which would have been better. So any pick they make is bad, either after they make it (as matters for causal ratificationism), or before they make it (as matters for most other theories). So it is a dilemma.
+
+It is a dilemma that involves there being infinitely many choices. But it's hard to see why that should make a philosophical difference. I'll return to this point in section \@ref(whyallow), but for now simply note that any argument that dilemmas are impossible on theoretical grounds must say that **Open Ended Good** is somehow impossible. And it's hard to see why it would be.
+
+### Heaven {#heaven}
+
+One reason someone may worry about **Open Ended Good** is that it involves discontinuous payouts. The limit payout, as $x$ tends to 1, of choosing $x$ is 1. But the payout of choosing 1 is undefined. If we allow unlimited payouts, this discontinuity goes away. Unlimited payouts are sometimes thought to be of dubious coherence due to paradoxes like St. Petersburg, and I'm somewhat sympathetic to this line of thought. But they can be motivated, even in paradoxical situations.
+
+> **Heaven**    
+> Chooser has died, and gone to face the last judgment. God looks over Chooser's varied and active life, and is struggling to make a final call. He eventually says, "Look there is so much bad here I can't just let you into Heaven. But there is so much good that I can't just send you away either. So here's what I'll do. You'll stay a while here, then off to the other place. I've been struggling with thinking about how long you should stay here." And at this point, Chooser is hoping God picks a very large number. Chooser has had a bit of a look around while God was deciding. This is strictly speaking against the rules, but as we mentioned, Chooser had a varied and active life. Chooser has realised that (a) days in Heaven are good, and the goodness of them does not diminish over time, (b) the other place is considerably less good, and (c) the afterlife is infinite in duration. After a pause, God speaks again. "You know what, you decide. Pick a number, any number, any natural number that is, and you'll spend that many days here, then off to the other place." What should Chooser do?
+
+Again, Chooser faces a dilemma. If Chooser picks $n$, then it would have been considerably better to pick $2n$, or $n!$, or $(n!)!$. Whatever choice Chooser makes, will be regretted instantly.
+
+It is worth thinking through this case a bit, to get a feel for what dilemmas are like from the inside. I think there is a common view that decision theory shouldn't allow dilemmas because it should be practical, that it should offer advice. And saying in cases like table \@ref(tab:first-dilemma) that whatever one does, one will regret it, isn't exactly advice. But in **Heaven**, that's obviously the right thing to say. Or, at least, it's obviously part of the right thing to say. And both of these insights, that everything is regrettable is both correct and incomplete, will be important in what follows.
 
 ### The Salesman
 
-The last example is the Salesman problem from section \@ref(deccertainty). The aim is to find as short a path as possible through these cities, assuming that it is possible to travel between any two cities in a straight line.
+The last example I'll discuss in this section is **Salesman**, the problem from section \@ref(deccertainty). The aim is to find as short a path as possible through these cities, assuming that it is possible to travel between any two cities in a straight line.
 
-```{r salesman-points, fig.cap="The 257 cities that must be visited in the Salesman problem."}
+```{r salesman-points-reprise, fig.cap="The 257 cities that must be visited in the Salesman problem (reprise)."}
+tour_map_points_only
 ```
 
- Just about the least thoughtful path possible orders the cities alphabetically. The resulting tour looks like this.
+This isn't a strict dilemma; there is a shortest path. But it is going to pattern with the dilemmas in a lot of philosophically important respects. And, like with **Heaven**, it helps to get clear on how dilemmas work by thinking through how to solve it.
+
+Just about the least thoughtful path possible orders the cities alphabetically. The resulting tour is shown in figure \@ref(fig:alpha-tour).
 
 ```{r drawmap-definition, cache=FALSE}
 drawmap <- function(tour_line){
@@ -1392,14 +1442,14 @@ tour_line <- solve_TSP(as.TSP(city_matrix), method="identity")
 drawmap(tour_line)
 ```
 
-It's only slightly more thoughtful to order the cities from west-to-east, but it does reduce the length by nearly two-thirds.
+It's only slightly more thoughtful to order the cities from west-to-east, as in figure \@ref(fig:longit-tour), but it does reduce the length by nearly two-thirds.
 
 ```{r longit-tour, cache=TRUE, fig.cap="A solution to the salesman problem that orders the cities by longtitude."}
 tour_line <- TOUR(arrange(our_gps, long)$rowid, tsp = as.TSP(city_matrix))
 drawmap(tour_line)
 ```
 
-Let's try something slightly more thoughtful. Start in an arbitrary city, I'll use New York, and then at each step go to the nearest city that isn't yet on the path. The result looks like this.
+Let's try something slightly more thoughtful. Start in an arbitrary city, I'll use New York, and then at each step go to the nearest city that isn't yet on the path. The result looks tour is shown in \@ref(fig:newyork-tour).
 
 ```{r newyork-tour, cache=TRUE, fig.cap="A solution to the salesman problem that chooses the nearest remaining city."}
 bad_path <- c(153)
@@ -1427,7 +1477,7 @@ Here's a much better idea, in two stages. For both stages I've used the implemen
 
 The first stage uses the _farthest-insertion_ method. The idea is to build the path in stages. At each stage, the algorithm identifies the city that is farthest from the existing path. It then inserts that city into the path at the spot where it will make the least addition to the path length. These kind of insertion algorithms are common. What makes the farthest-insertion algorithm work well is that it forces the path to start with something like a loop around the edges of the map, and this is a generally good approach.
 
-The second stage uses the _two-optimization_ method. This takes a completed path as input, and tries to improve it by seeing if the path would be shortened by flipping adjacent points. It does this repeatedly until it finds a local minimum. One way to turn this into an algorithm is to start with a random path. But what I did here was start with the path that a particular run of the farthest-insertion method generated. The farthest-insertion algorithm needs a start city, or it will choose one randomly. So for reproducibility purposes, I used New York again. And I set the _seed_ for the random number generator in R to 1. And the result was this elegant path.
+The second stage uses the _two-optimization_ method. This takes a completed path as input, and tries to improve it by seeing if the path would be shortened by flipping adjacent points. It does this repeatedly until it finds a local minimum. One way to turn this into an algorithm is to start with a random path. But what I did here was start with the path that a particular run of the farthest-insertion method generated. The farthest-insertion algorithm needs a start city, or it will choose one randomly. So for reproducibility purposes, I used New York again. And I set the _seed_ for the random number generator in R to 1. And the result was the elegant path shown in figure \@ref(fig:two-stage-tour).
 
 ```{r two-stage-tour, cache=TRUE, fig.cap="A solution to the salesman problem that uses two algorithms."}
 set.seed(1)
@@ -1438,7 +1488,7 @@ drawmap(tour_line)
 
 That map has a lot of virtues. There aren't any obvious missteps on the map, where it's easy to see just by looking that it could be shortened. The theory behind it makes sense. It was generated very quickly. It took my computer more time to draw the map than to find the path. And it is very short compared to the other maps we've seen.
 
-But it isn't optimal. I'm not sure what is optimal, but here's the shortest one I found after trying a few methods.
+But it isn't optimal. I'm not sure what is optimal, but the shortest one I found after trying a few methods is shown in figure \@ref(fig:two-stage-optimal).
 
 ```{r two-stage-optimal, cache=TRUE, fig.cap="The best solution I found to the salesman problem."}
 set.seed(33)
@@ -1447,7 +1497,7 @@ tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
 drawmap(tour_line)
 ```
 
-This used the same idea, but with a bit more brute force. The algorithm was the same two-step approach as the last map. But I had the computer cycle through all the different possible starting cities, and varied the seed for the randomisation. (The algorithm isn't quite deterministic, since it uses random numbers to break ties when it is asked to find the farthest city, or the shortest insertion.) And setting the start city to Dubuque, Iowa, and the seed to 33, generated that map.
+This used the same idea, but with a bit more brute force. The algorithm was the same two-step approach as the last map. But I had the computer cycle through all the different possible starting cities, and varied the seed for the randomisation. (The algorithm isn't quite deterministic, since it uses random numbers to break ties when it is asked to find the farthest city, or the shortest insertion.) And setting the start city to Dubuque, Iowa, and the seed to 33, generated that map. Finding these settings took some time, and I'm not sure it is even optimal. It would actually be helpful for the argument I'm about to make if it isn't optimal, and the shortest path is shorter again. But let's assume that it, or something like it, is. Because what I want us to focus on is the philosophical status of the tour in figure \@ref(fig:two-stage-tour). Getting clear on that will be the beginning of a solution to the puzzles about dilemmas.
 
 ### Characteristics of the Puzzles
 
@@ -1493,14 +1543,14 @@ A bad argument form, and why it matters
 
 
 
-### An Argument against EDT {#badargument}
+### An Argument against EDT {@badargumentedt}
 
 - Open Ended Good
 - Of course, this is a bad argument
 
 ### A Recipe for Counterexamples {#recipe}
 
-Once you see the idea behind the argument in section \@ref(badargument), it's easy to see how to construct 'counterexamples' to any decision theory that allows for dilemmas. For instance, here is a general purpose recipe for constructing counterexamples to most forms of Causal Decision Theory, causal defensivism included.
+Once you see the idea behind the argument in subsection \@ref(badargumentedt), it's easy to see how to construct 'counterexamples' to any decision theory that allows for dilemmas. For instance, here is a general purpose recipe for constructing counterexamples to most forms of Causal Decision Theory, causal defensivism included.
 
 Step One 
 :    Find some game where one player has demon-like payouts, and there is no pure strategy equilibrium for the other player. By a 'demon-like payout', I mean that player's payouts are all 1s and 0s, and you can sensibly interpret the 1s as situations where they correctly predicted the other player's choice.
@@ -1541,7 +1591,7 @@ Stage Two
 Stage Three
 :    Chooser selects one of two bets. Bet R (for right) wins $25 if Demon predicted correctly, and loses $75 if Demon predicted incorrectly. Bet W (for wrong) wins $75 if Demon predicted incorrectly, and loses $25 if Demon predicted correctly.
 
-After this the moves are revealed, and Chooser gets their rewards. Here is the strategic form of the game, assuming Demon wants to make correct predictions, and ignoring strategies that differ only in what Chooser does in worlds that are ruled out by their Stage Two choice. (I'll leave it as an exercise for the reader to confirm that they aren't relevant to the analysis.)
+After this the moves are revealed, and Chooser gets their rewards. The strategic form of the game is shown in figure \@ref(fig:betting-against-demon). I'm assuming Demon wants to make correct predictions, and ignoring strategies that differ only in what Chooser does in worlds that are ruled out by their Stage Two choice. (I'll leave it as an exercise for the reader to confirm that they aren't relevant to the analysis.)
 
 ```{r, betting-against-demon, cache=TRUE}
 demon_betting_strategic <- tribble(
@@ -1558,7 +1608,7 @@ For Chooser, each row sets out what they do at stage two, and what they do at st
 
 It should be clear enough that there are no pure strategy Nash equilibria for this game. The best response to P1 is 2W, but the pair of 2W and P1 is not a Nash equilibrium. And the best response to P2 is 1W, but the pair of 1W and P2 is not a Nash equilibrium. 
 
-But of course this game is not a strategic form game, it's an extensive form game. Here is the game tree for it.
+But of course this game is not a strategic form game, it's an extensive form game. Figure \@ref(fig:betting-against-demon-tree) is the game tree for it.
 
 ```{tikz, betting-against-demon-tree, fig.cap = "The game tree for the betting against the demon example", fig.ext = 'png', cache=TRUE}
 \usetikzlibrary{calc}
@@ -1628,7 +1678,7 @@ If Chooser can randomise, they should randomise. They should play the one and on
 
 If Chooser can't randomise, then it's a dilemma. What we say here should be similar to what EDT, or any other decision theory, says about the example in section \@ref(recipe). But what is that? Let's come back to that question in a bit - first I'll address some objections to the very idea that there could be dilemmas in decision theory.
 
-## Why Allow Dilemmas
+## Why Allow Dilemmas {#whyallow}
 
 ### Arguments Against Dilemmas
 
@@ -1649,6 +1699,7 @@ Be like a smart rationally constrained person
 Use heuristics that work much of the time, on average
 
 **This might end up looking a lot like EDT**
+
 Maybe this is why Newcomb's Problem is so hard
 
 # Against Coherence Norms {#coherence}
@@ -1710,7 +1761,7 @@ To start, let's translate the beer-quiche game into decision-theoretic terms, us
 6. Chooser gets 2 utils if Demon predicts they are type $u$, and 1 util if their choice 'matches' their type, i.e., if they select $U$ if they are $u$ or $D$ if they are $d$.
 7. Demon gets 1 util if their guess is correct.
 
-Here is the game in graphical form.
+Figure \@ref(fig:beer-quiche) presents the game in graphical form.
 
 ```{tikz, beer-quiche, fig.cap = "A Signaling Game", fig.ext = 'png', cache=TRUE}
 \usetikzlibrary{calc}
@@ -1791,7 +1842,7 @@ So decision theory should take substantive notions of rationality into account
 
 ## So Why Ain't You Rich?
 
-There is a familiar complaint against causal decision theory that goes back to the modern origins of decision theory in the 1970s. Here is a recent version of it due to @AhmedPrice2012. While their version is primarily directed against proceduralist forms of causal decision theory, this particular objection does not turn on the proceduralism. If the objection works, it also works against my defensivist version of causal decision theory. (I've slightly changed some of the wording, but otherwise this argumentis quoted from page 16 of their paper.)
+There is a familiar complaint against causal decision theory that goes back to the modern origins of decision theory in the 1970s. Here is a recent version of it due to @AhmedPrice2012. While their version is primarily directed against proceduralist forms of causal decision theory, this particular objection does not turn on the proceduralism. If the objection works, it also works against my defensivist version of causal decision theory. (I've slightly changed some of the wording, but otherwise this argument is quoted from page 16 of their paper.)
 
 1. In Newcomb problems, the average returns to one-boxing exceed that to two-boxing.
 2. Everyone can see that (1) is true.
@@ -1800,7 +1851,7 @@ There is a familiar complaint against causal decision theory that goes back to t
 
 Here's what they, and many other proponents of Evidential Decision Theory (EDT) say follows from 4.
 
-> The point of the argument is that if everyone knows that the CDT-irrational strategy will in fact do better on average than the CDT-rational strategy, then it’s rational to play the CDT-irrational strategy. @AhmedPrice2012, 17
+> The point of the argument is that if everyone knows that the CDT-irrational strategy will in fact do better on average than the CDT-rational strategy, then it’s rational to play the CDT-irrational strategy. [@AhmedPrice2012, 17]
 
 This is what @Lewis1981e called the "Why Ain'cha Rich" argument, and what following @Bales2018 I'll call the WAR argument. I'm going to argue the last step of the WAR argument doesn't follow. Or, at the very least, that proponents of EDT cannot coherently say that it follows. For there are several cases where EDT foreseeably does worse than CDT. This section will go over three of them.
 
@@ -1812,9 +1863,9 @@ This game takes place over three rounds.
 2. At stage two, demon chooses Left or Right, and this choice is announced.
 3. At stage three demon and the player simultaneously choose either Up or Down. Demon is very good at predicting what player's choices will be, and indeed at stage two they were already very good at making such a prediction. And Demon wants to use these predictive powers to get as high a payoff as possible, and this is common knowledge.
 
-If Demon chose Left at stage two, stage three involves the following game.
+If Demon chose Left at stage two, stage three involves the game in table \@ref(tab:left-anti-war).
 
-```{r}
+```{r left-anti-war, cache=TRUE}
 left_anti_war <- tribble(
 	   ~"", ~PU, ~PD,
 	   "U", "$2, 1$", "$4, 0$",
@@ -1823,18 +1874,18 @@ left_anti_war <- tribble(
 gameformat(left_anti_war, "The left hand side of Split Newcomb")
 ```
 
-But if Demon chose Right at stage two, stage three involves this game.
+But if Demon chose Right at stage two, stage three involves the game in table \@ref(tab:right-anti-war).
 
-```{r}
+```{r right-anti-war, cache=TRUE}
 right_anti_war <- tribble(
 	   ~"", ~PU, ~PD,
 	   "U", "$12, 4$", "$14, 0$",
 	   "D", "$11, 0$", "$13, 2$"
 	)
-gameformat(left_anti_war, "The left hand side of Split Newcomb")
+gameformat(right_anti_war, "The left hand side of Split Newcomb")
 ```
 
-If you'd prefer it as a game tree, here it is.
+If you'd prefer it as a game tree, it is presented in figure \@ref(fig:first-anti-war).
 
 ```{tikz, first-anti-war, fig.cap = "Tree Diagram of the Split Newcomb Game", fig.ext = 'png', cache=TRUE}
 \tikzset{
@@ -1942,6 +1993,9 @@ At the third stage, Demon will try to guess what the coin showed. Demon knows th
 
 The payoffs to each player are a function of what happens at each of the three steps, and are given by the following table.
 
+
+Table: (\#tab:payoffs-demon-coin) Payoffs for the coins and signals game.
+
  Coin   Chooser   Demon   Chooser Payoff   Demon Payoff  
 ------ --------- ------- ---------------- --------------
    H      U        H       40               1
@@ -1953,7 +2007,7 @@ The payoffs to each player are a function of what happens at each of the three s
    T      D        H       28               0
    T      D        T       36               1
 
-In tree form, here is the game they are playing.
+Figure \@ref(fig:second-anti-war) shows game they are playing in tree form.
 
 ```{tikz, second-anti-war, fig.cap = "Tree Diagram of the Coins and Signals Game", fig.ext = 'png', cache=TRUE}
 \usetikzlibrary{calc}
@@ -2033,12 +2087,16 @@ Now you might object that while the the causal defensivist can do better, it doe
 
 ### Example Three - Coins and Newcomb
 
-This is just like Example Two, with one twist. If the game goes Tails, Down, Tails, then we don't immediately end the game and make payouts to the players. Instead we play another game, with a familiar structure. As always, Demon is really good at predicting Chooser's play, and Chooser's payouts are listed first in every cell. (I'm not going to include a tree here, because it is more confusing than helpful.)
+This is just like Example Two, with one twist. If the game goes Tails, Down, Tails, then we don't immediately end the game and make payouts to the players. Instead we play another game, with a familiar structure, and the payouts shown in table \@ref(tab:third-anti-war). As always, Demon is really good at predicting Chooser's play, and Chooser's payouts are listed first in every cell. (I'm not going to include a tree here, because it is more confusing than helpful.)
 
-        Up       Down
------ -------- --------
-   Up  20, 1    40, 0
- Down  16, 0    36, 1
+```{r third-anti-war, cache=TRUE}
+third_anti_war <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "$20, 1$", "$40, 0$",
+	   "D", "$16, 0$", "$36, 1$"
+	)
+gameformat(third_anti_war, "The payouts after tails–down–tails in coins and signals.")
+```
 
 The EDTer will think they'll get 36 from this game, so the example will be just like Example Two. And the EDTer will play Up if Heads, Down if Tails, for an expected return of 38.
 
@@ -2071,7 +2129,7 @@ In chapter \@ref(decisive) I argued that decision theory is often compatible wit
 
 This chapter argues that thinking about symmetric games gives us new reason to believe in permissivism. In some finite games, if permissivism is false then we have to think that a player is more likely to take one option rather than another, even though each have the same expected return given that player's credences. And in some infinite games, if permissivism is false there is no rational way to play the game, although intuitively the games could be rationally played. The latter set of arguments rely on the recent discovery that there are symmetric games with only asymmetric equilibria. It was long known that there are symmetric games with no pure strategy symmetric equilibria; the surprising new discovery is that there are symmetric games with asymmetric equilibria, but no symmetric equilibria involving either mixed or pure strategies.
 
-The permissivist theses that have been the focus of recent philosophical attention vary along two dimensions.^[For a much more thorough introduction to the debate, and especially into the varieties of permissivist theses, see @KopecTitelbaum2016. Much of the setup here, including for example the use of the subjective Bayesian as an illustrative example, is from that paper. Some notable more recent contributions to the debate include @Schultheis2018 arguing for Uniqueness, and @Callahan2021 arguing for Permissivism. Callahan connects Permissivism to existentialism. I suspect there are deep and unexplored connections here, but exploring them is a task for a different book. ]
+The permissivist theses that have been the focus of recent philosophical attention vary along two dimensions.^[For a much more thorough introduction to the debate, and especially into the varieties of permissivist theses, see @KopecTitelbaum2016. Much of the setup here, including for example the use of the subjective Bayesian as an illustrative example, is from that paper. Some notable more recent contributions to the debate include @Schultheis2018 arguing for Uniqueness, and @Callahan2021 arguing for Permissivism. Callahan connects Permissivism to existentialism. I suspect there are deep and unexplored connections here, but exploring them is a task for a different book.]
 
 The first dimension concerns what we hold fixed when we say that multiple attitudes are rationally permissible. The weakest possible theory just says that two people with distinct attitudes may both be rational. No one really denies this. The strongest theory says that holding every fact about a situation constant, there are two possible rational attitudes. In between we have a number of interesting theses. For instance, we can ask whether multiple attitudes are rationally compatible holding constant the evidence the believer has. And we can ask whether multiple attitudes are rationally compatible holding constant both the evidence and the believer's prior doxastic states. A classic form of subjective Bayesianism answers _yes_ to the first question, and _no_ to the second. The focus here will be on a thesis very close to the strongest one - whether two people who are alike in all qualitative respects can rationally have different attitudes.
 
@@ -2102,7 +2160,7 @@ Since the games are symmetric, we don't have to ask about which player will make
 
 ## Chicken
 
-Some finite symmetric games have no symmetric pure-strategy equilibria. One notable example is Chicken. Here's a version of Chicken that will do.
+Some finite symmetric games have no symmetric pure-strategy equilibria. One notable example is Chicken. Table \@ref(tab:simple-chicken) shows a version of Chicken that will do.
 
 ```{r, simple-chicken}
 chicken <- tribble(
@@ -2148,24 +2206,24 @@ Over the years, a positive answer was given to various restricted forms of that 
 
 But recently it has been proven that the answer to the general question is no. Mark @Fey2012 showed that there are symmetric positive-sum two-player games that have only asymmetric equilibria.^[Fey also includes a nice chronology of some of the proofs of positive answers to restricted forms of the question.] And Dimitrios @Xefteris2015 showed that there is a symmetric three-player zero-sum that has only asymmetric equilibria. In fact, he showed that a very familiar game, a version of a Hotelling–Downs model of elections, has this property. Here's how he describes the game.
 
-> Consider a unit mass of voters. Each voter is characterized by her ideal policy. We assume that the ideal policies of the voters are uniformly distributed in [0, 1]. We moreover assume that three candidates $A$, $B$ and $C$ compete for a single office. Each candidate $J \in \{A, B, C\}$ announces a policy $s_J \in [0, 1]$  and each voter votes for the candidate who announced the policy platform which is nearest to her ideal policy. If a voter is indifferent between two or among all three candidates she evenly splits her vote between/among them. A candidate $J \in \{A, B, C\}$ gets a payoff equal to one if she receives a vote-share strictly larger than the vote-share of each of the two other candidates. If two candidates tie in the first place each gets a payoff equal to one half. If all three candidates receive the same vote-shares then each gets a payoff equal to one third. In all other cases a candidate gets a payoff equal to zero. @Xefteris2015, 124
+> Consider a unit mass of voters. Each voter is characterized by her ideal policy. We assume that the ideal policies of the voters are uniformly distributed in [0, 1]. We moreover assume that three candidates A, B and C compete for a single office. Each candidate $J \in \{A, B, C\}$ announces a policy $s_J \in [0, 1]$  and each voter votes for the candidate who announced the policy platform which is nearest to her ideal policy. If a voter is indifferent between two or among all three candidates she evenly splits her vote between/among them. A candidate $J \in \{A, B, C\}$ gets a payoff equal to one if she receives a vote-share strictly larger than the vote-share of each of the two other candidates. If two candidates tie in the first place each gets a payoff equal to one half. If all three candidates receive the same vote-shares then each gets a payoff equal to one third. In all other cases a candidate gets a payoff equal to zero. [@Xefteris2015, 124]
 
-It is clear that there is no symmetric pure-strategy equilibrium here. If all candidates announced the same policy, everyone would get a payoff of $\frac{1}{3}$. But no matter what that strategy is, if $B$ and $C$ announce the same policy, then $A$ has a winning move available. 
+It is clear that there is no symmetric pure-strategy equilibrium here. If all candidates announced the same policy, everyone would get a payoff of $\frac{1}{3}$. But no matter what that strategy is, if B and C announce the same policy, then A has a winning move available. 
 
 What's more surprising, and what Xefteris proves, is that there is no symmetric mixed strategy equilibria either. Again, in such an equilibrium, any player would have a payoff of $\frac{1}{3}$. Very roughly, the proof that no such equilibrium exists is that random deviations from the equilibrium are as likely to lead to winning as losing, so they have a payoff of roughly $\frac{1}{2}$. So there is no incentive to stay in equilibrium. So no symmetric equilibrium exists.
 
-But if Uniqueness is true, and if it is possible to play the game under circumstances of common knowledge of rationality and kind, then there must be a symmetric equilibrium. The reason is that a version of the proof of the previous section still goes through. Whatever credal distribution $A$ has over $B$'s possible policies, $A$ must also have over $C$'s policies (since they both adopt the uniquely rational strategy), and she must know that $B$ and $C$ each have over each other's policies and over hers, and these distributions must be consistent with each player having these credal distributions while thinking that the other players have the same distributions and are maximising expected utility. In other words, the assumptions we've made about the game imply that $A$ has a credal distribution $F$ over $B$'s possible policies only if the mixed strategy triple where each player adopts $F$ as their mixed strategy is itself an equilibrium. And that would be a symmetric equilibrium. But no symmetric equilibrium exists. 
+But if Uniqueness is true, and if it is possible to play the game under circumstances of common knowledge of rationality and kind, then there must be a symmetric equilibrium. The reason is that a version of the proof of the previous section still goes through. Whatever credal distribution A has over B's possible policies, A must also have over C's policies (since they both adopt the uniquely rational strategy), and she must know that B and C each have over each other's policies and over hers, and these distributions must be consistent with each player having these credal distributions while thinking that the other players have the same distributions and are maximising expected utility. In other words, the assumptions we've made about the game imply that A has a credal distribution $F$ over B's possible policies only if the mixed strategy triple where each player adopts $F$ as their mixed strategy is itself an equilibrium. And that would be a symmetric equilibrium. But no symmetric equilibrium exists. 
 
 But if we drop Uniqueness, it is possible to keep all the other assumptions. As Xefteris points out, the game has asymmetric equilibria. Here is one possible model for the game.
 
-- $A$ plays 0.6 (and wins), $B$ and $C$ each play 0.4 (and lose).
+- A plays 0.6 (and wins), B and C each play 0.4 (and lose).
 - Each player has a correct belief about what the other players will play.
-- But both $B$ and $C$ know they cannot win given the other player's moves, so they pick a move completely arbitrarily.
+- But both B and C know they cannot win given the other player's moves, so they pick a move completely arbitrarily.
 - Further, each player has a correct belief about why each player makes the move they make.
 
 This is the coherent equilibria that Xefteris describes, but note that it is rather implausible that we'd end up there in a real-life version of the game. It requires two of the players to know that one of the other players will be indifferent between their options, but from this draw a correct inference about what they will do. That's not particularly plausible. So let's note that there is a somewhat more plausible way to get all three players to make those moves.
 
-- $A$ plays 0.6 (and wins), $B$ and $C$ each play 0.4 (and lose).
+- A plays 0.6 (and wins), B and C each play 0.4 (and lose).
 - The only two rational plays are 0.4 and 0.6, but each of them is permissible.
 - In any world that a player believes to be actual, or a player believes another player believes to be actual, or a player believes another player believes another player believes to be actual, etc., the following two conditions hold.
 - If a player plays 0.6, they believe the other two players will play 0.4, and hence playing 0.6 is a winning move.
@@ -2183,17 +2241,17 @@ This possibility is a little uncomfortable for philosophical defenders of Unique
 
 The bigger worry here is that one key argument for Uniqueness seems to require that Uniqueness is knowable. A number of recent authors have argued that Uniqueness best explains our practice of deferring to rational people.^[There is a nice discussion of this argument, including citations of the papers I'm about to discuss, in @KopecTitelbaum2016 [195].] For instance, Greco and Hedden use this principle in their argument for Uniqueness.
 
-> If agent $S_1$ judges that $S_2$'s belief that $P$ is rational and that $S_1$ does not have relevant evidence that $S_2$ lacks, then $S_1$ defers to $S_2$'s belief that $P$. @GrecoHedden2016, 373.
+> If agent $S_1$ judges that $S_2$'s belief that $P$ is rational and that $S_1$ does not have relevant evidence that $S_2$ lacks, then $S_1$ defers to $S_2$'s belief that $P$. [@GrecoHedden2016, 373].
 
-Similar kinds of arguments are made by @Dogramaci2012 and @Horowitz2014. But the principle looks rather dubious in the case of these games. Imagine that $A$ forms a belief that $B$ believes that a rational thing to do in the Xefteris game is to play 0.6, and so she will play 0.6. She should judge that belief to be rational; as we saw it is fully defensible. But although she does not believe that she has evidence that $B$ lacks, she should not defer to it. At least, she should not act as if she defers to it; believing that $B$ will play 0.6 is a reason to play something other than 0.6. 
+Similar kinds of arguments are made by @Dogramaci2012 and @Horowitz2014. But the principle looks rather dubious in the case of these games. Imagine that A forms a belief that B believes that a rational thing to do in the Xefteris game is to play 0.6, and so she will play 0.6. She should judge that belief to be rational; as we saw it is fully defensible. But although she does not believe that she has evidence that B lacks, she should not defer to it. At least, she should not act as if she defers to it; believing that B will play 0.6 is a reason to play something other than 0.6. 
 
 And that's the general case for these symmetric games with only asymmetric equilibria. Believing that someone else is at an equilibrium point is a reason to not copy them. If it were not a reason to not copy them, then the strategy profile where each player plays the same thing would be a symmetric equilibrium. So thinking about these games doesn't just give us a rebutting defeater for Uniqueness, as described in the previous two sections, but an undercutting defeater, since they also tell against a premise that has been central to recent defences of Uniqueness.
 
-I think there is a somewhat better move available to the Uniqueness theorist. They could simply deny that the Xefteris game, as I've described it, is even possible. ^[This is really just a response to the argument based on that game; I think they just have to say that in Chicken a rational player will rationally think the other player is more likely to make one of the two choices with equal expected payoffs.] This perhaps isn't as surprising as it might seem.
+I think there is a somewhat better move available to the Uniqueness theorist. They could simply deny that the Xefteris game, as I've described it, is even possible.^[This is really just a response to the argument based on that game; I think they just have to say that in Chicken a rational player will rationally think the other player is more likely to make one of the two choices with equal expected payoffs.] This perhaps isn't as surprising as it might seem.
 
 Note two things about the Xefteris game. First, it is an infinite game in the sense that each player has infinitely many choices. It turns out this matters to the proof that there is no symmetric equilibrium to the game. Second, we are assuming it is common knowledge, and hence true, that the players are perfectly rational. Third, we are assuming that perfect rationality entails that people will not choose one option when there is a better option available. When you put those three things together, some things that do not look obviously inconsistent turn out to be impossible. Here's one example of that.
 
-> $A$ and $B$ are playing a game. Each picks a real number in the open interval (0, 1). They each receive a payoff equal to the average of the two numbers picked.
+> A and B are playing a game. Each picks a real number in the open interval (0, 1). They each receive a payoff equal to the average of the two numbers picked.
 
 For any number that either player picks, there is a better option available. It is always better to pick $\frac{x+1}{2}$ than $x$, for example. So it is impossible that each player knows the other is rational, and that rationality means never picking one option when a better option is available. 
 
