@@ -13,35 +13,35 @@ require(grid)
 knitr::opts_chunk$set(echo = FALSE, results = "asis")
 
 gameformat <- function(game, caption){
-#   gg <- as_hux(game) %>%
-#     set_width(ncol(game)/10) %>%
-# 	  set_markdown() %>% 
-#     set_caption(caption) %>%
-#     set_bold(1, everywhere) %>%
-#     set_bold(everywhere, 1) %>%
-#     set_align(everywhere, everywhere, "center") %>%
-# #    set_right_border(everywhere, 1, 0.5) %>%
-# #    set_bottom_border(1, everywhere, 0.5) %>%
-#     set_right_border_color(everywhere, 1, "grey60") %>%
-#     set_bottom_border_color(1, everywhere, "grey60") %>%
-#     set_caption_pos("bottom") %>%
-#     set_row_height(everywhere, 0.6) %>%
-#   print_html(gg)
-  kable(game,
-     format = 'latex',
-   booktabs = T,
-   escape = FALSE,
-   align = paste0("r",strrep("c", ncol(game)-1)),
-   linesep = "",
-   caption = caption) %>%
-  column_spec(0:ncol(game), border_right = F) %>%
-  column_spec(1,
-             border_right = T,
-             bold = T) %>%
-  row_spec(0, bold = T) %>%
-  sub("\\\\toprule", "", .) %>%
-  sub("\\\\bottomrule", "", .) %>%
-  sub("\\\\midrule", "\\\\hline", .)
+  gg <- as_hux(game) %>%
+    set_width(ncol(game)/10) %>%
+	  set_markdown() %>% 
+    set_caption(caption) %>%
+    set_bold(1, everywhere) %>%
+    set_bold(everywhere, 1) %>%
+    set_align(everywhere, everywhere, "center") %>%
+#    set_right_border(everywhere, 1, 0.5) %>%
+#    set_bottom_border(1, everywhere, 0.5) %>%
+    set_right_border_color(everywhere, 1, "grey60") %>%
+    set_bottom_border_color(1, everywhere, "grey60") %>%
+    set_caption_pos("bottom") %>%
+    set_row_height(everywhere, 0.6) %>%
+  print_html(gg)
+  # kable(game,
+  #    format = 'latex',
+  #  booktabs = T,
+  #  escape = FALSE,
+  #  align = paste0("r",strrep("c", ncol(game)-1)),
+  #  linesep = "",
+  #  caption = caption) %>%
+  # column_spec(0:ncol(game), border_right = F) %>% 
+  # column_spec(1,
+  #            border_right = T,
+  #            bold = T) %>%
+  # row_spec(0, bold = T) %>%
+  # sub("\\\\toprule", "", .) %>%
+  # sub("\\\\bottomrule", "", .) %>%
+  # sub("\\\\midrule", "\\\\hline", .)
 
 
 # Have to add space between caption and table
@@ -439,7 +439,7 @@ On the other hand, there is a causal connection between the choice and the state
 
 So here we get to a point of common ground among contemporary decision theorists. It will, more or less, be the last point of common ground on the journey; from here everything gets contentious. When there is both an evidential and a causal connection between the possible choices and the possible states of the world, it is inappropriate to use Basic Decision Theory to make a decision. Indeed, in these cases, Basic Decision Theory will often validate the wrong decision.
 
-It's not quite a universal view, and we'll come back in section \@ref(quiggin) to people who don't believe it, but there is another very widely accepted claim in the vicinity of this one. When there is no evidential or causal connection between the possible choices and the possible states, most theorists think Basic Decision Theory recommends the right choice. Now they might not say, and typically do not say, that it makes the right recommendations for the right reasons. But they do say, at least most of them, that it gets the verdicts right. In the favored lingo of twentieth century philosophers, it is extensionally adequate in these cases.
+It's not quite a universal view, and I'll talk a bit in appendix \@ref(quiggin) about people who don't believe it, but there is another very widely accepted claim in the vicinity of this one. When there is no evidential or causal connection between the possible choices and the possible states, most theorists think Basic Decision Theory recommends the right choice. Now they might not say, and typically do not say, that it makes the right recommendations for the right reasons. But they do say, at least most of them, that it gets the verdicts right. In the favored lingo of twentieth century philosophers, it is extensionally adequate in these cases.
 
 So that covers the cases where there is both an evidential and causal connection - Basic Decision Theory gets things wrong - and the cases where there is neither - Basic Decision Theory gets things right. But what about the cases where there is one such connection but not the other? We're all taught that correlation is not causation. What happens when there is correlation but not causation between the choices and the states? Then things get really interesting, and that's the debate we're doing to jump into.
 
@@ -779,7 +779,7 @@ gameformat(d_i_d, "Matching pennies as a decision problem")
 
 And table \@ref(tab:death-in-damascus) is the familiar problem Death in Damascus from @GibbardHarper1978.
 
-Let's do one last one, starting with the familiar game Battle of the Sexes. Row and Column each have to choose whether to do R or C. They both prefer doing the same thing to doing different things. But Row would prefer they both do R, and Column would prefer they both do C. (The original name comes from a version of the story where Row and Column are a heterosexual married couple, and Row wants to do some stereotypically male thing, while Column wants to do some stereotypically female thing. That framing is tiresome at best, but the category of asymmetric coordination games is not, hence my more abstract presentation.) So table @\ref(tab:bach-stravinsky) is one way we might think of the payouts.
+Let's do one last one, starting with the familiar game Battle of the Sexes. Row and Column each have to choose whether to do R or C. They both prefer doing the same thing to doing different things. But Row would prefer they both do R, and Column would prefer they both do C. (The original name comes from a version of the story where Row and Column are a heterosexual married couple, and Row wants to do some stereotypically male thing, while Column wants to do some stereotypically female thing. That framing is tiresome at best, but the category of asymmetric coordination games is not, hence my more abstract presentation.) So table \@ref(tab:bach-stravinsky) is one way we might think of the payouts.
 
 ```{r,bach-stravinsky, cache=TRUE}
 b_o_t_s <- tribble(
@@ -790,7 +790,7 @@ b_o_t_s <- tribble(
 gameformat(b_o_t_s, "A version of battle of the sexes.")
 ```
 
-As it stands, that's not a symmetric game. But we can make it a symmetric game by relabeling the choices. Let option A for each player be doing their favored choice, and option B be doing their less favored choice. That turns table @\ref(tab:bach-stravinsky) into table @\ref(tab:bach-stravinsky-symmetric).
+As it stands, that's not a symmetric game. But we can make it a symmetric game by relabeling the choices. Let option A for each player be doing their favored choice, and option B be doing their less favored choice. That turns table \@ref(tab:bach-stravinsky) into table \@ref(tab:bach-stravinsky-symmetric).
 
 ```{r,bach-stravinsky-symmetric, cache=TRUE}
 b_o_t_s_symmetric <- tribble(
@@ -801,7 +801,7 @@ b_o_t_s_symmetric <- tribble(
 gameformat(b_o_t_s_symmetric, "Battle of the sexes, relabeled.")
 ```
 
-After making that change, change column's payouts so that it is a demonic game. The result is table @\ref(tab:bach-demon)
+After making that change, change column's payouts so that it is a demonic game. The result is table \@ref(tab:bach-demon)
 
 ```{r,bach-demon, cache=TRUE}
 b_o_t_s_demonic <- tribble(
@@ -812,7 +812,7 @@ b_o_t_s_demonic <- tribble(
 gameformat(b_o_t_s_demonic, "A demonic version of battle of the sexes.")
 ```
 
-Finally, replace Demon's choices with states generated by (probably accurate) predictions, to get the decision problem in table @\ref(tab:asymm-death-damascus).
+Finally, replace Demon's choices with states generated by (probably accurate) predictions, to get the decision problem in table \@ref(tab:asymm-death-damascus).
 
 ```{r,asymm-death-damascus, cache=TRUE}
 asymm_d_i_d <- tribble(
@@ -869,7 +869,7 @@ stag_decision <- tribble(
 gameformat(stag_decision, "A demonic decision problem based on stag hunt.")
 ```
 
-In order to have less algebra, I'm going to often focus mostly on a particular version of this decision, with the values shown in table @\ref(stag-decision-particular). But it's important that the  main conclusions will be true of all decision problems based on stag Hunt.
+In order to have less algebra, I'm going to often focus mostly on a particular version of this decision, with the values shown in table \@ref(stag-decision-particular). But it's important that the  main conclusions will be true of all decision problems based on stag Hunt.
 
 ```{r,stag-decision-particular, cache=TRUE}
 stag_decision_particular <- tribble(
@@ -888,7 +888,7 @@ One approach, endorsed for rather different reasons by Richard @Jeffrey1983 and 
 
 I'm going to argue that all of these views are mistaken. Decision theory should not say what to do in these cases - either choice is rational.
 
-Now I should note here that I'm slightly cheating in setting out the problem this way. The theory I defend says that in any decision problem like this with two equilibria, either choice can be rational. And that includes games like, say, the one in @\ref(not-stag-decision), where everyone I mentioned in the last few paragraphs would agree that A is the uniquely correct choice.
+Now I should note here that I'm slightly cheating in setting out the problem this way. The theory I defend says that in any decision problem like this with two equilibria, either choice can be rational. And that includes games like, say, the one in \@ref(not-stag-decision), where everyone I mentioned in the last few paragraphs would agree that A is the uniquely correct choice.
 
 ```{r,not-stag-decision, cache=TRUE}
 not_stag_decision <- tribble(
@@ -904,6 +904,14 @@ I certainly don't want to lean too hard on the intuition that either option is r
 ### An Example of a Dilemma {#firstdilemma}
 
 - Rock Paper Scissors
+
+## Plan for the Book {#Plan}
+
+**NOT COMPLETE**
+
+- Talk about appendices
+- Talk about each chapter
+- This is literally the last thing to write
 
 # Why So Defensive? {#defensive}
 
@@ -1499,6 +1507,8 @@ drawmap(tour_line)
 
 This used the same idea, but with a bit more brute force. The algorithm was the same two-step approach as the last map. But I had the computer cycle through all the different possible starting cities, and varied the seed for the randomisation. (The algorithm isn't quite deterministic, since it uses random numbers to break ties when it is asked to find the farthest city, or the shortest insertion.) And setting the start city to Dubuque, Iowa, and the seed to 33, generated that map. Finding these settings took some time, and I'm not sure it is even optimal. It would actually be helpful for the argument I'm about to make if it isn't optimal, and the shortest path is shorter again. But let's assume that it, or something like it, is. Because what I want us to focus on is the philosophical status of the tour in figure \@ref(fig:two-stage-tour). Getting clear on that will be the beginning of a solution to the puzzles about dilemmas.
 
+## Common Features of the Puzzles {#commonfeatures}
+
 ### Characteristics of the Puzzles
 
 - Multiple standards
@@ -1526,7 +1536,7 @@ This used the same idea, but with a bit more brute force. The algorithm was the 
 - The best option might be _fine_.
 - Weirich 1985 AJP says that it's absurd to have dilemmas, then says that ideal decision is impossible in these cases! That's what I mean by a dilemma :)
 
-### Cognitive Limits
+### Cognitive Limits and Mixed Strategies
 
 - If there are limits, salesman could be a dilemma
 - I think, though I'm not relying on it, same is true for assuming can't randomise
@@ -1543,7 +1553,7 @@ A bad argument form, and why it matters
 
 
 
-### An Argument against EDT {@badargumentedt}
+### An Argument against EDT {#badargumentedt}
 
 - Open Ended Good
 - Of course, this is a bad argument
@@ -1570,7 +1580,7 @@ Step Five
 Step Six
 :    Point out that it is really unintuitive that CDT would recommend that strategy, declare that this is a clear counterexample to CDT, declare victory, etc.
 
-Hopefully the discussion in section @\ref(badargument) will have made it clear that we can run this recipe against just about any theory, so it overgenerates. And not just that, we can identify the misstep - it's step five. 
+Hopefully the discussion in section \@ref(badargument) will have made it clear that we can run this recipe against just about any theory, so it overgenerates. And not just that, we can identify the misstep - it's step five. 
 
 ### An Instance of the Recipe
 
@@ -1686,6 +1696,10 @@ If Chooser can't randomise, then it's a dilemma. What we say here should be simi
 	- This doesn't rule out all dilemmas
 	- And we reject the assumption
 
+- Dilemmas should only be allowed in infinite cases.
+	- Why?
+	- Quote Ahmed 2012, and mock
+
 - Decision theory should be guiding
 	- Reject the assumption
 
@@ -1706,11 +1720,32 @@ Maybe this is why Newcomb's Problem is so hard
 
 Some say decision theory is just about doing well by one's own lights.
 
-I follow Comesana 2020 in saying rational action requires rational belief.
+I follow @Comesana2020 in saying rational action requires rational belief.
 
 Actually doesn't quite require - Knight's kid playing in the field is fine
 
-And I mean I think something stronger than Comesana - I mean that there isn't anything extra good re coherence
+And I mean I think something stronger than Comesana - I mean that there isn't anything extra good re coherence.
+
+**THESES**
+
+- All coherence norms are wide scope. It isn't that since Chooser thinks L is more likely than R, that Chooser should pick L over R. It is, rather, that Chooser shouldn't both think L is more likely than R and choose R over L. If Chooser does both those things, one should change, but decision theory is silent about which it is.
+- Some coherence norms are actually fickleness norms. Orthodox decision theory doesn't capture fickleness in desire or, in some cases, belief. But the cases should be treated the same.
+- We need some coherence norms to capture sure-thing, which plays a role in my theory.
+- There is no upside to being coherent if one is irrational; coherence is a multiplier not an addition. (Maybe quote Harman on this.)
+- Rational action does not require belief, as in the case of Knight's child playing in the field.
+
+**EXAMPLES**
+
+Chooser1 has two boxes in front of them, L for Left and R for Right. A valuable good is in one of the boxes; the other box is empty. Chooser1 has to chooser L or R, and they will get what is in the box they chose. Their evidence suggests the good is more likely in L, but they believe the good is more likely in R. What should they do?
+
+Chooser2 faces the same setup as Chooser1: two boxes, a good in just one of them. But their evidence is indecisive. A rational person with that evidence could believe the good is more likely in L, but another rational person with that evidence could believe the good is more likely in R. As it turns out, Chooser2 rationally believes the good is more likely in L. What should they do?
+
+Chooser3 is just like Chooser2, in terms of (a) how the boxes are setup, (b) the evidence they have, and (c) their belief about where the good is (i.e., that it is more likely in L). But Chooser3 has a coin in their hands that they can flip. And Chooser3 has the following dispositions. Right now, they are disposed to take R. After flipping the coin, they are disposed to take L if the coin lands heads, and to take L if the coin lands tails. Is there anything wrong with Chooser3?
+
+Chooser4 is just like Chooser1; their evidence points to the good being in L. They don't have any beliefs about where the good is more likely to be, or any credence about the location of the good. What should they do?
+
+Chooser5 is going to a dinner this weekend, and they have to specify in advance whether they want red wine or white wine. On Monday, they said they wanted red wine. On Tuesday, they changed their mind and said they wanted white. On Wednesday morning, they changed their mind again and said they wanted red. By Wednesday lunchtime, they changed back to white. There are no practical costs to this change; Chooser5 likes using the website where the wine choices are entered. Moreover, if they weren't using that website they would be doing something of negative value, like unsuccessfully gambling on cryptocurrencies, or watching online porn, or getting into political fights on social media. Is there anything wrong with Chooser5?
+
 
 ## Coherence for the Incoherent
 
@@ -2481,7 +2516,7 @@ By principles, I mean claims like _Preferences should be transitive_, or _Choose
 
 By sameness of cases, I mean claims that two particular decisions should get (in some sense), the same choice. Here is a familiar example from a non-Demonic decision problem. Chooser has a ticket to today's cricket match, and is deciding whether to go. Chooser enjoys watching cricket, but does not enjoy sitting around in the stands waiting for the rain to clear, and there is a good chance of rain. What should Chooser do? Well, we haven't said nearly enough to settle that, so let's ask something more precise. What more do we need to know to know what Chooser should do? We do need to know how much Chooser likes watching cricket, dislikes sitting around in the rain, will have to pay to get to the ground and how likely rain is. But we don't need to know how much Chooser paid for the ticket. That's a sunk cost. If we settle all the forward looking parameters (likelihood of rain, utility of going under different scenarios, etc), then changing the backwards looking ones (how much Chooser paid) doesn't make a difference. If it would be rational to stay home given all those parameters and having paid $10 for the ticket, it would be rational to stay home given all those parameters and having paid $100 for the ticket. Even in hard cases, and if the weather is bad enough Chooser may have a very hard choice here, we often have clear enough knowledge that some differences do not in fact make a difference.
 
-And by cases I mean claims about what Chooser should do in a particular vignette. These are the main form of evidence that get used in philosophical decision theory. We (the theorists) are told that Chooser faces a problem like the following choice between $A$ and $B$, with a Demon predicting the choice and the payout dependent on the actions of the two of them.
+And by cases I mean claims about what Chooser should do in a particular vignette. These are the main form of evidence that get used in philosophical decision theory. We (the theorists) are told that Chooser faces a problem like the one in \@ref(tab:basic-stag), with a Demon predicting the choice and the payout dependent on the actions of the two of them.
 
 ```{r, basic-stag, cache=TRUE}
 basic_stag <- tribble(
@@ -2494,11 +2529,11 @@ gameformat(basic_stag, "An example of a choice situation")
 
 A lot of philosophers seem to the following approach to decision theory. (I say 'seem to' because I've never really seen a good defence of this methodology, but I have seen a lot of arguments from cases like this to sweeping theoretical claims.) First, we figure out what Chooser should do in this case, perhaps by consulting our intuitions. Second, we work out which theory best fits with what we've learned this way about individual cases.
 
-Now it would be wrong to say that the three kinds of evidence I've presented here fall into three very neat categories. The boundaries between them are blurry at best. Any evidence about an individual case can be turned into a kind of principle by simply replacing the names in the vignette with variables and universally quantifying over the variables. We'll get very restricted principles that way - anyone facing just that game should play $B$, for example - but all principles have some restrictions on them. And there's not much distance between judging that what Chooser should do is independent of what they paid for the ticket, and judging that the principle _Sunk costs are irrelevant_ is part of our evidence. But the fact that a boundary isn't sharp doesn't mean that it's theoretically useless. The paradigms of the three kinds of evidence are different enough that we can helpfully keep them in mind when understanding what particular theorists are doing.
+Now it would be wrong to say that the three kinds of evidence I've presented here fall into three very neat categories. The boundaries between them are blurry at best. Any evidence about an individual case can be turned into a kind of principle by simply replacing the names in the vignette with variables and universally quantifying over the variables. We'll get very restricted principles that way—anyone facing just that game should play B, for example—but all principles have some restrictions on them. And there's not much distance between judging that what Chooser should do is independent of what they paid for the ticket, and judging that the principle _Sunk costs are irrelevant_ is part of our evidence. But the fact that a boundary isn't sharp doesn't mean that it's theoretically useless. The paradigms of the three kinds of evidence are different enough that we can helpfully keep them in mind when understanding what particular theorists are doing.
 
 And the paradigm that starts with individual cases, like the table I just presented, seems considerably worse than the other two paradigms. Arguments in that family are vulnerable to two kinds of objection that arguments that start with the other kinds of evidence are not.
 
-First, judgments about cases might conflate what the standards of ideal rationality say about the case with what the standards of non-ideal rationality say about the case. Consider this example, which I'll come back to in chapter \@ref(dilemma). 
+First, judgments about cases might conflate what the standards of ideal rationality say about the case with what the standards of non-ideal rationality say about the case. Consider this example, which I discuss more in chapter \@ref(dilemma). 
 
 
 > **Quick Basketball Choice**    
