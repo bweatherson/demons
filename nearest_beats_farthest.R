@@ -1,6 +1,9 @@
+## A script to find a pair of paths where a typically worse algorithm does better on the particular use
+
 require(tidyverse)
 require(TSP)
 require(maps)
+set.seed(2)
 
 theme_map <- function(base_size=9, base_family="") {
   require(grid)
@@ -32,7 +35,7 @@ all_states$code <- c("AL", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA",
                      "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", 
                      "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY")
 
-used_states <- 1:49
+used_states <- c(36, 4, 27)
 
 long_states <- all_states$state[used_states]
 short_states <- all_states$code[used_states]
@@ -64,22 +67,22 @@ city_matrix <- as.matrix(our_cities)
 
 rownames(city_matrix) <- filter(city_numbers, used_city == 1)$thecities
 
-## Fine tour
-#tour_line <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion")
-#tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
+length_tib <- tibble(st = 1:length(the_city_numbers)) 
 
-## Not good tour
-#tour_line <- solve_TSP(as.TSP(city_matrix), method="cheapest_insertion", start = 17) # - Very messy
+length_tib <- length_tib %>% 
+  rowwise() %>% 
+  mutate(farth = tour_length(solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start = st))) %>% 
+  mutate(near = tour_length(solve_TSP(as.TSP(city_matrix), method="nearest_insertion", start = st))) %>% 
+  ungroup() %>% 
+  mutate(diff = near - farth) %>% 
+  arrange(diff)
 
-## Generate tour by longitude - really bad
-#tour_line <- TOUR(arrange(our_gps, long)$rowid, tsp = as.TSP(city_matrix))
+best_diff <- min(length_tib$near) - max(length_tib$farth)
 
-## Best tour
-load("tour_line.RData")
+near_tour <- solve_TSP(as.TSP(city_matrix), method="nearest_insertion", start = 7)
+far_tour <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start = 19)
 
-#tour_line <- TOUR(bad_path, tsp = as.TSP(city_matrix))
-#tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
-tour_length(tour_line)
+tour_line <- far_tour
 
 # Turn tour to map path
 paths <- tribble(
@@ -102,16 +105,56 @@ paths <- paths %>% add_row(step = 24, property = "from", rowid = our_gps$rowid[x
 
 state_map_data <- map_data("state") %>%
   #  filter(subregion != "north" | is.na(subregion)) %>%
-  filter(region %in% long_states) 
+  filter(region %in% long_states)
 
 tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
-  geom_polygon(fill = "white", colour = "grey90") + 
+  geom_polygon(fill = "white", colour = "grey90") +
   geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
-  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
+  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) +
   coord_quickmap() +
   labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
   theme(axis.title.x = element_text())
 #tour_length(tour_line)
 tour_map
 
-#str_c(our_gps$name, sep = "; ", collapse = "; ")
+tour_line <- near_tour
+
+# Turn tour to map path
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+paths <- paths %>% add_row(step = 24, property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+
+state_map_data <- map_data("state") %>%
+  #  filter(subregion != "north" | is.na(subregion)) %>%
+  filter(region %in% long_states)
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") +
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) +
+  coord_quickmap() +
+  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+  theme(axis.title.x = element_text())
+#tour_length(tour_line)
+tour_map
+
+# Just do California and Nevada and Oregon
+# Nearst starts in Las Vegas, NV
+# Farthest starts in Reno, NV
+# Learn how to do side by side pictures for this
+# Have the players in the story pick these at random
+# Reno, NV is a bad start location, kind of obviously so, but maybe player doesn't know that.

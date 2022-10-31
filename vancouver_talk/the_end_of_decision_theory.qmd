@@ -1,0 +1,368 @@
+---
+title: "The End of Decision Theory"
+author: "Brian Weatherson"
+format:
+  revealjs: 
+    theme: white
+editor: visual
+---
+
+# Overview
+
+## Two Big Questions
+
+1.  What question are decision theorists trying to answer?
+2.  Why is it a worthwhile question to ask and answer?
+
+## What Question
+
+Decision theory is about trying to describe what a certain kind of idealised decider will do.
+
+## Why Care About That Question
+
+Negative claim
+
+:   Not because it helps us make decisions in anything like normal circumstances.
+
+Positive claim
+
+:   Because it helps us predict what people will do in an interesting range of cases.
+
+# Getting at the Question
+
+## Methodology
+
+-   Figure out what question decision theorists must be asking by looking at what answers they give.
+-   Concentrate on questions that everyone (in the field) answers the same way.
+
+## Betting Example
+
+-   Chooser has \$110, and is in a sportsbook.
+-   There is a basketball game about to start, between two teams they know to be equally matched.
+-   Chooser has three options: bet the \$110 on Home, bet it on Away, keep money.
+-   If they bet and are right, they win \$100 (plus get the money back they bet), if they are wrong, they lose the money.
+
+## Betting Example
+
+-   Given standard assumptions about how much Chooser likes money, literally everyone in decision theory thinks Chooser should not bet.
+-   So decision theory is not in the business of answering this question:
+-   *What action will produce the best outcome?*
+
+## Axiology
+
+-   We do have a discipline in philosophy that is all about evaluating outcomes: axiology.
+-   It's a worthwhile project.
+-   But it's not what decision theorists are up to.
+
+## Why Not Axiology?
+
+Intuitive Answer
+
+:   It isn't very practical in this case. Chooser can't bet on the winner.^[Actually, it's a bit more complicated than that, but let's stick with this characterisation for now.]
+
+## Helpful Advice
+
+-   Philosophical decision theory is not in the business of providing helpful advice to choosers.
+-   We can see this by another example.
+
+------------------------------------------------------------------------
+
+```{r echo=FALSE, cache=TRUE}
+require(tidyverse)
+require(TSP)
+require(maps)
+
+theme_map <- function(base_size=9, base_family="") {
+  require(grid)
+  theme_bw(base_size=base_size, base_family=base_family) %+replace%
+    theme(axis.line=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title=element_blank(),
+          panel.background=element_blank(),
+          panel.border=element_blank(),
+          panel.grid=element_blank(),
+          panel.spacing=unit(0, "lines"),
+          plot.background=element_blank(),
+          legend.justification = c(0,0),
+          legend.position = c(0,0)
+    )
+}
+
+theme_set(theme_map())
+
+all_states <- map_data("state") %>% 
+  group_by(region) %>% 
+  tally() %>% 
+  select(state = region)
+
+all_states$code <- c("AL", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA",
+                     "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", 
+                     "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", 
+                     "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", 
+                     "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY")
+
+used_states <- 1:49
+
+long_states <- all_states$state[used_states]
+short_states <- all_states$code[used_states]
+
+data("USCA312")
+data("USCA312_GPS")
+
+cities <- as_tibble(as.matrix(USCA312))
+
+city_numbers <- tibble(
+  id = 1:312,
+  thecities = colnames(cities)
+) %>% 
+  mutate(used_city = case_when(str_sub(thecities, -2) %in% short_states  ~ 1,
+                               TRUE ~ 0))
+
+the_city_numbers <- filter(city_numbers, used_city == 1)$id
+
+
+our_cities <- cities %>% 
+  select(all_of(the_city_numbers)) %>% 
+  slice(the_city_numbers)
+
+our_gps <- USCA312_GPS %>% 
+  slice(the_city_numbers) %>% 
+  rowid_to_column()
+
+city_matrix <- as.matrix(our_cities)
+
+rownames(city_matrix) <- filter(city_numbers, used_city == 1)$thecities
+
+## Fine tour
+#tour_line <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion")
+#tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
+
+## Not good tour
+#tour_line <- solve_TSP(as.TSP(city_matrix), method="cheapest_insertion", start = 17) # - Very messy
+
+## Generate tour by longitude - really bad
+#tour_line <- TOUR(arrange(our_gps, long)$rowid, tsp = as.TSP(city_matrix))
+
+## Best tour
+load("tour_line.RData")
+
+#tour_line <- TOUR(bad_path, tsp = as.TSP(city_matrix))
+#tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
+#tour_length(tour_line)
+
+# Turn tour to map path
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+paths <- paths %>% add_row(step = 24, property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+
+state_map_data <- map_data("state") %>%
+  #  filter(subregion != "north" | is.na(subregion)) %>%
+  filter(region %in% long_states) 
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") + 
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+#  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
+  coord_quickmap() +
+#  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+  labs(x = "") +
+  theme(axis.title.x = element_text())
+#tour_length(tour_line)
+tour_map
+
+#str_c(our_gps$name, sep = "; ", collapse = "; ")
+```
+
+- Task: find the shortest path that goes through each of these cities.
+
+## Answer
+
+- Literally every philosophical decision theory on the market says that one should choose the path that's actually shortest.
+- That's not particularly helpful advice!
+
+## Helpful Advice
+
+Now as it turns out there are various helpful things you can say here.
+
+Farthest Insertion Algorithm
+:    Start with an arbitrary city. At each stage, add a city to the path by finding the point to insert it into the path that will add the least distance. The city you add should be the one **farthest** from the existing path.
+
+---
+
+```{r echo=FALSE, cache=TRUE}
+theme_set(theme_map())
+tour_line <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start = 1)
+
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+
+paths <- paths %>% add_row(step = 1+nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") + 
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
+  coord_quickmap() +
+  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+#  labs(x = "") +
+  theme(axis.title.x = element_text())
+tour_map
+```
+
+Not a bad path, but not the best.
+
+## More Good Advice
+
+Swap adjacent edges, two at a time, until there are no benefits from doing this swapping.
+
+- This will give you something very close to the original, but typically a bit shorter. And here it knocks off a few hundred miles.
+
+---
+
+```{r echo=FALSE, cache=TRUE}
+theme_set(theme_map())
+tour_line <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start = 1)
+tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
+
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+paths <- paths %>% add_row(step = 1+nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") + 
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
+  coord_quickmap() +
+  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+#  labs(x = "") +
+  theme(axis.title.x = element_text())
+tour_map
+```
+
+## Unlimited Computing
+
+- If you have unlimited computer power, you could brute force your way through all 257! paths. 
+- Or even with a bit less computing power (but with more mathematical knowledge than before) you can come up with the following map.
+
+---
+
+```{r echo = FALSE, cache = TRUE}
+my_list <- as.integer(unlist(strsplit("0,84,59,240,13,198,121,58,102,89,170,20,212,135,231,127,136,107,147,17,151,97,24,142,162,228,87,229,194,206,116,138,244,158,61,108,207,44,54,11,132,9,55,143,26,86,103,47,117,7,96,216,46,251,95,184,69,179,250,174,153,183,242,15,99,119,110,181,248,4,249,164,10,234,71,148,109,152,161,246,222,42,33,150,137,149,100,219,252,175,78,34,30,38,123,130,134,57,173,171,12,16,144,36,32,168,235,2,208,239,25,226,186,35,74,254,167,223,245,39,1,51,256,45,8,56,221,60,98,50,124,129,31,146,159,77,230,118,104,145,83,125,232,6,65,81,19,189,120,106,18,92,112,215,90,49,115,178,139,210,94,133,187,163,28,43,238,62,218,192,53,220,111,82,237,156,73,247,196,233,113,114,191,126,157,213,214,64,243,41,105,67,185,70,225,68,193,140,190,79,141,27,166,180,211,23,93,101,37,169,155,197,176,29,217,241,253,21,209,227,172,195,75,76,22,154,201,204,202,224,188,182,40,85,14,203,128,160,199,200,255,122,80,165,236,72,205,3,88,91,48,63,52,177,66,5,131",",")))
+my_list_adj <- my_list + 1
+tour_line <- TOUR(my_list_adj, tsp = as.TSP(city_matrix))
+
+theme_set(theme_map())
+
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+paths <- paths %>% add_row(step = 1+nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") + 
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
+  coord_quickmap() +
+  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+#  labs(x = "") +
+  theme(axis.title.x = element_text())
+tour_map
+```
+
+I'm not sure if this is best, but it's the best I could do, and it involved applying black box algorithms I don't understand.
+
+## Where We're At
+
+Let's summarise these two cases in a table.
+
+                    Betting                   Salesman 
+-----------------  -----------------       -------------------------
+Best outcome        Bet on winner            Shortest path
+Decision theory      Pass                    Shortest path
+Best advice          Pass                    Learn algorithms
+
+Decision theory is neither the theory of what is best to do, nor what is advisable to do.
+
+## So What Is It?
+
+Imagine a version of Chooser with knowledge as it is, and computational powers as they might be.
+
+- So for any mathematical problem, they can do it instantly.
+- Ask, what would be good advice for that person?
+
+## Decision Theory as Idealisation
+
+They will pass in bet, and choose the shortest path.
+
+- The mathematical work will be immense.
+- They have to calculate the path length for each of 257! paths.
+- And they have to find the minimum length among all of them.
+- But setting computational costs to zero, this is easily do-able.
+
+## Technical Detour
+
+Most philosophical decision theory concerns decisions under uncertainty, not decisions like Salesman that are made under certainty.
+
+- But the structure is still the same.
+
+## Technical Detour
+
+They say that for each option, you should loop through the possible states of the world, in each case multiplying something (usually a probability) by something else (usually a utility), and then summing the results. Then you choose the maximum.
+
+- That's exactly the same technical task as solving Salesman by brute force.^[Actually one step harder because of the multiplication, but otherwise the same.]

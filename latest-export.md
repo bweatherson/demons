@@ -348,7 +348,7 @@ A rational chooser knows what they are doing, and thinks that it is for the best
 
 The principle I just stated is backwards looking. It says that the chooser must think that the decision is for the best when they make it. It doesn't say much about how they come to make that decision, or whether the decision makes sense given the views the chooser has at the start of deliberation. That's by design. Decision theory is the theory of when decisions can be defended. Or, at least, that's what I'll argue in this book.
 
-I'm mostly going to be concerned with a special class of decision problems: those involving demons who have spectacular predictive powers. These have been a particular focus of decision theorists for the last half-century. In keeping them center stage I am, in this one respect at least, following tradition. But I will make use of the principle that our theory of how to make decisions when demons are around should be consistent with our theory of how to make decisions when demons are not around. And the motivations for the two parts of the theory should be consistent as well. This turns out to be a somewhat substantive constraint.
+I'm mostly going to be concerned with a special class of decision problems: those involving demons who have spectacular predictive powers. These have been a particular focus of decision theorists for the last half-century. In keeping them center stage I am, in this one respect at least, following tradition. But I will make use of the principle that our theory of how to make decisions when demons are around should be consistent with our theory of how to make decisions when demons are not around. And the motivations for the parts of the theory that do and do not engage with demons should be consistent as well. This turns out to be a somewhat substantive constraint.
 
 Demons predict what other people will choose, make moves accordingly, and these moves make a difference to the consequences of other choices. That's to say, demons behave just like the rational players in orthodox game theory. Interacting with demons is, at a fairly deep level, playing games with them. So we should expect game theory to have something to tell us about how those interactions go. This isn't a novel point; I owe it to William @Harper1986. But it is going to be central to the plot of this book.
 
@@ -467,7 +467,7 @@ general_newcomb <- tribble(
 gameformat(general_newcomb, "Newcomb's Problem")
 ```
 
-A large part of late 20th Century decision theory was given over to discussing this problem. So-called Causal Decision Theorists argued in favor of taking both boxes. The primary argument is that whatever the demon has done, the chooser gets a bonus of $y$ for taking the second box. It's good to get guaranteed bonuses, so they should take the bonus. This is basically the view I'm going to defend in this book, though with a number of deviations from the way it was defended in these classic works. So-called Evidential Decision Theorists argued in favor of taking just the one box. The primary argument is that the chooser who takes one box expects to get $x$, the chooser who expects to get both boxes expects to get $y$, it's better to take a choice that one expects to do better, and $x > y$, so it's better to take one box. 
+A large part of late twentieth century decision theory was given over to discussing this problem. So-called Causal Decision Theorists argued in favor of taking both boxes. The primary argument is that whatever the demon has done, the chooser gets a bonus of $y$ for taking the second box. It's good to get guaranteed bonuses, so they should take the bonus. This is basically the view I'm going to defend in this book, though with a number of deviations from the way it was defended in these classic works. So-called Evidential Decision Theorists argued in favor of taking just the one box. The primary argument is that the chooser who takes one box expects to get $x$, the chooser who expects to get both boxes expects to get $y$, it's better to take a choice that one expects to do better, and $x > y$, so it's better to take one box. 
 
 Both of these arguments trace back to the original presentation of the problem by Nozick. He named the problem after William Newcomb, a physicist from whom he learned of the problem. For much more detail on the background to this problem, and the motivation for the two prominent solutions, see @WeirichSEP. Let's turn to looking at those two solutions in more detail.
 
@@ -475,7 +475,7 @@ Both of these arguments trace back to the original presentation of the problem b
 
 The two most famous theories in recent work in decision theory are Causal Decision Theory and Evidential Decision Theory. I used these terms in subsection \@ref(newcombproblem) without defining them. It's time to do that now.
 
-As I understand the way the terms are used, and indeed as I'll be using them, they are potentially misleading. Both of these are not really theories, but families of theories. Evidential Decision Theory (EDT) is a somewhat tighter family of theories than Causal Decision Theory (CDT), but neither is something that I would typically be happy calling a theory. In this section I'll give somewhat imprecise descriptions of each 'theory', starting with EDT. In section \@ref(edtcdtprecise) I'll say why both of these are really theory schema, and set out some of the more viable ways of making them into precise theories.
+As I understand the way the terms are used, and indeed as I'll be using them, the terms are potentially misleading. Both of these are not really theories, but families of theories. Evidential Decision Theory (EDT) is a somewhat tighter family of theories than Causal Decision Theory (CDT), but neither is something that I would typically be happy calling a theory. In this section I'll give somewhat imprecise descriptions of each 'theory', starting with EDT. In section \@ref(edtcdtprecise) I'll say why both of these are really theory schema, and set out some of the more viable ways of making them into precise theories.
 
 EDT, as I'm going to understand it, traces back to the first edition of Richard Jeffrey's _The Logic of Decision_ [@Jeffrey1965]. The idea behind it is that what goes wrong with Henry's reasoning at Agincourt is that he ignores the fact that rushing into battle lowers the probability that he will win. In fact, according to EDT, the probability that he will win doesn't really matter to his decision. What matters is the probability that he will win if he attacks, and the probability that he will win if he waits for reinforcements. The value of each choice, according to EDT, is given by this formula
 
@@ -746,9 +746,9 @@ All I've done to generate table \@ref(tab:demon-chicken) is replace column's pay
 
 ```{r,egan-game, cache=TRUE}
 egan_game <- tribble(
-	   ~"", ~pa, ~pb,
-	   "a", "$0$", "$0$",
-	   "b", "$1$", "$-100$"
+	   ~"", ~PA, ~PB,
+	   "A", "$0$", "$0$",
+	   "B", "$1$", "$-100$"
 	)
 gameformat(egan_game, "A demonic decision problem based on Chicken.")
 ```
@@ -770,9 +770,9 @@ This isn't a symmetric game, but it is already demonic. Column's payouts are 1 i
 
 ```{r,death-in-damascus, cache=TRUE}
 d_i_d <- tribble(
-	   ~"", ~pa, ~pb,
-	   "a", "$0$", "$1$",
-	   "b", "$1$", "$0$"
+	   ~"", ~PA, ~PB,
+	   "A", "$0$", "$1$",
+	   "B", "$1$", "$0$"
 	)
 gameformat(d_i_d, "Matching pennies as a decision problem")
 ```
@@ -858,7 +858,7 @@ Second, one might want to maximise expected utility, given uncertainty about wha
 
 There are other arguments too for choosing to gather rather than hunt. To use a notion from Skyrms, gathering has a larger _basin of attraction_ than hunting, and its basin of attraction includes the midpoint of the probability space. Those two motivations, plus the two from the previous two paragraphs, give us four motivations for gathering. If one wants to motivate gathering in general, it is actually important to get clear on which of the four one takes to be most important. Because while they are equivalent in the two option game (or problem), they are not in general equivalent. Indeed, all four come apart very soon once more options get added. Since I'm not defending gathering, I think decision theory should say either option is acceptable in stag hunts, I'm not going to continue exploring this line. But there are some interesting technical questions along these paths.
 
-We can turn stag hunt into a decision problem by replacing the other player with  Demon in a way that should be familiar by now. The result is the decision problem in table \ref(tab:stag-decision).
+We can turn stag hunt into a decision problem by replacing the other player with  Demon in a way that should be familiar by now. The result is the decision problem in table \@ref(tab:stag-decision).
 
 ```{r,stag-decision, cache=TRUE}
 stag_decision <- tribble(
@@ -869,7 +869,7 @@ stag_decision <- tribble(
 gameformat(stag_decision, "A demonic decision problem based on stag hunt.")
 ```
 
-In order to have less algebra, I'm going to often focus mostly on a particular version of this decision, with the values shown in table \@ref(stag-decision-particular). But it's important that the  main conclusions will be true of all decision problems based on stag Hunt.
+In order to have less algebra, I'm going to often focus mostly on a particular version of this decision, with the values shown in table \@ref(tab:stag-decision-particular). But it's important that the  main conclusions will be true of all decision problems based on stag Hunt.
 
 ```{r,stag-decision-particular, cache=TRUE}
 stag_decision_particular <- tribble(
@@ -888,7 +888,7 @@ One approach, endorsed for rather different reasons by Richard @Jeffrey1983 and 
 
 I'm going to argue that all of these views are mistaken. Decision theory should not say what to do in these cases - either choice is rational.
 
-Now I should note here that I'm slightly cheating in setting out the problem this way. The theory I defend says that in any decision problem like this with two equilibria, either choice can be rational. And that includes games like, say, the one in \@ref(not-stag-decision), where everyone I mentioned in the last few paragraphs would agree that A is the uniquely correct choice.
+Now I should note here that I'm slightly cheating in setting out the problem this way. The theory I defend says that in any decision problem like this with two equilibria, either choice can be rational. And that includes games like, say, the one in \@ref(tab:not-stag-decision), where everyone I mentioned in the last few paragraphs would agree that A is the uniquely correct choice.
 
 ```{r,not-stag-decision, cache=TRUE}
 not_stag_decision <- tribble(
@@ -915,7 +915,7 @@ I certainly don't want to lean too hard on the intuition that either option is r
 
 # Why So Defensive? {#defensive}
 
-I'm arguing for causal ratificationism. And much of the argument will come in the next three chapters, when I argue in turn against three of the component parts of of proceduralism. But in this chapter I want to first address an argument that proceduralism must be right, because only procedural theories can deliver what decision theory promises: a rule for making decisions. And the main argument of this chapter is going to be that decision theory cannot, and should not, be in the business of providing such a rule. Such a rule would have to be sensitive to resource constraints, and this kind of sensitivity isn't compatible with doing the kind of theorising that decision theorists do.
+I am arguing for causal ratificationism. And much of the argument will come in the next three chapters, when I argue in turn against three of the component parts of of proceduralism. But in this chapter I want to first address an argument that proceduralism must be right, because only procedural theories can deliver what decision theory promises: a rule for making decisions. And the main argument of this chapter is going to be that decision theory cannot, and should not, be in the business of providing such a rule. Such a rule would have to be sensitive to resource constraints, and this kind of sensitivity isn't compatible with doing the kind of theorising that decision theorists do.
 
 ## Decision Theory and Making Decisions {#algorithm}
 
@@ -962,6 +962,7 @@ A third role for decision theory is in predicting what people will do. Sometimes
 Chooser runs a televised rock-paper-scissors tournament. Ratings are fine, but Chooser is told by the bosses that what the audience really likes is when rock beats scissors. The audience doesn't think rock-paper-scissors is really violent enough, and the implicit violence of rock smashing scissors is a help. So Chooser is thinking about generating more outcomes where rock beats scissors. And their plan is to make a cash payoff to players every time they successfully play rock, on top of the point they get for winning the game. Chooser's hope is that the game payoff will change from the standard payoff table, as shown in table \@ref(tab:simple-rps), to table \@ref(tab:adjusted-rps).
 
 ```{r, simple-rps, cache=TRUE}
+# Burp
 rps <- tribble(
 	   ~"",         ~Rock,   ~Paper, ~Scissors,
 	   "Rock",      "0, 0", "-1, 1",  "1, -1",
@@ -972,6 +973,7 @@ gameformat(rps, "Rock-Paper-Scissors")
 ```
 
 ```{r, adjusted-rps, cache=TRUE}
+# Burp
 rps_adjust <- tribble(
 	   ~"",         ~Rock,   ~Paper, ~Scissors,
 	   "Rock",      "0, 0", "-1, 1",  "2, -1",
@@ -1147,7 +1149,7 @@ gameformat(generic_abc_v6, "Problem 6.")
 
 Once I've argued that these problems should be treated the same way, I'll then argue that no strongly decisive theory does treat them the same way, so all strongly decisive theories are false. But what are these problems? What do these tables mean?
 
-In each case, Chooser has two options: U for Up, and D for Down. There is a demon, called Demon, who is arbitrarily good at predicting Chooser's choices, but who is not causally influenced by what Chooser does.^[For simplicity, I'm going to assume that the probability that Demon predicts correctly is 1. If you don't want to allow that this probability can be 1 without having a causal connection, it won't make a huge difference to make it ~$1 - \varepsilon$~. It's just important to note in Problems 4-6 that Demon acts as if the probability is 1. Even if there is some chance of Demon being wrong, Demon acts as if this isn't possible. This is not a distinctive assumption; in most equilibrium concepts in game theory, an equilibrium involves the players believing that their predictions of the other players are correct with probability 1.] Demon will select either PU, meaning they predict Chooser will play U, or PD, meaning they predict Chooser will play D. The two two-way choices produce four possible outcomes, and the payouts to Chooser in each of those four possibilities are shown in the table. So these are just the kinds of problems that are familiar in the modern decision theory literature. What's not familiar is the claim that Problem 1 and Problem 6 should be treated the same way. The argument for that goes via four more problems, and this section introduces them.
+In each case, Chooser has two options: U for Up, and D for Down. There is a demon, called Demon, who is arbitrarily good at predicting Chooser's choices, but who is not causally influenced by what Chooser does.^[For simplicity, I'm going to assume that the probability that Demon predicts correctly is 1. If you don't want to allow that this probability can be 1 without having a causal connection, it won't make a huge difference to make it $1 - \varepsilon$. It's just important to note in Problems 4-6 that Demon acts as if the probability is 1. Even if there is some chance of Demon being wrong, Demon acts as if this isn't possible. This is not a distinctive assumption; in most equilibrium concepts in game theory, an equilibrium involves the players believing that their predictions of the other players are correct with probability 1.] Demon will select either PU, meaning they predict Chooser will play U, or PD, meaning they predict Chooser will play D. The two two-way choices produce four possible outcomes, and the payouts to Chooser in each of those four possibilities are shown in the table. So these are just the kinds of problems that are familiar in the modern decision theory literature. What's not familiar is the claim that Problem 1 and Problem 6 should be treated the same way. The argument for that goes via four more problems, and this section introduces them.
 
 **Problem 2** is just like Problem 1, except it provides more backstory about why Demon is so likely to correctly predict Chooser correctly. It is a game with two players: Chooser and Demon. Chooser's payouts are just as before, Demon gets zero payout for an incorrect prediction, and a positive payout for predicting correctly. And Demon is a very good predictor and an expected utility maximiser, so they will almost certainly make correct predictions. But note that Demon's payouts are not the same in each case of a correct prediction. Because Demon is playing a game not making a prediction, I've relabeled their moves. They are called B and C; option A will come in at the next step. Table \@ref(tab:abc-v2) is the game table for Problem 2.
 
@@ -1203,7 +1205,7 @@ edge from parent node[right,xshift = 3]{C}
 
 I don't know of any argument for treating the table version and tree version of Problem 2 differently, so I will follow the standard assumption that these are two representations of essentially the same problem. 
 
-**Problem 3** is just like Problem 2, except Demon is offered an exit strategy. When Demon moves, they can now choose A, B or C. If they choose B or C, the game continues as before. Chooser is told that Demon chose B or C, but not which one they chose, and knows all the payouts, and has to choose U or D. If Demon chooses A, however, the game ends, and Chooser gets payout $e$, while Demon gets payout 1. Figure \ref(@fig:abc-v3) is the tree for that game.
+**Problem 3** is just like Problem 2, except Demon is offered an exit strategy. When Demon moves, they can now choose A, B or C. If they choose B or C, the game continues as before. Chooser is told that Demon chose B or C, but not which one they chose, and knows all the payouts, and has to choose U or D. If Demon chooses A, however, the game ends, and Chooser gets payout $e$, while Demon gets payout 1. Figure \@ref(fig:abc-v3) is the tree for that game.
 
 ```{tikz, abc-v3, fig.cap = "Problem 3.", fig.ext = 'png', cache=TRUE, fig.width = 5, fig.height = 5, fig.align="center"}
 \usetikzlibrary{calc}
@@ -1322,7 +1324,48 @@ So those are our six problems. In the next section, I'll argue that as theorists
 
 # Against Rational Possibility {#dilemma}
 
-## Four Puzzle Cases
+This chapter concerns dilemmas in ideal rational choice theory. A _dilemma_, as I'll use the term, is a situation where no choice is ideal. That is to say, it is a situation where there is nothing that the chooser can do which is ideal. The term _can_ here is tricky, and we need to pause over it for a moment. It is an _agentive modal_, and there has been some interesting work recently showing how puzzling these are. [@MandelkernEtAl2017; @Schwarz2020] Here is one familiar case from that literature.
+
+> **Bank**    
+> Chooser is at an ATM and would like to withdraw cash, but has forgotten the PIN. In fact, it is 2203, but Chooser doesn't remember this. Typing in 2203 would let Chooser withdraw cash, which would be good, but typing in anything else would lead to the ATM card being confiscated by the machine, which would be bad. What should Chooser do?
+
+One answer that is simple, elegant, and wrong is that Chooser should simply type in the correct PIN. That isn't right because Chooser can't type in the PIN; they've forgotten it. But, and here is the philosophical point I want us to focus on, there is a good sense in which they can type in the PIN. They can type 2, then 2, then 0, then 3, and to do that is to type in the PIN. So what happened to the view that Chooser can't type in the correct PIN?
+
+It helps here to borrow a conceptual tool from @MandelkernEtAl2017. It is tempting to think of these agentive modals as possibility claims. To say that X can do something is to say that it is possible that X does it, perhaps under the right circumstances. They argue that this is wrong, and in fact they are necessity claims. To say that X can do something is to say that there are basic actions within X's power which necessitate that the thing happens. They go on to argue that this is what agentive modals mean in ordinary language, and I'm a little sceptical of that. I think the best pitchers in baseball can strike out big league hitters, but there are no basic actions those pitchers can perform which necessitate a strikeout. (If there was, you would wonder why they didn't do it every time.) But whatever we think about the analysis of ordinary language, the idea that there are both possibility and necessity readings of these claims is a helpful one. Because this is the key to understanding what's going on in **Bank**.
+
+Can Chooser select the right PIN? On the possibility reading of _can_, the answer is yes. It is possible for Chooser to type 2,2,0,3. On the necessity reading, the answer is no. Even if Chooser typed those numbers in, it would be (at least from Chooser's perspective, which is what matters here) a fluke that it worked.
+
+Which of these readings is relevant to whether a situation is a dilemma? Both of them. A dilemma is a situation is which for anything that the agent can do, in the necessity sense, there is something better that they can do, in the possibility sense. And the alternative action is better, in the relevant sense, if it has a higher expected return than the first action once the first action is performed. In this sense there are lots of dilemmas around.
+
+There are, however, slightly more dilemmas given causal ratificationism than given some other theories. In particular, causal ratificationism says that there can be dilemmas even when (a) the chooser is ideally rational, and (b) the chooser only has finitely many choices. As we'll see, if either of these constraints are dropped, then every theory agrees that there can be dilemmas. This difference, however, leads to the first of the three arguments against causal ratificationism that are going to be running through the background of this chapter.
+
+1. The right theory of decision should not say that there can be dilemmas when choosers are ideally rational and face finitely many choices.
+2. Causal ratificationism says that there can be dilemmas when choosers are ideally rational and face finitely many choices.
+3. Therefore, causal ratificationism is false.
+
+Here is a version of this argument from Arif @Ahmed2012, discussing a problem he named the ABZ problem.
+
+> [This] is the catastrophic conclusion that whatever you do in ABZ is irrational: whichever option you take, some other option is (and always was) rationally preferable to it. It may be fair to say this about an agent whose beliefs or preferences are insane or incoherent and also about one whose options are infinite. But we are not facing either case here. Your beliefs and preferences in ABZ are, despite their science-fictional character, plainly sane and coherent. And it is equally clear that ABZ does not offer an infinitude of options but only three.
+
+My response here, which might seem a little unsubtle, is simply to deny the philosophical relevance of the finite/infinite distinction in this case. If we can live with dilemmas in infinite cases, we can live with them in finite cases. Indeed, whatever we do to manage the dilemmas in infinite cases can be applied to manage them in finite cases. Ahmed doesn't, as far as I can see, say anything to explain why it is 'catastrophic' to have dilemmas in finite cases but acceptable in infinite cases, and I can't see any reason it would be.
+
+The second argument I'm interested in turns on the assumed impossibility of dilemmas. Assume that some particular decision problem is salient, and the critic launches this argument.
+
+1. Causal ratificationism says every option other than X is non-ideal.
+2. Option X is non-ideal.
+3. Therefore, causal ratificationism says that something non-ideal, namely X, is ideal.
+
+This argument is invalid. If there are dilemmas, then causal ratificationism can agree that X is non-ideal, even if all the other options are non-ideal.
+
+That second argument is one we see frequently in the literature. The third one is not stated as frequently, but is I think sometimes implicit, and in any case is interesting.
+
+1. If a theory says all options in a particular problem are non-ideal, then it does not discriminate between the options.
+2. In some problems where causal ratificationism says there is a dilemma, there are reasons to discriminate between the options.
+3. So causal ratificationism is false, since it does not make distinctions that the best theory should make.
+
+This argument is in a sense right, but not in a way that upsets the primary thrust of this book. What this kind of reasoning shows (and we'll see several concrete instances of it as the chapter proceeds) is that causal ratificationism is incomplete. This shouldn't be surprising. It's a theory of ideal decision, and a complete theory should be supplemented by a theory of non-ideal decision. The final goal of this chapter will be to point in the direction of such a non-ideal theory, and to discuss the relationship between ideal and non-ideal theory.
+
+## Four Puzzle Cases {#fourpuzzles}
 
 
 ### Outguess the Demon
@@ -1340,7 +1383,7 @@ gameformat(first_dilemma, "A simple example of a dilemma.")
 
 Assume first, for simplicity, that Chooser can't play any mixed strategy. Chooser simply has to play U or D, and is arbitrarily confident that Demon will guess their choice correctly. Then Chooser will regret their choice whatever they do. But ideally rational choices are not regretted as soon as they are chosen. So no choice is ideally rational.
 
-The case I've used here is a somewhat asymmetric version of the _Death in Damascus_ case from @GibbardHarper1978. A slightly more common asymmetric version, as in @Richter1984, would have something like the following table, where there is a benefit to U over D whether Demon is correct or incorrect.
+The case I've used here is a somewhat asymmetric version of the _Death in Damascus_ case from @GibbardHarper1978. A slightly more common asymmetric version, as in @Richter1984, uses payouts like those in \@ref(tab:second-dilemma). In that case, Chooser prefers U over D both when Demon predicts correctly and when they predict incorrectly.
 
 ```{r, second-dilemma, cache=TRUE}
 second_dilemma <- tribble(
@@ -1353,7 +1396,7 @@ gameformat(second_dilemma, "A version of asymmetric Death in Damascus.")
 
 The cases seem to raise the same philosophical issues as far as I can see, and table \@ref(tab:first-dilemma) is a little simpler, so I'll focus on it.
 
-There is, I gather, a widespread intuition amongst philosophers that decision theory should treat U and D asymmetrically in this case. I don't really share that intuition; they both look like unhappy choices to me. And it isn't shared by orthodox game theory. When table \@ref(tab:first-dilemma) is turned into a game, it becomes \@ref(tab:first-dilemma-game).
+There is, I gather, a widespread intuition amongst philosophers that ideal decision theory should treat U and D asymmetrically in this case. I don't really share that intuition; they both look like unhappy choices to me. And it isn't shared by orthodox game theory. When table \@ref(tab:first-dilemma) is turned into a game, it becomes \@ref(tab:first-dilemma-game).
 
 ```{r, first-dilemma-game, cache=TRUE}
 first_dilemma_game <- tribble(
@@ -1368,9 +1411,9 @@ That game has a unique Nash equilibrium. In equilibrium, Row, or Chooser, plays 
 
 Thinking about the equilibrium shows us how to drop the assumption that Chooser can't play mixed strategies, while keeping the conclusion that there are dilemmas. In \@ref(tab:first-dilemma) the standard setup is that Demon is an arbitrarily good predictor who is an expected utility maximiser. That settles what Demon will do in all but one case: when Chooser plays a 50/50 mix of U and D. Unfortunately, that's exactly what Chooser will do in equilibrium. So it's an important oversight. To fill it in, let's stipulate that Demon will also play a 50/50 mix of $PU$ and $PD$ if each of them have the same expected utility. That's enough to reinstate the dilemma. 
 
-Every strategy for Chooser is a mixture^[I'm assuming here that the pure strategies U and D are improper mixtures, where Chooser plays one of them with probability 1, and the other with probability 0. This assumption isn't at all needed for the proof; but it simplifies the presentation.] where U is played with probability $p$, and D is played with probability $1-p$. If $p < 0.5$, then Chooser thinks Demon will play $PD$, so they should definitely play U, so they regret any strategy other than U for sure. And that means they regret playing this mixture where $p < 0.5$. If $p > 0.5$, then Chooser thinks Demon will play $PU$, so they should definitely play D, so they regret any strategy other than D for sure. And that means they regret playing this mixture where $p > 0.5$. And if $p = 0.5$, then Chooser thinks Demon will play a 50/50 mixture of $PU$ and $PD$, in which case they think the right strategy is to play U for sure. (This is where the asymmetry in the payoffs matters.) And so they regret the mixed strategy where $p = 0.5$. Whichever strategy, mixed or pure, that Chooser adopts, they regret it. So no strategy, mixed or pure, is ideally rational.
+Every strategy for Chooser is a mixture^[I'm assuming here that the pure strategies U and D are improper mixtures, where Chooser plays one of them with probability 1, and the other with probability 0. This assumption isn't needed for the proof; but it simplifies the presentation.] where U is played with probability $p$, and D is played with probability $1-p$. If $p < 0.5$, then Chooser thinks Demon will play $PD$, so they should definitely play U, so they regret any strategy other than U for sure. And that means they regret playing this mixture where $p < 0.5$. If $p > 0.5$, then Chooser thinks Demon will play $PU$, so they should definitely play D, so they regret any strategy other than D for sure. And that means they regret playing this mixture where $p > 0.5$. And if $p = 0.5$, then Chooser thinks Demon will play a 50/50 mixture of $PU$ and $PD$, in which case they think the right strategy is to play U for sure. (This is where the asymmetry in the payoffs matters.) And so they regret the mixed strategy where $p = 0.5$. Whichever strategy, mixed or pure, that Chooser adopts, they regret it. So no strategy, mixed or pure, is ideally rational.
 
-It's easy to think that if mixed strategies are allowed, then the fact that these games have equilibria means they must allow strategies that won't be regretted. The problem with that reasoning is that it assumes more about Demon's dispositions than is known. It isn't stipulated that Demon is perfectly rational, or that they are an equilibrium seeker. It is just stipulated that they are an excellent predictor and a utility maximiser. And that isn't enough to rule out dilemmas, as this example shows.
+It's easy to think that if mixed strategies are allowed, then the fact that finite games have equilibria means they must allow strategies that won't be regretted. The problem with that reasoning is that it assumes more about Demon's dispositions than is known. It isn't stipulated that Demon is perfectly rational, or that they are an equilibrium seeker. It is just stipulated that they are an excellent predictor and a utility maximiser. And that isn't enough to rule out dilemmas, as this example shows.
 
 I'll have much more to say about mixed strategies as this chapter progresses. But I'll leave them here, and turn to dilemmas that are not unique to causal ratificationism.
 
@@ -1398,15 +1441,15 @@ It is worth thinking through this case a bit, to get a feel for what dilemmas ar
 
 ### The Salesman
 
-The last example I'll discuss in this section is **Salesman**, the problem from section \@ref(deccertainty). The aim is to find as short a path as possible through these cities, assuming that it is possible to travel between any two cities in a straight line.
+The last two examples are dilemmas on every theory of decision. **Outguess the Demon** is a dilemma according to causal ratificationism, but not according to most other theories. I'll end this section with a case that is harder to classify. It is **Salesman**, the problem from section \@ref(deccertainty). The aim is to find as short a path as possible through these cities, assuming that it is possible to travel between any two cities in a straight line.
 
 ```{r salesman-points-reprise, fig.cap="The 257 cities that must be visited in the Salesman problem (reprise)."}
 tour_map_points_only
 ```
 
-This isn't a strict dilemma; there is a shortest path. But it is going to pattern with the dilemmas in a lot of philosophically important respects. And, like with **Heaven**, it helps to get clear on how dilemmas work by thinking through how to solve it.
+For an ideal agent, this isn't a dilemma; there is a shortest path. But for normal people, it is a dilemma. At least, it satisfies the definition of a dilemma that I've given. And thinking through the case helps motivate that definition, and indeed helps clarify dilemmas in general.
 
-Just about the least thoughtful path possible orders the cities alphabetically. The resulting tour is shown in figure \@ref(fig:alpha-tour).
+Just about the least thoughtful path possible through the 257 cities orders the cities alphabetically. The resulting tour is shown in figure \@ref(fig:alpha-tour).
 
 ```{r drawmap-definition, cache=FALSE}
 drawmap <- function(tour_line){
@@ -1479,9 +1522,9 @@ tour_line <- TOUR(bad_path, tsp = as.TSP(city_matrix))
 drawmap(tour_line)
 ```
 
-It's better, but it still looks not so great in a few respects. For one thing, it crosses over itself too many times. For another, those long lines seem like mistakes. And they are somewhat inevitable consequences of this approach. Always choosing the nearest city will mean sometimes the path leaves a region without clearing it, and has to come back. So in this map there is a single step from Wyoming to New Jersey, as the map goes back to clean up the cities near the start that were missed.
+It's better, but it still looks not so great in a few respects. For one thing, it crosses over itself too many times. For another, those very long lines seem like mistakes. And they are somewhat inevitable consequences of this approach. Always choosing the nearest city will mean sometimes the path leaves a region without clearing it, and has to come back. So in this map there is a single step from Wyoming to New Jersey, as the map goes back to clean up the cities near the start that were missed.
 
-Here's a much better idea, in two stages. For both stages I've used the implementation in the TSP package by Michael Hashler and Kurt Hornik, and what follows is from their description [-@HashlerHornik2007].
+Here's a much better idea, in two stages. For both stages I've used the implementation of these ideas in the TSP package by Michael Hashler and Kurt Hornik, and what follows is from their description [-@HashlerHornik2007].
 
 The first stage uses the _farthest-insertion_ method. The idea is to build the path in stages. At each stage, the algorithm identifies the city that is farthest from the existing path. It then inserts that city into the path at the spot where it will make the least addition to the path length. These kind of insertion algorithms are common. What makes the farthest-insertion algorithm work well is that it forces the path to start with something like a loop around the edges of the map, and this is a generally good approach.
 
@@ -1494,58 +1537,430 @@ tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
 drawmap(tour_line)
 ```
 
-That map has a lot of virtues. There aren't any obvious missteps on the map, where it's easy to see just by looking that it could be shortened. The theory behind it makes sense. It was generated very quickly. It took my computer more time to draw the map than to find the path. And it is very short compared to the other maps we've seen.
+That map has a lot of virtues. There aren't any obvious missteps on the map, where it's easy to see just by looking that it could be shortened. The theory behind it makes sense. It was generated very quickly. It took my computer more time to draw the map than to find the path. And it is a very short path compared to the other maps we've seen.
 
 But it isn't optimal. I'm not sure what is optimal, but the shortest one I found after trying a few methods is shown in figure \@ref(fig:two-stage-optimal).
 
 ```{r two-stage-optimal, cache=TRUE, fig.cap="The best solution I found to the salesman problem."}
-set.seed(33)
-tour_line <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start=68)
-tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
+# Converting the concorde generated tour into our form
+my_list <- as.integer(unlist(strsplit("0,84,59,240,13,198,121,58,102,89,170,20,212,135,231,127,136,107,147,17,151,97,24,142,162,228,87,229,194,206,116,138,244,158,61,108,207,44,54,11,132,9,55,143,26,86,103,47,117,7,96,216,46,251,95,184,69,179,250,174,153,183,242,15,99,119,110,181,248,4,249,164,10,234,71,148,109,152,161,246,222,42,33,150,137,149,100,219,252,175,78,34,30,38,123,130,134,57,173,171,12,16,144,36,32,168,235,2,208,239,25,226,186,35,74,254,167,223,245,39,1,51,256,45,8,56,221,60,98,50,124,129,31,146,159,77,230,118,104,145,83,125,232,6,65,81,19,189,120,106,18,92,112,215,90,49,115,178,139,210,94,133,187,163,28,43,238,62,218,192,53,220,111,82,237,156,73,247,196,233,113,114,191,126,157,213,214,64,243,41,105,67,185,70,225,68,193,140,190,79,141,27,166,180,211,23,93,101,37,169,155,197,176,29,217,241,253,21,209,227,172,195,75,76,22,154,201,204,202,224,188,182,40,85,14,203,128,160,199,200,255,122,80,165,236,72,205,3,88,91,48,63,52,177,66,5,131",",")))
+my_list_adj <- my_list + 1
+tour_line <- TOUR(my_list_adj, tsp = as.TSP(city_matrix))
 drawmap(tour_line)
 ```
 
-This used the same idea, but with a bit more brute force. The algorithm was the same two-step approach as the last map. But I had the computer cycle through all the different possible starting cities, and varied the seed for the randomisation. (The algorithm isn't quite deterministic, since it uses random numbers to break ties when it is asked to find the farthest city, or the shortest insertion.) And setting the start city to Dubuque, Iowa, and the seed to 33, generated that map. Finding these settings took some time, and I'm not sure it is even optimal. It would actually be helpful for the argument I'm about to make if it isn't optimal, and the shortest path is shorter again. But let's assume that it, or something like it, is. Because what I want us to focus on is the philosophical status of the tour in figure \@ref(fig:two-stage-tour). Getting clear on that will be the beginning of a solution to the puzzles about dilemmas.
+That was the best I could find with the tools I had, and I'm not sure it is even optimal. It would actually be helpful for the argument I'm about to make if it isn't optimal, and the shortest path is shorter again. But let's assume that it, or something like it, is. Because what I want us to focus on is the philosophical status of the tour in figure \@ref(fig:two-stage-tour). Getting clear on that will be the beginning of a solution to the puzzles about dilemmas.
 
 ## Common Features of the Puzzles {#commonfeatures}
 
-### Characteristics of the Puzzles
+The four puzzles from section \@ref(fourpuzzles) have a lot of features in common. This is relevant both because these commonalities support the claim I've made that **Salesman** is a dilemma, and because they make it more reasonable to think that we can learn from one example what's true in other examples.
 
-- Multiple standards
-- Stake Sensitivity
-- Might be no available ideal play
-- Especially if there are cognitive limits
 
 ### Multiple Standards
 
-- Tempting to have a binary split into ideal/non-ideal
-- The big point of this chapter is that this is a bad way to do things
-- Talk about Salesman at length, including the maps
-- Key point: Not just quantitative differences, but qualitative differences
+Philosophers have high standards. In this field, as in many others, this is more of a curse than a blessing. It means that the question _Is this ideal?_ is often not just the first question, but the last question. That approach leads to one losing a lot of information. A lot of things that are not ideal are interesting, useful, and good, and if one can't tell them apart from other non-ideal things that are boring, useless, and bad, one is missing out on a lot.
+
+This is particularly clear in **Salesman**. The farthest-insertion algorithm is not ideal, but it is much better than most approaches, especially in situations where the cost of computation is high relative to the cost of travel. By that I don't just mean that it produces shorter routes, though it does do that. I mean that it is qualitatively, not just quantitatively, better than some alternatives. It is a very good algorithm. And what I want us to focus on for a little bit is this idea of being _very good_.
+
+Being very good is an evaluative standard. It is qualitative in the sense I meant in the previous paragraph. Saying that a strategy is very good is to say that it is more rational strategies that are bad, or poor, or mediocre, or fine. This isn't just to say that it produces better outcomes than strategies that are bad, poor, mediocre, or fine. It is easy to see this in **Open Ended Good**. Answering 0.2 produces a better outcome than answering 0.1. But both of them are absurdly bad answers. They are qualitatively alike, even though one of them is quantitatively better. (Indeed, twice as good.) There are only finitely many standards like _very good_ or _absurdly bad_, but there are continuum many answers to **Open Ended Good** that are strictly ordered from quantitatively worst to better.
+
+All this matters because it blocks an inference that is otherwise tempting. If one makes no distinction between non-ideal statuses, then one is left saying that decision theory has nothing to say in the case of dilemmas. But that's not true; it can still say that this or that decision is more rational or less rational.
 
 ### Stake Sensitivity
 
-- Whether something is ideal is not stake-sensitive (unless something weird happens - e.g., me on evidence)
-- But whether something is _fine_ is stake-sensitive
-- Example from open ended good
-- Example from Salesman
+If a solution to a decision problem is ideal, it stays ideal if the stakes of the problem change. But that isn't true of the other statuses I described in the previous subsection, like being _absurdly bad_ or _very good_. It's easiest to see this with **Open Ended Good**. Here are two versions of the problem, with the details filled in.
 
-### No Ideals
+> **Open Ended Good (Dollars)**    
+> Chooser must pick a real in $[0, 1)$. They will get as many dollars as they pick. (Chooser lives in a world somewhat like ours, except that bank accounts can have any real valued number of dollars in them.)
 
-- Foot on two kinds of dilemmas
-- The best option might be _fine_.
-- Weirich 1985 AJP says that it's absurd to have dilemmas, then says that ideal decision is impossible in these cases! That's what I mean by a dilemma :)
+> **Open Ended Good (Lives)**    
+> Chooser must pick a real in $[0, 1)$. From now on, every human born will have a new disease, that kills some people at random on their eighteenth birthday. The real Chooser picks will determine what proportion of people survive. If they choose 0.7, for example, then 30% of people will die from the disease.
 
-### Cognitive Limits and Mixed Strategies
+In **Dollars**, selecting 0.999 is fine, even fairly good. In **Lives**, selecting 0.999 is awfully bad, actually fairly immoral. The same thing goes for the other problems in this chapter. (Except for **Heaven**, where the details are filled in so much that there is not the potential for more variation.) In **Salesman**, first consider a version where each extra mile will cost Chooser a penny, and Chooser has to work out the paths by hand. The path in \@ref(fig:newyork-tour) is not bad in that situation. Chooser could save $50 by coming up with one of the other paths, but it would take hours and hours of work to come up with it. Now consider a version where they have fancy software and hardware to throw at the problem, but a person will die for each mile they take beyond the shortest path. Then even \@ref(fig:two-stage-tour), which I'd said was pretty good, would be awful. Chooser should instead learn how to use one of the algorithms that find the exact solution, and use it.
 
-- If there are limits, salesman could be a dilemma
-- I think, though I'm not relying on it, same is true for assuming can't randomise
-- Why say that someone can't?
-- Stipulation: But then could stipulate that they can't solve salesman
-- Realism (quote Lewis): But we can't solve salesman. In fact, we're better at randomising than salesman
-- Punishment: Then we've given up ideals. Compare my NBA example
-- No good argument really
-- But it doesn't matter, because in Outguess, if Demon does 50/50 if Chooser does 50/50, still a dilemma.
+### Resource Sensitivity {#resource}
+
+This may have been implicit in what I said above, but dilemmas are sensitive not just to how much is at stake, but what resources the chooser has for resolving them. This is clear in **Salesman**. The path in \@ref(fig:newyork-tour) is reasonable if Chooser is solving the problem with pen and paper, and unreasonable if they are solving it with modern technology. But it also applies in **Open-Ended Good**. Assume Chooser has so little mathematical knowledge that they can only answer by saying _zero point nine nine nine etc_. If they are answering verbally, and the stakes are moderate, it might be reasonable to end after eight to ten repetitions. But if they have a computer, and can answer by writing a number on screen, the reasonably thing to do is to hold down the nine key for a while and have it repeat.
+
+This puts a real constraint on what a non-ideal theory must look like. Existing theories of decision, at least in the philosophical literature, are not resource-sensitive. So they can't be good theories of non-ideal decision, at least as they stand.
+
+## No Ideals {#noideals}
+
+This section argues for something that has been implicit in everything I've said in this chapter: _dualism_ about ideal and non-ideal decision theory. By dualism, I mean the view that neither ideal nor non-ideal decision theory are reducible to the other. There are a couple of reductions that are, prima facie, rather attractive. One takes ideal decision theory to be primary, and says that non-ideal decision theory is just ideal decision theory with different costs and benefits of options, and perhaps different available options. Another takes non-ideal decision theory to be primary, and says that ideal decision theory is the special case of non-ideal decision theory that one gets when conditions are, as a matter of fact, ideal. I reject both views; I think ideal and non-ideal decision theory are distinct subject matters. And this section argues for the division.
+
+
+
+### Outguessing Again {#outguess-reprise}
+
+The decision problem in table \@ref(tab:third-dilemma) is just table \@ref(tab:second-dilemma) with the labels changed.
+
+```{r, third-dilemma, cache=TRUE}
+third_dilemma <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "0", "2",
+	   "D", "3", "1"
+	)
+gameformat(third_dilemma, "Another version of asymmetric Death in Damascus.")
+```
+
+I think the following things are true about this game.
+
+1. Ideal theory says that it is a dilemma, neither choice is ideal.
+2. Non-ideal theory says that it is better (in most situations) to choose D rather than U.
+
+In this subsection I'll argue for 1, and in the rest of this section I'll argue for the consistency of 1 and 2. In the next section I'll argue directly for 2, though I suspect that part of the argument won't meet much resistance. The real point of the next section will be to say something substantive about the nature of non-ideal decision theory; the defense of 2 will fall out.
+
+Given 1 and 2, the argument for dualism is straightforward. Any plausible reduction of ideal to non-ideal decision theory will say that 1 and 2 are inconsistent. If they are both true, then there is no possible reduction. And hence dualism is true.
+
+The argument for 1 is primarily an instance of the ABC argument from chapter \@ref(decisive). Consider a version of the ABC game with the following characteristics:
+
+- Demon gets 0 for a false prediction.
+- Demon gets 1 for correctly predicting U, or for choosing A.
+- Demon gets 2 for correctly predicting D.
+- If Demon doesn't choose A, Chooser's payouts are as in table \@ref(tab:third-dilemma).
+- If Demon chooses A, Chooser gets 1.5.
+- If Demon predicts U, Demon chooses A with probability $\frac{8}{9}$, and B with probability $\frac{1}{9}$.
+
+Before Demon makes a choice, the strategic form of the game facing Chooser looks like table \@ref(tab:third-dilemma-strategic).
+
+```{r, third-dilemma-strategic, cache=TRUE}
+third_dilemma_strategic <- tribble(
+	   ~"", ~PU, ~PD,
+	   "U", "4/3", "2",
+	   "D", "5/3", "1"
+	)
+gameformat(third_dilemma_strategic, "Chooser's options before Demon makes a move.")
+```
+
+All the arguments in chapter \@ref(decisive) carry over, so according to ideal theory, a choice is permissible in table \@ref(tab:third-dilemma-strategic) iff it is permissible in table \@ref(tab:third-dilemma). But any reason for choosing D in table \@ref(tab:third-dilemma) works equally well as a reason for choosing U in table \@ref(tab:third-dilemma-strategic). So the view that D is the uniquely rational choice in table \@ref(tab:third-dilemma) is dynamically incoherent, and should be rejected.
+
+This doesn't quite seal the argument for it being a dilemma. For all this shows, it could be that both U and D are ideally permissible in table \@ref(tab:third-dilemma). The argument here relies on the instability of both U and D. Each of those choices is such that, once made, the chooser is unhappy with it. Intuitively, an ideal choice should not be like that. It is particularly hard to see how U in table \@ref(tab:third-dilemma) could be ideal; by any natural measure it is leaving money on the table. Since it is not ideally permissible, and the ABC argument shows that either both options are ideally permissible or neither is, it follows that neither option is ideally permissible. The case is, from the perspective of ideal decision theory, a dilemma.
+
+
+### Foot's Distinction {#foot}
+
+But surely what I just said is a contradiction. Here is a very simple argument against the conclusions of the last subsection.
+
+1. If there are two options, and one is better than the other, the first one is ideal.
+2. In table \@ref(tab:third-dilemma), there are two options, and D is clearly better than U.
+3. So, in table \@ref(tab:third-dilemma), D is ideal.
+
+I think the second premise is true, and the conclusion is false. Since the argument is valid, I'm committed to denying the first premise. But it looks like an analytic truth.
+
+To see what it wrong with premise 1, we need to take a detour through work on moral dilemmas, and in particular pay attention to a distinction drawn by Philippa @Foot1983. She distinguishes _type 1_ and _type 2_ ought statements. It is easiest to understand the distinction with an example she uses. A person has made two incompatible promises and cannot keep both. But it would be an inconvenience to break one, and a disaster to break the other. Ought the person keep the first promise, the one it would be an inconvenience to break? There is, Foot argues, a sense in which the answer is _yes_, and a sense in which the answer is _no_. And that suggests that there are two notions of _ought_. The _type 1_ notion is the one in which the person ought keep the promise; one ought keep one's promises. The _type 2_ notion is the one in which the person ought not keep it; they have to break a promise, and it would be better to break this one. The names aren't the most evocative, but I think Foot is right that there are simply two notions here, and we shouldn't aim to say which of them is what _ought_ really means.
+
+I say the same thing about table \@ref(tab:third-dilemma). In neither sense ought Chooser choose U. But ought they choose D? No, in the type 1 sense; yes, in the type 2 sense. They must choose D or U, and ought not choose U. That implies that they ought choose D, but only in the type 2 sense of ought.
+
+The key thing to make all of what I've said so far consistent is that ideal decision theory is a theory of what one ought do, in Foot's type 1 sense. There is independent evidence that this is the case. What one ought do in the type 2 sense is sensitive to stakes, and computation costs. Non-ideal decision theory, as I discussed above, is sensitive to stakes, and to computation costs. But ideal decision theory is not sensitive to these things. All of the cases I've discussed are ones where we have to distinguish between what's best and what's ideal, so they are all cases where Foot's distinction is important.
+
+I'm not the first to note that this kind of distinction could matter to decision theory. Paul @Weirich1985 says that it is absurd to say that there are dilemmas in decision theory, but that ideal decision theory is impossible in cases like table \@ref(tab:third-dilemma). That requires making Foot's distinction. If a dilemma just means a situation where no solution is ideal, then Weirich has simply contradicted himself. That would be an absurd reading; a better reading is that he's distinguishing between what is ideal (Foot's type 1), and what should be done all things considered (Foot's type 2). Now I'm not as sure that dilemmas in the second sense are impossible; after all, in **Heaven** there might be nothing that one ought do in the type 2 sense. But I think the best way to read what Weirich says is as making the same kind of distinction as Foot makes, and which I'm relying on here.
+
+### The Sure Thing Principle in Non-Ideal Decisions {#salesurething}
+
+In this section I'm going to go over a somewhat complicated variant of **Salesman** which has striking consequences for how one should think about non-ideal decision making. The basic idea for this example is due to Nick Smith (in conversation), but he shouldn't be held responsible for the details of how I'm setting it out.
+
+Chooser is shown a list of one thousand lists of ten cities each. Each of the ten cities was chosen at random from the 257 cities (independently over each of the thousand choices), with the exception that South Bend, Indiana, and Kalamazoo, Michigan, are excluded from the list. One of these thousand lists will be chosen at random. Chooser is asked the following question.
+
+- In the shortest path through the 247 remaining cities (once the ten listed cities are excluded), is there a direct path from South Bend, Indiana, to Kalamazoo, Michigan?
+
+Now this is a hard question twice over. Chooser doesn't even know which are the 247 cities, although Chooser knows that the set of 247 is one of a thousand possible sets. And Chooser doesn't know what the shortest path through each of these sets of 247 cities is, because these problems are hard. Happily, Chooser has three possible answers to this question: _Yes_, _No_, or _Pass_. If Chooser says _Yes_ or _No_, they get $100 if they are correct, and nothing otherwise. If they say _Pass_, they get $80.
+
+Three more details about Chooser's situation, then we'll get onto the analysis. First, Chooser has a decent computer, and knows a bit about how to use it to solve problems like **Salesman**. The time and effort it costs Chooser to solve a particular instance of a salesman problem with about 250 cities is worth about $10. So if Chooser were told which 247 cities were to be mapped out, Chooser would use the computer, figure it out, and get the $100. But it's not worth doing this a thousand times over for $20. Second, from playing around with these problems, Chooser's prior probability that the shortest path for one of these sets of 247 cities would include a link direct from South Bend to Kalamazoo is about 0.5. There are very natural maps that include such a link, and very natural maps that don't. Indeed, there are plenty of natural maps which have the cities on very different parts of the path. Even when the shortest path includes a direct link, there will be a very short path that does not. Excluding a city from a very different part of the map might make all the difference in whether there should be a direct link. Third, although there is no way Chooser could know this, in fact for any one of the thousand sets of ten cities on the list, the answer is _Yes_. This is a remarkable coincidence, and it's one Chooser doesn't know, and couldn't possibly guess.
+
+Given all this, there are two natural conclusions to draw. In the actual situation Chooser is in, they should say _Pass_. They'll get $80. If they said _Yes_ or _No_, they would be guessing, and the expected return of the guess is about $50. They could work it out, but it's not worth the hassle. But, if Chooser were shown which ten cities had been chosen, they would work out what the shortest path was, and say the correct answer _Yes_.
+
+Two philosophical conclusions follow from those points.
+
+First, the Sure Thing Principle doesn't apply in cases of non-ideal decision theory. Whatever list from the one thousand lists was chosen, Chooser would say _Yes_, and rationally so. But before the choice is made, Chooser says _Pass_, and rationally so. I've made heavy use of the Sure Thing Principle for ideal decision theory, and I think it is a key part of ideal decision theory. But it is false when applied to non-ideal decision theory.
+
+Second, sometimes the best thing to do in a non-ideal case is something Chooser knows is not what ideal decision theory would recommend. 
+
+Both of these points support Dualism. If ideal and non-ideal decision theory have different logics, which is what follows from one but not the other obeying Sure Thing, then it is unlikely that one can be reduced to the other. And the most natural reductions involve the idea that one should not do, even in non-ideal cases, what is known not to be ideal.
+
+And this also explains why the ABC argument, which is so central to the discussion here of ideal decision theory, is irrelevant to non-ideal decision theory. Without Sure Thing, a key premise of the ABC argument is not supported. And so it is reasonable in non-ideal decision theory to make a distinction between cases that are, from the perspective of ideal decision theory, alike.
+
+## Evaluating the Non-Ideal
+
+So far I’ve argued that it is consistent to say that table ref is a dilemma, and that it is better to choose D than U. I now turn to the question of whether D is in fact better, and, if it is, why it is. 
+
+The short version will be that non-ideal strategies should be evaluated not in terms of how well they do on an occasion, or even in terms of how well they respond to the available evidence on an occasion, but in terms of how well they do generally. But what is it for a strategy to do well _generally_? That turns out to be a hard question, and not one that I'll make much progress on settling here. The aim of this section is to set up this question, and point towards what a resolution of it might look like.
+
+### Salesman, One Last Time
+
+As with most things about dilemmas, and non-ideal decision theory, **Salesman** turns out to be a useful guide. So let's think about one last particular case of it. Fargle and Nargle are solving the version of Salesman in figure 
+
+```{r west-coast-tour, fig.cap="The 21 cities that must be visited in the west coast salesman problem."}
+theme_set(theme_map())
+
+all_states <- map_data("state") %>% 
+  group_by(region) %>% 
+  tally() %>% 
+  select(state = region)
+
+all_states$code <- c("AL", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA",
+                     "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", 
+                     "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", 
+                     "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", 
+                     "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY")
+
+used_states <- c(36, 4, 27)
+
+long_states <- all_states$state[used_states]
+short_states <- all_states$code[used_states]
+
+data("USCA312")
+data("USCA312_GPS")
+
+cities <- as_tibble(as.matrix(USCA312))
+
+city_numbers <- tibble(
+  id = 1:312,
+  thecities = colnames(cities)
+) %>% 
+  mutate(used_city = case_when(str_sub(thecities, -2) %in% short_states  ~ 1,
+                               TRUE ~ 0))
+
+the_city_numbers <- filter(city_numbers, used_city == 1)$id
+
+
+our_cities <- cities %>% 
+  select(all_of(the_city_numbers)) %>% 
+  slice(the_city_numbers)
+
+our_gps <- USCA312_GPS %>% 
+  slice(the_city_numbers) %>% 
+  rowid_to_column()
+
+city_matrix <- as.matrix(our_cities)
+
+rownames(city_matrix) <- filter(city_numbers, used_city == 1)$thecities
+
+length_tib <- tibble(st = 1:length(the_city_numbers)) 
+
+length_tib <- length_tib %>% 
+  rowwise() %>% 
+  mutate(farth = tour_length(solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start = st))) %>% 
+  mutate(near = tour_length(solve_TSP(as.TSP(city_matrix), method="nearest_insertion", start = st))) %>% 
+  ungroup() %>% 
+  mutate(diff = near - farth) %>% 
+  arrange(diff)
+
+best_diff <- min(length_tib$near) - max(length_tib$farth)
+
+near_tour <- solve_TSP(as.TSP(city_matrix), method="nearest_insertion", start = 7)
+far_tour <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start = 19)
+
+tour_line <- far_tour
+
+# Turn tour to map path
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+paths <- paths %>% add_row(step = 24, property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+
+state_map_data <- map_data("state") %>%
+  #  filter(subregion != "north" | is.na(subregion)) %>%
+  filter(region %in% long_states)
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") +
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+#  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) +
+  coord_quickmap() +
+#  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+  theme(axis.title.x = element_text())
+#tour_length(tour_line)
+tour_map
+```
+
+This is just like the version that I've used many times so far, constrained to California, Nevada, and Oregon. Both of them know that _insertion_ algorithms are very good ways to quickly get a short path through the points. And in both cases, it is reasonable, given the stakes involved in the problem and the computational resources available, to use a single run through an insertion algorithm to find a solution. So that's what they will do.
+
+But they use different insertion algorithms. Recall how insertion algorithms go. The full path is built by adding a city into the path at each step. To go from, say, fifteen cities to sixteen, the algorithm looks at the fifteen options for inserting the new city between each of the existing adjacent cities on the path, and chooses the shortest one. Then it looks to add the seventeenth city by inserting it between two paths on the existing path, and so on until all the cities are included. There are three kinds of choice points in running an insertion algorithm: which city to start with, how to choose the city to be inserted, and how to break ties. The last is usually done at random, and it introduces some noise into the process. The first is also done somewhat arbitrarily, although it turns out to make a big difference. But the second we can be more theoretical about.
+
+Two natural versions of the insertion algorithm are the _farthest insertion_ and the _nearest insertion_. The farthest insertion algorithm chooses at each stage the city that is farthest from the path, and looks at the way to insert it onto the path with minimal increase in length. The nearest insertion algorithm chooses at each stage the city that is closest from the path, and looks at the way to insert it onto the path with minimal increase in length. In the vast majority of cases, the farthest insertion algorithm does better. A lot of people find this counterintuitive, as I did when I first learned it. But the reason it works is that it forces the path to start with a giant loop around the edge of the map, and  in general the shortest paths have the structure of giant loops with interior cities reached by small detours. 
+
+Fargle and Nargle both know this fact about insertion algorithms. Fargle reacts to this sensibly, by using a farthest insertion algorithm, and ending up with the path shown on the left of figure \@ref(fig:near-and-far). Nargle reacts less sensibly, by choosing a nearest insertion algorithm, and ending up with the path shown on the right of \@ref(fig:near-and-far).
+
+```{r near-and-far, fig.cap="Two solutions to the west coast salesman problem.", fig.show="hold", out.width="50%"}
+## A script to find a pair of paths where a typically worse algorithm does better on the particular use
+
+require(tidyverse)
+require(TSP)
+require(maps)
+set.seed(2)
+
+theme_map <- function(base_size=9, base_family="") {
+  require(grid)
+  theme_bw(base_size=base_size, base_family=base_family) %+replace%
+    theme(axis.line=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title=element_blank(),
+          panel.background=element_blank(),
+          panel.border=element_blank(),
+          panel.grid=element_blank(),
+          panel.spacing=unit(0, "lines"),
+          plot.background=element_blank(),
+          legend.justification = c(0,0),
+          legend.position = c(0,0)
+    )
+}
+
+theme_set(theme_map())
+
+all_states <- map_data("state") %>% 
+  group_by(region) %>% 
+  tally() %>% 
+  select(state = region)
+
+all_states$code <- c("AL", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA",
+                     "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", 
+                     "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", 
+                     "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", 
+                     "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY")
+
+used_states <- c(36, 4, 27)
+
+long_states <- all_states$state[used_states]
+short_states <- all_states$code[used_states]
+
+data("USCA312")
+data("USCA312_GPS")
+
+cities <- as_tibble(as.matrix(USCA312))
+
+city_numbers <- tibble(
+  id = 1:312,
+  thecities = colnames(cities)
+) %>% 
+  mutate(used_city = case_when(str_sub(thecities, -2) %in% short_states  ~ 1,
+                               TRUE ~ 0))
+
+the_city_numbers <- filter(city_numbers, used_city == 1)$id
+
+
+our_cities <- cities %>% 
+  select(all_of(the_city_numbers)) %>% 
+  slice(the_city_numbers)
+
+our_gps <- USCA312_GPS %>% 
+  slice(the_city_numbers) %>% 
+  rowid_to_column()
+
+city_matrix <- as.matrix(our_cities)
+
+rownames(city_matrix) <- filter(city_numbers, used_city == 1)$thecities
+
+length_tib <- tibble(st = 1:length(the_city_numbers)) 
+
+length_tib <- length_tib %>% 
+  rowwise() %>% 
+  mutate(farth = tour_length(solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start = st))) %>% 
+  mutate(near = tour_length(solve_TSP(as.TSP(city_matrix), method="nearest_insertion", start = st))) %>% 
+  ungroup() %>% 
+  mutate(diff = near - farth) %>% 
+  arrange(diff)
+
+best_diff <- min(length_tib$near) - max(length_tib$farth)
+
+near_tour <- solve_TSP(as.TSP(city_matrix), method="nearest_insertion", start = 7)
+far_tour <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start = 19)
+
+tour_line <- far_tour
+
+# Turn tour to map path
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+paths <- paths %>% add_row(step = 24, property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+
+state_map_data <- map_data("state") %>%
+  #  filter(subregion != "north" | is.na(subregion)) %>%
+  filter(region %in% long_states)
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") +
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) +
+  coord_quickmap() +
+  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+  theme(axis.title.x = element_text(size=14))
+#tour_length(tour_line)
+tour_map
+
+tour_line <- near_tour
+
+# Turn tour to map path
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+paths <- paths %>% add_row(step = 24, property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+
+state_map_data <- map_data("state") %>%
+  #  filter(subregion != "north" | is.na(subregion)) %>%
+  filter(region %in% long_states)
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") +
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) +
+  coord_quickmap() +
+  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+  theme(axis.title.x = element_text(size=14))
+#tour_length(tour_line)
+tour_map
+
+# Just do California and Nevada and Oregon
+# Nearst starts in Las Vegas, NV
+# Farthest starts in Reno, NV
+# Learn how to do side by side pictures for this
+# Have the players in the story pick these at random
+# Reno, NV is a bad start location, kind of obviously so, but maybe player doesn't know that.
+```
+
+
+And as sometimes happens, Nargle does better. This is rare. (It took some looking to find a pair like this.) This does not show that Nargle was more rational; Fargle was more rational. Indeed, Fargle might have done as well as one could do given the available skills and resources. That's true even though there are many better routes that, in theory, could have been selected. For instance, if Fargle had selected literally any of the other twenty cities as their first city, they would have done better than Nargle. And this was a priori knowable when they set out. 
+
+**NOT COMPLETE**
 
 ## The Possibility Assumption in Philosophical Arguments {#badargument}
 
@@ -1620,7 +2035,7 @@ It should be clear enough that there are no pure strategy Nash equilibria for th
 
 But of course this game is not a strategic form game, it's an extensive form game. Figure \@ref(fig:betting-against-demon-tree) is the game tree for it.
 
-```{tikz, betting-against-demon-tree, fig.cap = "The game tree for the betting against the demon example", fig.ext = 'png', cache=TRUE}
+```{tikz, betting-against-demon-tree, fig.cap = "The game tree for the betting against the demon example", fig.ext = 'png', cache=TRUE, fig.width = 4}
 \usetikzlibrary{calc}
 \begin{tikzpicture}[scale=1.4,font=\footnotesize]
 \tikzset{
@@ -1688,194 +2103,191 @@ If Chooser can randomise, they should randomise. They should play the one and on
 
 If Chooser can't randomise, then it's a dilemma. What we say here should be similar to what EDT, or any other decision theory, says about the example in section \@ref(recipe). But what is that? Let's come back to that question in a bit - first I'll address some objections to the very idea that there could be dilemmas in decision theory.
 
-## Why Allow Dilemmas {#whyallow}
-
-### Arguments Against Dilemmas
-
-- Decision theory assigns values
-	- This doesn't rule out all dilemmas
-	- And we reject the assumption
-
-- Dilemmas should only be allowed in infinite cases.
-	- Why?
-	- Quote Ahmed 2012, and mock
-
-- Decision theory should be guiding
-	- Reject the assumption
-
-- Shouldn' t treat every option the same
-	- This is  better argument, but we can reject it. Some are fine
-
-### What Dilemmas are Like
-
-Be like a smart rationally constrained person
-
-Use heuristics that work much of the time, on average
-
-**This might end up looking a lot like EDT**
-
-Maybe this is why Newcomb's Problem is so hard
-
 # Against Coherence Norms {#coherence}
 
-Some say decision theory is just about doing well by one's own lights.
+A common view in philosophy is that decision theory is the theory of how to make good decisions by one's own lights. Here's a particularly clear statement of this view by David Lewis. (The quote is from letter 695 in volume 2, to Jonathan Gorman, on page 472)
 
-I follow @Comesana2020 in saying rational action requires rational belief.
+> The central question of decision theory is: which choices are the ones that serve one’s desires according to one’s beliefs? 
 
-Actually doesn't quite require - Knight's kid playing in the field is fine
+Lewis was a causal decision theorist, but the view he's defending here is orthogonal to debates between causalists and evidentialists. To give it a name, I'll call it **coherentism about decision theory**, or coherentism for short. The coherentist believes, with Lewis, that a rational decision is one that best serves the chooser's ends given their actual beliefs.
 
-And I mean I think something stronger than Comesana - I mean that there isn't anything extra good re coherence.
+The aim of this chapter is to argue against coherentism, and defend a **rationalist**. I'm following @Comesana2020 in saying that beliefs only rationalise actions if they are themselves rational. And note this is a sufficient condition for rationality, not a necessary one. I think actions can be decision theoretically rational even if the chooser hasn't formed the beliefs that rationalise them. The motivation for this is a much cited story by Frank Knight.
 
-**THESES**
+>  Let us take Marshall’s example of a boy gathering and eating berries … We can hardly suppose that the boy goes through such mental operations as drawing curves or making estimates of utility and disutility scales.  … Nor is this any criticism of the boy. Quite the contrary! It is evident that the rational thing to do is to be irrational, where deliberation and estimation cost more than they are worth. [@Knight1921, 67]
 
-- All coherence norms are wide scope. It isn't that since Chooser thinks L is more likely than R, that Chooser should pick L over R. It is, rather, that Chooser shouldn't both think L is more likely than R and choose R over L. If Chooser does both those things, one should change, but decision theory is silent about which it is.
-- Some coherence norms are actually fickleness norms. Orthodox decision theory doesn't capture fickleness in desire or, in some cases, belief. But the cases should be treated the same.
-- We need some coherence norms to capture sure-thing, which plays a role in my theory.
-- There is no upside to being coherent if one is irrational; coherence is a multiplier not an addition. (Maybe quote Harman on this.)
-- Rational action does not require belief, as in the case of Knight's child playing in the field.
+But cases like this aren't going to be the main focus of attention here. Instead we're going to mostly talk about cases like Old Tom.
 
-**EXAMPLES**
+> **Old Tom**    
+> Old Tom is punching himself in the face. He's doing this because he wants a nice cold beer, and believes, for no good reason whatsoever, that the only way to do this is to punch himself in the face. (And he wants the beer more than he wants to avoid being punched in the face.) His face hurts, and he has no beer.
 
-Chooser1 has two boxes in front of them, L for Left and R for Right. A valuable good is in one of the boxes; the other box is empty. Chooser1 has to chooser L or R, and they will get what is in the box they chose. Their evidence suggests the good is more likely in L, but they believe the good is more likely in R. What should they do?
+I think that Old Tom isn't rational in any sense, including the decision theoretic sense. But I suspect many readers will disagree. Old Tom isn't doing well, those punches are going to hurt, but at least he's instrumentally rational.
 
-Chooser2 faces the same setup as Chooser1: two boxes, a good in just one of them. But their evidence is indecisive. A rational person with that evidence could believe the good is more likely in L, but another rational person with that evidence could believe the good is more likely in R. As it turns out, Chooser2 rationally believes the good is more likely in L. What should they do?
+I have four objections to this view. I'll run through two of them quickly here, and the third and fourth in subsequent sections.
 
-Chooser3 is just like Chooser2, in terms of (a) how the boxes are setup, (b) the evidence they have, and (c) their belief about where the good is (i.e., that it is more likely in L). But Chooser3 has a coin in their hands that they can flip. And Chooser3 has the following dispositions. Right now, they are disposed to take R. After flipping the coin, they are disposed to take L if the coin lands heads, and to take L if the coin lands tails. Is there anything wrong with Chooser3?
+First, I think that to the extent there is an intuition that Old Tom is doing well in _some_ respect, it doesn't survive looking at a broader range of cases. So instead of the fictional case of Old Tom, consider the (more or less) realistic case of Dolores.^[For much more on this case, see @Keefe2018].
 
-Chooser4 is just like Chooser1; their evidence points to the good being in L. They don't have any beliefs about where the good is more likely to be, or any credence about the location of the good. What should they do?
+> **Dolores**    
+> Dolores wants the perfidious British to leave Northern Ireland. And she believes, for no good reason whatsoever, that the best way to bring this about is to set off car bombs on London streets. (And she desires the British exit from Northern Ireland more than she desires avoiding being someone who sets off car bombs.) So she sets of car bombs on London streets. This does not lead to the British leaving Northern Ireland.
 
-Chooser5 is going to a dinner this weekend, and they have to specify in advance whether they want red wine or white wine. On Monday, they said they wanted red wine. On Tuesday, they changed their mind and said they wanted white. On Wednesday morning, they changed their mind again and said they wanted red. By Wednesday lunchtime, they changed back to white. There are no practical costs to this change; Chooser5 likes using the website where the wine choices are entered. Moreover, if they weren't using that website they would be doing something of negative value, like unsuccessfully gambling on cryptocurrencies, or watching online porn, or getting into political fights on social media. Is there anything wrong with Chooser5?
+I know intuitions differ on this, but I don't look at cases like this and think "At least she was being instrumentally rational." As the old saying goes, you do not under any circumstances have to hand it to the terrorists, even when you're talking about instrumental rationality. So I don't think that there is any intuitive sense in which Old Tom is doing something well. And since ideal decision theory is meant to be tracking something worth doing, I don't think it is tracking this kind of means-end coherence. That said, I know this is just a clash of intuitions and many readers won't agree with what I say about Dolores. So let's move on to other arguments.
 
+Consider a variant of the Old Tom story where he also has the following beliefs, and has them because they are true and supported by his evidence.
 
-## Coherence for the Incoherent
+- It's Sunday, and if it's Sunday the best way to get a nice cold beer is to ask the local friendly barman (LFB).
+- It's raining, and if it's raining, the best way to get a nice cold beer is to ask LFB.
+- He's Scottish, and if he's Scottish, the best way to get a nice cold beer is to ask LFB.
 
-What is it to do best by one's own lights
+Whether Old Tom asks LFB or punches himself in the face, he will be doing something a bit incoherent. Asking LFB is incoherent given his belief that the only way to get a nice cold beer is punching himself in the face. But not asking LFB is incoherent given each of these three beliefs I just listed. Indeed, not asking seems more incoherent, since it clashes with so many of his beliefs.
 
-If one believes p, q -\> -p, and q, is it best to act as if p, or as if q
+Now most coherentists are aware of this kind of case. They don't say Old Tom should punch himself. That's because they think that utilities and credences aren't really defined for cases like Old Tom's. Someone this incoherent doesn't really have a defined expected value for either punching himself in the face, or asking LFB. So it's not like the coherentist is committed to saying it is more coherent for Old Tom to punch himself in the face than ask LFB. But they are, at least as I read them, committed to saying that decision theory does not recommend asking LFB.
 
-At best we can get rules for how to be more coherent if you are a bit coherent
-
-And that's maybe something, but not a lot
-
-But even this requires there being a gap between coherence norms and evidence norms, and I don't think there is
+And that non-recommendation seems like a reductio of the view to me. For one thing, there is a clearly right thing to do here, both given the facts and given Old Tom's evidence and beliefs, and they are not recommending it. More importantly, it is now very hard to see what is interesting about the coherentist aim for decision theory. I can see, dimly, why one would care about making actions cohere with beliefs and desires. I can't see, at all, why one would care about a subject matter that at most says how someone who is already coherent in most respects can stay being coherent in other respects. That doesn't seem like a worthwhile project to me, and it's not the one I'm engaged in here.
 
 ## Coherence is a Substantive Norm
 
-Summarise Worsnip book
+The coherentist is committed to saying that there need not be anything wrong with Old Tom in the following case. Old Tom has lost all the conditional beliefs about Sundays and Scotland, still believes the only way to get a nice cold beer is to punch himself in the face, but now has the following belief.
 
-Intuition about guy who punches self in head because he thinks it will mean some trivial thing he cares about is realised
+- On each of the last one hundred days, Old Tom has wanted a nice cold beer. On each of those days, he has asked LFB for a beer, and LFB has given him a beer. He has no new evidence about LFB, but he no longer thinks this will work.
 
-Intuition about guy who goes from p to p v  q1, p v q2, etc, etc, all day every day
+To make the case more substantive, imagine Old Tom has been reading two kinds of philosophical work. The first is work on inductive scepticism, and he has become convinced that the evidence of the last hundred days is not actually good evidence. The second is work on the harmony of the universe, and it has convinced Old Tom that you can only get something as good as a nice cold beer by doing something as unpleasant as punching yourself in the face. These are not great views, but they are coherent. And Old Tom is overall coherent, just in quite a bit of pain.
 
-Intuition that Dummett/Priest etc are, if wrong about anything, wrong about a substantive matter
+Or, at least, most coherentists say that they are coherent. To the extent I understand the notion of coherence, I think it's incoherent to know what happened for the last one hundred days, and not take it to be evidence for what will happen today. More generally, I think it's incoherent to believe against one's evidence. But the coherentist can't say that; if they do their view collapses into rationalism.
 
-Worsnip response - everyone has a tendency to be coherent
+So the coherentist needs a way to distinguish coherence norms, like the norm against believing all of $p, p \rightarrow q$ and $\neg q$, from substantive norms, like the norm against being a counter-inductivist. One option is to try to argue that coherence norms are in some sense _formal_, while substantive norms are not. But this faces challenges in both directions. Some coherence norms, especially norms that cross attitude types, do not look particularly formal. And the view requires that the Carnapian project of understanding probability as truly logical can't work. And, for what it's worth, it's not like we have a particularly clear sense of what it is for a norm to be formal.
 
-Response - what, and I cannot stress this enough, the f
+In recent work, Alex @Worsnip2021 has defended a different approach. He thinks what is definitive of incoherent attitudes is that having those attitudes, or at least having them "transparently" entails having a disposition to revise them.
 
-There is no way that's a correct description of the dialethist, the intuitionist, etc
+> _Incoherence Test_. A set of attitudinal mental states is jointly incoherent iff it is (partially) constitutive of (at least some of) the states in the set that any agent who holds this set of states has a disposition, when conditions of full transparency are met, to revise at least one of the states. [@Worsnip2021, 132]
+
+There is a rather obvious objection to this, which Worsnip is of course aware of. A lot of philosophers, especially logicians, defend views that most other philosophers would say are incoherent. This includes non-standard theories of decision, as in @Buchak2104, non-standard theories of uncertainty, as in @Shafer1977, and, especially, non-classical logics. It would be interesting, but take us too far afield, to see how Worsnip's account applies to intuitionist logicians.^[Or, in keeping with the spirit of this book, the intuitionist theory of uncertainty and decision set out in @Weatherson2005.] So let's stick a case that clearly raises problems; what to say about dialethists such as Graham @Priest1987. 
+
+I'm not a dialethist, so I think Priest is making some kind of mistake. But if he is making a mistake, it is a subtle one, and one that differs in degree not in kind from the mistake that Old Tom makes when he endorses inductive scepticism.^[To be clear, it differs in degree because it a much less culpable mistake than Old Tom's.] Simplifying greatly, Priest believes that the following argument is basically sound.
+
+1. The various semantic paradoxes should get a uniform solution.
+2. The best, perhaps only, uniform solution on the market is the dialethist solution.
+3. So, the dialethist solution to the semantic paradoxes is correct.
+4. So, both the Liar and its negation are true.
+
+I'm a bit sceptical about premise 2; I'm not sold that the dialethist solutions to the Berry, Curry or Yablo paradoxes are particularly compelling, or uniform.^[To be very clear, this is not logical advice. Do not invest in logical theories on my say-so. I'm just noting, for the record, where _I_ think the argument for dialethism goes wrong.] But I'm particularly sceptical about premise 1. And it's very notable for current purposes that if it is wrong, it's a mistake of substantive rationality, not coherence. It's an evidential principle that Priest is appealing to here, and that many may think are mistaken, just like Old Tom is appealing to an evidential principle when he goes for inductive scepticism.
+
+But all might feel too in the weeds. Isn't the simpler thing to say that if coherence norms are to have any bite at all, Priest's views must count as incoherent, but Priest violates the Incoherence Test? Worsnip is aware of this simple objection, and argues that the dialethist either doesn't really believe what they say, or they really do have the dispositions required by the test. Here's the key passage.
+
+> Even if some dialetheists can have contradictory beliefs, I still suspect that in many cases this involves a kind of strain, or a sense of fighting oneself. In her darkest moments in the middle of the night, when the dialetheist is really feeling the power of the considerations favoring her belief in $p$, can she really avoid feeling at least _some_ pressure—arising from these very same considerations—to give up her belief in not-$p$? [@Worsnip2021, 142 emphasis in original]
+
+As a matter of observation, the dialethists I know sure don't seem to feel any such pressure. But who knows what goes through a logician's mind in the darkest moments in the middle of the night? So let's think about whether they should feel such pressure. Remember the key case here. It is when $p$ is the proposition that the negation of $p$ is true. Our dialethist is committed to $p$, and is thinking about the reasons why it is true. Should these considerations make them give up their belief in $\neg p$? Not at all! Given the T-schema, which they are very committed to, the truth of $p$ entails the truth of $\neg p$.
+
+Now one might think at this point that the dialethist's appeal to the unrestricted T-schema is a mistake. And I wouldn't entirely disagree. But it's very hard to see how it is a formal mistake; it looks just the same kind of substantive mistake as Old Tom makes with inductive scepticism (though a much more plausible mistake than his). So if the dialethist goes wrong here, they go wrong in exactly the same way that someone who makes a substantive mistake goes wrong. So that shouldn't, and doesn't trigger the revision dispositions that Worsnip needs.
+
+This is hardly a comprehensive survey of the field. But I'm left rather sceptical that the distinction the coherentist needs, between coherence norms and evidential, or substantive, norms, can be made out. I'll end this chapter by turning away from very general features of coherence norms, and looking at a particular reason for thinking coherence isn't all there is to decision theory.
 
 ## Coherence in Signaling Games
 
-So far I've offered the following argument against the view that decision theory is only about how people should act given their existing beliefs and desires, and has no interest in the rationality of the beliefs.
+The argument in this section is that the best solution to the beer-quiche game [@ChoKreps1987] requires that we look at the rationality of the underlying beliefs, not just at which actions flow in the right way from existing beliefs. I'll start by describing the original game that Cho and Kreps use, then translate it into decision theoretic language, then argue that the coherentist solution to the game is implausible.
 
-1. The view does not make sense when applied to people whose beliefs are not just irrational, but incoherent.
-2. So the view needs a distinction between coherence norms on belief, which must be satisfied for decision theory to be applicable, and substantive norms on belief, which are  irrelevant to decision theory.
-3. But thinking about heterodox logicians reveals that there is no distinction to be found here.
-4. So, the view does not ultimately make sense.
+The back story is that Chooser has wandered into a disreputable bar by mistake, and now has a choice of ordering beer or quiche. Chooser doesn't have enough money for both, and Barman will be unhappy if they order neither. But Barman isn't the main foil for Chooser in our story; that instead would be Patron. The following facts are common knowledge between Chooser and Patron.
 
-Here I want to change tack and offer a direct argument, from with decision theory, for the argument that the decision-theoretic notion of rational action is sensitive to the rationality of the chooser's underlying beliefs. The argument is going to be that the best solution to the beer-quiche game [@ChoKreps1987] requires that we look at the rationality of the underlying beliefs, not just at which actions flow in the right way from existing beliefs.
+- Chooser is either Tough or Wimp.
+- Chooser knows which of these they are, Patron does not. Patron's prior credence that Chooser is Tough is 0.6, leaving 0.4 credence that Chooser is Wimp.^[Just how these facts about Patron's credences become common knowledge is not made entirely clear in the story, but let's pretend they are.]
+- If Chooser is Tough, they prefer beer. If Chooser is Wimp, they prefer quiche.
+- Patron is a bully who will fight Wimps but not Toughs. They utility 1 from fighting Wimps and not fighting Toughs, and utility 0 from the converse.
+- Chooser's order will become common knowledge, and Patron will make their decision about whether Chooser is Tough or Wimp after hearing it.
+- Chooser gets utility 1 from ordering their preferred option (beer or quiche), and utility 2 from Patron not fighting them.
 
-To start, let's translate the beer-quiche game into decision-theoretic terms, using an arbitrarily accurate demon. The problem is a little more complicated than Newcomb-like problems often are, but it should be reasonably familiar if one is used to the kind of signaling games first developed by David Lewis [-@Lewis1969a]. The game goes through the following stages.
+So here is the game tree.
 
-1. Both Chooser and Demon are informed of all the following facts, and it is made clear that they are common knowledge.
-2. Chooser is randomly assigned to one of two _types_, which we'll call $u$ and $d$, for Up and Down. This assignment is done by a random device which has an 0.6 chance of assigning Chooser to $u$, and an 0.4 chance of assigning Chooser to $d$. Demon is not told of the assignment, and cannot predict how random devices work.
-3. Chooser will then make a choice of two options, which we will label $U$ and $D$. Demon will be told which option Chooser takes.
-4. Demon will then try to guess which type Chooser is.
-5. In making this guess, Demon will use their arbitrarily good ability to predict Chooser's _strategy_. The strategy, in the relevant sense, is Chooser's function from type assignment to choice. Chooser can randomise, so a function is a pair of probabilities - what probability of selecting $U$ if they are type $u$, and what probability of selecting $U$ if they are type $d$.
-6. Chooser gets 2 utils if Demon predicts they are type $u$, and 1 util if their choice 'matches' their type, i.e., if they select $U$ if they are $u$ or $D$ if they are $d$.
-7. Demon gets 1 util if their guess is correct.
-
-Figure \@ref(fig:beer-quiche) presents the game in graphical form.
-
-```{tikz, beer-quiche, fig.cap = "A Signaling Game", fig.ext = 'png', cache=TRUE}
+```{tikz, beer-quiche, fig.cap = "Tree Diagram of the Beer-Quich Game", fig.ext = 'png', cache=TRUE, fig.width = 4}
 \usetikzlibrary{calc}
+
 \begin{tikzpicture}[scale=1.4,font=\footnotesize]
 \tikzset{
 % Two node styles for game trees: solid and hollow
 solid node/.style={circle,draw,inner sep=1.5,fill=black},
-hollow node/.style={circle,draw,inner sep=1.5}
+hollow node/.style={circle,draw,inner sep=1.5},
+square node/.style={rectangle,draw, inner sep = 1, fill = black}
 }
 
 % Specify spacing for each level of the tree
 \tikzstyle{level 1}=[level distance=12mm,sibling distance=25mm]
 \tikzstyle{level 2}=[level distance=15mm,sibling distance=15mm]
-\tikzstyle{level 3}=[level distance=17mm,sibling distance=10mm]
+\tikzstyle{level 3}=[level distance=13mm,sibling distance=11mm]
+
 % The Tree
-\node(0)[solid node,label=right:{Nature}]{}
-child[grow=up]{node[solid node,label=above:{
+\node(0)[hollow node,label=above:{Nature}]{}
+child[grow=left]{node[solid node,label=left:{
 $Chooser$
 }] {}
-child[grow=left]{node(1)[solid node]{}
-child{node[hollow node,label=left:{$(3,1)$}]{} edge from parent node [above]{$u$}}
-child{node[hollow node,label=left:{$(0,0)$}]{} edge from parent node [below]{$d$}}
-edge from parent node [below]{$U$}
+child[grow=up]{node(1)[solid node]{}
+child{node[square node,label=above:{$1,0$}]{} edge from parent node [right]{$W$}}
+child{node[square node,label=above:{$3,1$}]{} edge from parent node [left]{$T$}}
+edge from parent node [left, yshift = -5]{$Beer$}
 }
-child[grow=right]{node(3)[solid node]{}
-child{node[hollow node,label=right:{$(1,0)$}]{} edge from parent node [below]{$d$}}
-child{node[hollow node,label=right:{$(2,1)$}]{} edge from parent node [above]{$u$}}
-edge from parent node [below]{$D$}
+child[grow=down]{node(3)[solid node]{}
+child{node[square node,label=below:{$2,0$}]{} edge from parent node [left]{$T$}}
+child{node[square node,label=below:{$0,0$}]{} edge from parent node [right]{$W$}}
+edge from parent node [left, yshift = 5]{$Down$}
 }
-edge from parent node [left]{$0.6$}
+edge from parent node [below, align=center]{$Tough$ \\ $0.6$}
 }
-child[grow=down]{node[solid node,label=below:{
+child[grow=right]{node[solid node,label=right:{
 $Chooser$
 }] {}
-child[grow=left]{node(2)[solid node]{}
-child{node[hollow node,label=left:{$(2,0)$}]{} edge from parent node [above]{$u$}}
-child{node[hollow node,label=left:{$(0,1)$}]{} edge from parent node [below]{$d$}}
-edge from parent node [above]{$U$}
+child[grow=up]{node(2)[solid node]{}
+child{node[square node,label=above:{$0,1$}]{} edge from parent node [right]{$W$}}
+child{node[square node,label=above:{$2,0$}]{} edge from parent node [left]{$T$}}
+edge from parent node [right, yshift = -5]{$Up$}
 }
-child[grow=right]{node(4)[solid node]{}
-child{node[hollow node,label=right:{$(1,1)$}]{} edge from parent node [below]{$d$}}
-child{node[hollow node,label=right:{$(3,0)$}]{} edge from parent node [above]{$u$}}
-edge from parent node [above]{$D$}
+child[grow=down]{node(4)[solid node]{}
+child{node[square node,label=below:{$3,0$}]{} edge from parent node [left]{$T$}}
+child{node[square node,label=below:{$1,1$}]{} edge from parent node [right]{$W$}}
+edge from parent node [right, yshift = 5]{$Down$}
 }
-edge from parent node [right]{$0.4$}
+edge from parent node [below,align=center]{$Wimp$ \\ $0.4$}
 };
 
 % information set
 \draw[dashed,rounded corners=10]($(1) + (-.45,.45)$)rectangle($(2) +(.45,-.45)$);
 \draw[dashed,rounded corners=10]($(3) + (-.45,.45)$)rectangle($(4) +(.45,-.45)$);
 % specify mover at 2nd information set
-\node at ($(1)!.5!(2)$) {$Demon$};
-\node at ($(3)!.5!(4)$) {$Demon$};
+\node at ($(1)!.5!(2)$) {$Patron$};
+\node at ($(3)!.5!(4)$) {$Patron$};
 \end{tikzpicture}
+
+
 ```
 
-The game starts in the middle. Nature assigns Chooser to a type, and we move either up, if they are assigned $u$, or down, if they are assigned $d$. Then Chooser chooses an option. We move left if they choose $U$, and right if they choose $R$. Then Demon chooses, and we move up or down on the angled lines. The dotted lines around the two nodes are there because Demon doesn't know precisely which node they are at. They know what Chooser chose, the nodes inside the dashed lines are alike in that respect. But they don't know  which type assignment was made. And then we get the payouts, using the formulae in lines 6 and 7.
+The game starts in the middle. Nature assigns Chooser to a type: Tough or Wimp. Then Chooser orders, moving up for beer and down for quiche. Then Patron decides Chooser is Tough, and doesn't fight them, or Wimp, and does. And then we get the payoffs. The dashed circles indicate that when Patron moves, they don't know which of two nodes they are at.
 
-Note that while Demon can perfectly predict Chooser's strategy, it doesn't follow that they will perfectly predict Chooser's type. This can be true even if Chooser uses a non-probabilistic strategy. In particular, it is true if Chooser adopts what's called a pooling strategy, of playing the same option whatever type they are. If Chooser plays $U$ whether they are $u$ or $d$, the Demon will get no information from the play, and have to use their prior credence that Chooser has an 0.6 chance of being $u$. And so, it will be expected utility maximising for Demon to guess that Chooser is $u$, and that's what they will do. And the same goes for the situation where Chooser's strategy is to play $D$ no matter what.
+This is of course a signaling game of the kind introduced to the literature by David @Lewis1969. It's not the kind of cooperative signaling game that Lewis was most interested in. But still the structure is that one player gets a message from nature, then makes a signal, and the second player reacts in part by trying to deduce what the signal means about what the first player learned.
 
-The non-pooling strategies, on the other hand, are not stable. If Chooser gives Demon information about their type, that will mean Demon is more likely to accurately guess their type. And that's bad news for choosers who are of type $d$. But since Chooser knows their type when they act, they will not perform an act that's bad for their type. So they will not do anything other than play one of the two pooling strategies. (I'm glossing over a lot of the details here, but this is well worked out territory. See, inter alia, @ChoKreps1987 for the more careful version of the argument in this paragraph.)
+This game has two equilibria. Both of them are _pooling_ equilibria; Chooser plays the same thing whatever type they are. 
 
-So Chooser will play a pooling strategy. But which one will they play? Playing $U$ makes sense. If they are of type $u$, then they will get the best possible return, so they will be happy to follow through on the strategy. And if they are of type $d$, they will get a return of 2 from this strategy, and a return of 1 if they deviate from the strategy and play $D$. 
+The natural equilibrium is that Chooser orders beer whatever type they are, and Patron fights quiche eaters and not beer drinkers. In practice, since Patron doesn't get any information from Chooser's order, their posterior credence that Chooser is Tough equals their prior credence, i.e., 0.6. So Patron doesn't fight, and we end up at either the 3,1 or 2,0 outcomes. In expectation, Chooser's return is 2.6, and Patron's return is 0.6. But neither can do any better given the other's move. If Chooser deviates to quiche when they are Wimp, Patron will fight, and Chooser's payoff will fall from 2 to 1. And Patron is utility maximizing given their evidence.
+
+But there is another, less natural, equilibrium. Chooser orders quiche whatever type they are, and Patron is disposed to fight beer orderers and not fight quiche orderers. Chooser's expected return is only 2.4 in this equilibrium. But neither when they are Tough nor when they are Wimp can they do better given Patron's dispositions. And Patron maximizes expected utility—again, they have to use their prior probability of Chooser's type since they get no useful information. So everything is stable and coherent.
+
+This equilibrium is very strange, because it's hard to make sense of Patron's mindset. And it is harder still to make sense of why Chooser would think that Patron has that mindset. Patron has to think the following things at once. Whether Chooser is Tough or Wimp, they'd be better off ordering quiche, given Patron's dispositions. But, if one of the two were to do the irrational thing, it would be Wimp. And that's true even though Wimp is currently getting their highest possible payout, i.e., three, while Tough is only getting two and could arguably think it was worth the gamble to order beer. And then Chooser has to believe all of this about Patron, with very little evidence.
+
+This game can quite easily be turned into a decision problem. Simply make Patron into Demon with the following characteristics. They want to predict Chooser's type after seeing Chooser's order. They are arbitrarily good at predicting Chooser's _strategy_, i.e., Chooser's dispositions for what to order if Tough or Wimp. They are no better than chance at predicting whether Chooser is Tough or Wimp to start with, but they do know that the probability that Chooser was assigned Tough is 0.6. Then everything else stays the same. Chooser is told their type, then Chooser orders, then Demon says whether Chooser is Tough or Wimp. Demon wants to predict correctly; Chooser wants to maximize utility. Chooser gets 1 for the right order, and 2 for Demon saying they are Tough. Demon wants to get it right, but can't do much if Chooser plays a pooling strategy.
+
+And again, there is a question about what if anything is wrong with the pooling strategy of Chooser always selecting quiche. It maximizes utility if Chooser believes that Demon will say that Chooser is Tough if they order quiche, and Wimp if they order beer. And that belief isn't strictly wrong; in the only situation that obtains, it is a correct belief about what Demon will do. 
+
+Still, it seems intuitively wrong. It isn't rational to order quiche no matter what. And this isn't just my intuition. Cho and Kreps report the same intuition; about the game version to be sure not the decision version, but it's essentially the same. And so do the literally thousands of writers who have follow Cho and Kreps. They develop something they call the _intuitive criterion_ to rule out the all-quiche strategy. The literature on this is voluminous, and I'm not going to summarise it here. But what's important is that this criterion is usually taken to be, usually presented as, continuous with other criteria like subgame perfection that can be used to determine the rational solution in simpler games. That is, it is a criterion of game-theoretic, and hence decision-theoretic, rationality. 
+
+But it's not a criterion that the coherentist can accept. There is nothing incoherent about the belief set that leads to the all-quiche strategy. If Chooser believes that Demon/Patron is following the strategy Tough-if-quiche/Wimp-if-beer, all-quiche is the rational play. And that belief is coherent with their other attitudes. It just isn't evidentially rational. There is no reason to think that that's what Demon/Patron would do if beer were selected.
+
+So decision theory should say in this case that Chooser should order beer. Coherentist decision theory cannot make that recommendation. It says that Chooser should play a pooling strategy but doesn't say which pooling strategy to play. It is only when we supplement coherentist decision theory with the requirement that beliefs are rational that we get the desired result that Chooser should order beer. So coherentist decision theory is false, and its rival rationalist decision theory is true.
+
+Part of what's philosophically interesting about Cho and Kreps's work is that it shows that the following two categories are not equivalent.
+
+- Criteria of rationality that are to do with coherence, as opposed to substantive rationality.
+- Criteria of rationality that can given a precise mathematical formulation.
+
+It's easy to think these go together because most of the criteria of rationality that we discuss in philosophy fall into both or neither. Criteria to do with credences conformity to the probability calculus fall into both. Criteria to with the requirement that credences are (in some sense) proportional to the evidence are in neither. But the criterion that Cho and Kreps offer to rule out the all quiche strategy has a precise mathematical formulation, even though it is clearly a substantive not a coherence constraint. There is nothing incoherent about Chooser believing that Demon/Patron will (coherently) predict that quiche orderers are Tough and beer orderers are Wimps. But it is substantively irrational, and in conflict with the so-called "intuitive criterion".
+
+# Responding to Evidential Decision Theory {#antiedt}
 
 
-
-
-The best solution to beer-quiche puts constraints on priors
-
-These aren't coherence constraints in any recognisable sense
-
-But they are the kind of thing decision theory should take into account
-
-So decision theory should take substantive notions of rationality into account
-
-# Responding to Evidential Decision Theory
-
-
-## So Why Ain't You Rich?
+## So Why Ain't You Rich? {#antiwar}
 
 There is a familiar complaint against causal decision theory that goes back to the modern origins of decision theory in the 1970s. Here is a recent version of it due to @AhmedPrice2012. While their version is primarily directed against proceduralist forms of causal decision theory, this particular objection does not turn on the proceduralism. If the objection works, it also works against my defensivist version of causal decision theory. (I've slightly changed some of the wording, but otherwise this argument is quoted from page 16 of their paper.)
 
@@ -1922,7 +2334,7 @@ gameformat(right_anti_war, "The left hand side of Split Newcomb")
 
 If you'd prefer it as a game tree, it is presented in figure \@ref(fig:first-anti-war).
 
-```{tikz, first-anti-war, fig.cap = "Tree Diagram of the Split Newcomb Game", fig.ext = 'png', cache=TRUE}
+```{tikz, first-anti-war, fig.cap = "Tree Diagram of the Split Newcomb Game", fig.ext = 'png', cache=TRUE, fig.width=5}
 \tikzset{
     % Three node styles for game trees: solid, hollow, square
     solid node/.style={circle,draw,inner sep=1.5,fill=black},
@@ -2044,7 +2456,7 @@ Table: (\#tab:payoffs-demon-coin) Payoffs for the coins and signals game.
 
 Figure \@ref(fig:second-anti-war) shows game they are playing in tree form.
 
-```{tikz, second-anti-war, fig.cap = "Tree Diagram of the Coins and Signals Game", fig.ext = 'png', cache=TRUE}
+```{tikz, second-anti-war, fig.cap = "Tree Diagram of the Coins and Signals Game", fig.ext = 'png', cache=TRUE, fig.width=4}
 \usetikzlibrary{calc}
 
 \begin{tikzpicture}[scale=1.4,font=\footnotesize]
@@ -2308,7 +2720,7 @@ This chapter has four aims, corresponding to its four sections. In section \@ref
 
 Consider the following version of the ABC game.
 
-```{tikz, abc-game-weak-dominance, fig.cap = "A version of the ABC game that supports weak dominance.", fig.ext = 'png', cache=TRUE}
+```{tikz, abc-game-weak-dominance, fig.cap = "A version of the ABC game that supports weak dominance.", fig.ext = 'png', cache=TRUE, fig.width=4}
 \usetikzlibrary{calc}
 \begin{tikzpicture}[scale=1.5,font=\footnotesize]
 \tikzset{
