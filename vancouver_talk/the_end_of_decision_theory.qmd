@@ -371,3 +371,13 @@ They say that for each option, you should loop through the possible states of th
 -   That's exactly the same technical task as solving Salesman by brute force.[^the_end_of_decision_theory-2]
 
 [^the_end_of_decision_theory-2]: Actually one step harder because of the multiplication, but otherwise the same.
+
+## Finish this section
+
+# Idealisations as Life Goals
+
+It's all in sections 3.2 and 3.3 of book - http://brian.weatherson.org/demons/defensive.html#why
+
+# Idealisations as Models
+
+## 
