@@ -4,7 +4,7 @@ author: "Brian Weatherson"
 format:
   revealjs: 
     theme: white
-editor: visual
+editor: source
 ---
 
 # Overview
@@ -76,16 +76,16 @@ require(maps)
 
 theme_map <- function(base_size=9, base_family="") {
   require(grid)
-  theme_bw(base_size=base_size, base_family=base_family) %+replace%
-    theme(axis.line=element_blank(),
-          axis.text=element_blank(),
-          axis.ticks=element_blank(),
-          axis.title=element_blank(),
-          panel.background=element_blank(),
-          panel.border=element_blank(),
-          panel.grid=element_blank(),
-          panel.spacing=unit(0, "lines"),
-          plot.background=element_blank(),
+  theme_bw(base_size = base_size, base_family = base_family) %+replace%
+    theme(axis.line = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          axis.title = element_blank(),
+          panel.background = element_blank(),
+          panel.border = element_blank(),
+          panel.grid = element_blank(),
+          panel.spacing = unit(0, "lines"),
+          plot.background = element_blank(),
           legend.justification = c(0,0),
           legend.position = c(0,0)
     )
@@ -209,7 +209,7 @@ Farthest Insertion Algorithm
 
 ```{r echo=FALSE, cache=TRUE}
 theme_set(theme_map())
-tour_line <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start = 1)
+tour_line <- solve_TSP(as.TSP(city_matrix), method = "farthest_insertion", start = 1)
 
 paths <- tribble(
   ~step, ~property, ~rowid, ~long, ~lat
@@ -228,7 +228,7 @@ for (i in 1:nrow(our_gps)){
 x <- tour_line[1]
 
 
-paths <- paths %>% add_row(step = 1+nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+paths <- paths %>% add_row(step = 1 + nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
 
 tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
   geom_polygon(fill = "white", colour = "grey90") + 
@@ -253,8 +253,8 @@ Swap adjacent edges, two at a time, until there are no benefits from doing this 
 
 ```{r echo=FALSE, cache=TRUE}
 theme_set(theme_map())
-tour_line <- solve_TSP(as.TSP(city_matrix), method="farthest_insertion", start = 1)
-tour_line <- solve_TSP(as.TSP(city_matrix), method="two_opt", tour = tour_line)
+tour_line <- solve_TSP(as.TSP(city_matrix), method = "farthest_insertion", start = 1)
+tour_line <- solve_TSP(as.TSP(city_matrix), method = "two_opt", tour = tour_line)
 
 paths <- tribble(
   ~step, ~property, ~rowid, ~long, ~lat
@@ -271,7 +271,7 @@ for (i in 1:nrow(our_gps)){
 
 x <- tour_line[1]
 
-paths <- paths %>% add_row(step = 1+nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+paths <- paths %>% add_row(step = 1 + nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
 
 
 tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
@@ -314,7 +314,7 @@ for (i in 1:nrow(our_gps)){
 
 x <- tour_line[1]
 
-paths <- paths %>% add_row(step = 1+nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+paths <- paths %>% add_row(step = 1 + nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
 
 
 tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
