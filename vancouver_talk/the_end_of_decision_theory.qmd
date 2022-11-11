@@ -372,11 +372,71 @@ They say that for each option, you should loop through the possible states of th
 
 [^the_end_of_decision_theory-2]: Actually one step harder because of the multiplication, but otherwise the same.
 
-## Finish this section
+## Summary
+
+Decision theory describes what a particular kind of idealised agent **will** do.
+
+- I've bolded **will** because it's going to turn out that's the important modal to use here; as opposed to *should*.
+- If there is any normativity here, it's in the **idealised** part of that sentence, not the modal.
 
 # Idealisations as Life Goals
 
-It's all in sections 3.2 and 3.3 of book - http://brian.weatherson.org/demons/defensive.html#why
+## A Modest Proposal
+
+Decision theory is relevant to how we should act because:
+
+1. It tells us that idealised people do use decision theory, and
+2. We should try to be like idealised people.
+C.  We should try to apply 
+
+---
+
+![I think this stands for What Would Jeffrey Do?](bracelet.jpg)
+
+## First Objection - Knowing the Inputs
+
+To use decision theory as a guide to action, I need to know the utility of the possible states. 
+
+- Knowing ordering isn't enough, need cardinality of each utility.
+- I can only ever tell that the utility of A is half way between that of B and C by thinking about whether A is better or worse to take than a 50/50 bet on B or C.
+- I need to make decisions to get the inputs to decision theory.
+- And I think this is the usual case.
+
+## Second Objection - The General Theory of the Second Best
+
+In general, it's not true that one should try to approximate what the ideal is like.
+
+---
+
+![_The General Theory of the Second Best_, by R. G. Lipsey and Kelvin Lancaster, The Review of Economic Studies, 1956]
+
+This is one of the most philosophically important economics papers ever published.
+
+## Second Best
+
+Often times, the right thing to do is something whose value consists in mitigating the costs of our other flaws.
+
+- We should, especially in high stakes settings, stop and have a little think before acting.
+- The "ideal agent" of decision theory never stops to have a think.
+- Stopping is costly, and **they** don't gain anything from it.
+
+## Second Best
+
+- The ideal agent does lots of things we don't do.
+- They always take reasonable hedges against costly possibilities, and they never stop to have a think.
+- Knowing that the ideal agent is *F* doesn't tell us whether we should try to be *F* unless we also know that *F* is more like the first of these than the second.
+- And decision theory, in anything like its current form, is not particularly helpful on this score.
+
+## Third Objection - The Yoda Objection
+
+Decision theory doesn't say what one should try or not try, it says what one should do.
+
+- So it's weird to infer something about trying from a theory about trying.
+
+## Yoda
+
+I think there's something importantly right about this - decision theory gives criteria of correctness not methods of deliberation - but that in turn shows us why it might be useful.
+
 
 # Idealisations as Models
 
