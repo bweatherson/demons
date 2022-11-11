@@ -58,7 +58,9 @@ Positive claim
 
 Intuitive Answer
 
-:   It isn't very practical in this case. Chooser can't bet on the winner.^[Actually, it's a bit more complicated than that, but let's stick with this characterisation for now.]
+:   It isn't very practical in this case. Chooser can't bet on the winner.[^the_end_of_decision_theory-1]
+
+[^the_end_of_decision_theory-1]: Actually, it's a bit more complicated than that, but let's stick with this characterisation for now.
 
 ## Helpful Advice
 
@@ -188,21 +190,22 @@ tour_map
 #str_c(our_gps$name, sep = "; ", collapse = "; ")
 ```
 
-- Task: find the shortest path that goes through each of these cities.
+-   Task: find the shortest path that goes through each of these cities.
 
 ## Answer
 
-- Literally every philosophical decision theory on the market says that one should choose the path that's actually shortest.
-- That's not particularly helpful advice!
+-   Literally every philosophical decision theory on the market says that one should choose the path that's actually shortest.
+-   That's not particularly helpful advice!
 
 ## Helpful Advice
 
 Now as it turns out there are various helpful things you can say here.
 
 Farthest Insertion Algorithm
-:    Start with an arbitrary city. At each stage, add a city to the path by finding the point to insert it into the path that will add the least distance. The city you add should be the one **farthest** from the existing path.
 
----
+:   Start with an arbitrary city. At each stage, add a city to the path by finding the point to insert it into the path that will add the least distance. The city you add should be the one **farthest** from the existing path.
+
+------------------------------------------------------------------------
 
 ```{r echo=FALSE, cache=TRUE}
 theme_set(theme_map())
@@ -244,9 +247,9 @@ Not a bad path, but not the best.
 
 Swap adjacent edges, two at a time, until there are no benefits from doing this swapping.
 
-- This will give you something very close to the original, but typically a bit shorter. And here it knocks off a few hundred miles.
+-   This will give you something very close to the original, but typically a bit shorter. And here it knocks off a few hundred miles.
 
----
+------------------------------------------------------------------------
 
 ```{r echo=FALSE, cache=TRUE}
 theme_set(theme_map())
@@ -284,10 +287,10 @@ tour_map
 
 ## Unlimited Computing
 
-- If you have unlimited computer power, you could brute force your way through all 257! paths. 
-- Or even with a bit less computing power (but with more mathematical knowledge than before) you can come up with the following map.
+-   If you have unlimited computer power, you could brute force your way through all 257! paths.
+-   Or even with a bit less computing power (but with more mathematical knowledge than before) you can come up with the following map.
 
----
+------------------------------------------------------------------------
 
 ```{r echo = FALSE, cache = TRUE}
 my_list <- as.integer(unlist(strsplit("0,84,59,240,13,198,121,58,102,89,170,20,212,135,231,127,136,107,147,17,151,97,24,142,162,228,87,229,194,206,116,138,244,158,61,108,207,44,54,11,132,9,55,143,26,86,103,47,117,7,96,216,46,251,95,184,69,179,250,174,153,183,242,15,99,119,110,181,248,4,249,164,10,234,71,148,109,152,161,246,222,42,33,150,137,149,100,219,252,175,78,34,30,38,123,130,134,57,173,171,12,16,144,36,32,168,235,2,208,239,25,226,186,35,74,254,167,223,245,39,1,51,256,45,8,56,221,60,98,50,124,129,31,146,159,77,230,118,104,145,83,125,232,6,65,81,19,189,120,106,18,92,112,215,90,49,115,178,139,210,94,133,187,163,28,43,238,62,218,192,53,220,111,82,237,156,73,247,196,233,113,114,191,126,157,213,214,64,243,41,105,67,185,70,225,68,193,140,190,79,141,27,166,180,211,23,93,101,37,169,155,197,176,29,217,241,253,21,209,227,172,195,75,76,22,154,201,204,202,224,188,182,40,85,14,203,128,160,199,200,255,122,80,165,236,72,205,3,88,91,48,63,52,177,66,5,131",",")))
@@ -331,11 +334,11 @@ I'm not sure if this is best, but it's the best I could do, and it involved appl
 
 Let's summarise these two cases in a table.
 
-                    Betting                   Salesman 
------------------  -----------------       -------------------------
-Best outcome        Bet on winner            Shortest path
-Decision theory      Pass                    Shortest path
-Best advice          Pass                    Learn algorithms
+|                 |    Betting    |     Salesman     |
+|-----------------|:-------------:|:----------------:|
+| Best outcome    | Bet on winner |  Shortest path   |
+| Decision theory |     Pass      |  Shortest path   |
+| Best advice     |     Pass      | Learn algorithms |
 
 Decision theory is neither the theory of what is best to do, nor what is advisable to do.
 
@@ -343,26 +346,38 @@ Decision theory is neither the theory of what is best to do, nor what is advisab
 
 Imagine a version of Chooser with knowledge as it is, and computational powers as they might be.
 
-- So for any mathematical problem, they can do it instantly.
-- Ask, what would be good advice for that person?
+-   So for any mathematical problem, they can do it instantly.
+-   Ask, what would be good advice for that person?
 
 ## Decision Theory as Idealisation
 
 They will pass in bet, and choose the shortest path.
 
-- The mathematical work will be immense.
-- They have to calculate the path length for each of 257! paths.
-- And they have to find the minimum length among all of them.
-- But setting computational costs to zero, this is easily do-able.
+-   The mathematical work will be immense.
+-   They have to calculate the path length for each of 257! paths.
+-   And they have to find the minimum length among all of them.
+-   But setting computational costs to zero, this is easily do-able.
 
 ## Technical Detour
 
 Most philosophical decision theory concerns decisions under uncertainty, not decisions like Salesman that are made under certainty.
 
-- But the structure is still the same.
+-   But the structure is still the same.
 
 ## Technical Detour
 
 They say that for each option, you should loop through the possible states of the world, in each case multiplying something (usually a probability) by something else (usually a utility), and then summing the results. Then you choose the maximum.
 
-- That's exactly the same technical task as solving Salesman by brute force.^[Actually one step harder because of the multiplication, but otherwise the same.]
+-   That's exactly the same technical task as solving Salesman by brute force.[^the_end_of_decision_theory-2]
+
+[^the_end_of_decision_theory-2]: Actually one step harder because of the multiplication, but otherwise the same.
+
+## Finish this section
+
+# Idealisations as Life Goals
+
+It's all in sections 3.2 and 3.3 of book - http://brian.weatherson.org/demons/defensive.html#why
+
+# Idealisations as Models
+
+## 
