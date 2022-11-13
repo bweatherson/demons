@@ -408,7 +408,7 @@ In general, it's not true that one should try to approximate what the ideal is l
 
 ---
 
-![_The General Theory of the Second Best_, by R. G. Lipsey and Kelvin Lancaster, The Review of Economic Studies, 1956]
+![_The General Theory of the Second Best_, by R. G. Lipsey and Kelvin Lancaster, The Review of Economic Studies, 1956](lipsey.png)
 
 This is one of the most philosophically important economics papers ever published.
 
@@ -440,4 +440,176 @@ I think there's something importantly right about this - decision theory gives c
 
 # Idealisations as Models
 
-## 
+## Luck
+
+One thing that decision theory is useful for is sorting bad decisions from bad luck.
+
+- This is important in assessing spur-of-the-moment decisions on whether to gamble or not in, e.g., sporting situations.
+- But I'm not sure it is important beyond that.^[I used to think this was a significant project for moral and legal philosophy, but I've changed my mind on this, and am more than happy to talk about why in Q&A.]
+
+## Two Notions of Idealisation
+
+In philosophy we use the word 'idealisation' for two rather different kinds of thing.
+
+1. Perfect
+2. Simple
+
+## Two Notions of Idealisation
+
+It's easy to come up with things that are one but not the other.
+
+1. Whoever the greatest writer or painter is, they aren't simple.
+2. A point mass is not perfect in any sense, but it is a very useful simplication in reasoning.
+
+## Idealisations in Decision Theory
+
+Decision theory provides idealisations in the second sense - they are **simplifications**.
+
+- Just like the point masses we use in the ideal gas law, they say not what should happen, but what would happen in the absence of certain complications.
+
+## Idealisations in Decision Theory
+
+Why do I say it isn't the perfection kind?
+
+1. As already noted, it's bad advice. Don't spend zero seconds on hard but important math problems, like your idealised self does.
+2. But the idealised self isn't really perfect - they have very restricted information.
+
+## Idealisations in Decision Theory
+
+The idealised self that gets used is god-like in one respect - computational ability - but human-like in another - informational awareness.
+
+- That's a common feature of idealised models.
+- You abstract away from one feature, but not others.
+
+## Why Care?
+
+That's what we do, but why do we do it?
+
+- Because sometimes these models are enlightening.
+- Sometimes, the fact that we have computational limitations is not relevant to predicting/explaining/understanding what we will do.
+
+## Really, Why Care?
+
+It's tempting to identify these with high stakes situations, since those are ones where we'll throw enough computational resources at the problem that we have god-like powers.
+
+- But that isn't quite right.
+- In some high stakes cases, we also throw enough investigative resources at the problem that holding actual knowledge fixed is a bad modeling assumption.
+
+## Informational Limitations
+
+What we need are cases where there are principled limitations to our informational capacities, such as,
+
+1. Cases where the information concerns the future; or 
+2. Cases where someone has (or may have) just as strong an incentive to hide information from us.
+
+I'll end with a discussion of an important instance of the second.^[Photo of George Akerlof on next slide by Yan Chi Vinci Chow.]
+
+## Akerlof on Lemons
+
+::: {.columns}
+
+:::: {.column width=35%}
+
+![](akerlof.jpg){width=80% height=80%}
+
+::::
+
+:::: {.column width=65%}
+
+![](lemon.jpg){width=80% height=80%}
+
+::::
+
+:::
+
+## Akerlof on Lemons
+
+::: {.columns}
+
+:::: {.column width=35%}
+
+![](akerlof.jpg){width=80% height=80%}
+
+::::
+
+:::: {.column width=65%}
+
+![](vw.jpeg){width=80% height=80%}
+
+::::
+
+:::
+
+## A 20th Century Puzzle
+
+Used cars sold at a huge discount to new cars, even when the cars were just a few months old with almost no usage.
+
+- There was no agreed upon explanation for this, with the most common theory being that it reflected a preference/prejudice on the part of buyers.
+
+## Akerlof's Theory
+
+Make the following assumptions.
+
+1. Cars vary a lot in quality, even coming from the same production line.
+2. Sellers of used cars know how good this token car is.
+3. Buyers of uesd cars do not; they only know how good the model is in general.
+4. People rarely sell cars they just bought.
+5. Everyone involved is an expected utility maximiser.
+
+## Akerlof's Theory
+
+Akerlof built a formal model with the following properties.
+
+- The most common reason to sell a car one just bought is the discovery that it was a bad instance of that kind of car.
+- Knowing this, buyers of used cars demanded a big discount in exchange for the possibility they were buying a dud.
+- Everyone is acting rationally within the model, given their asymmetric information.
+
+## Akerlof's Theory
+
+If he was right (and I basically think he was) you'd expect the used car discount to fall if either of the following things happened.
+
+1. Production lines got more reliable, and cars off the same line were more similar to one another; or
+2. Buyers had access to better tools to judge the quality of used cars.
+
+By 2020 both of those things had happened, and the used car discount was almost zero.
+
+## Back To Philosophy
+
+You can't build models like this without a theory of rational action under uncertainty.
+
+- And that's the payoff of philosophical decision theory.
+- It's an essential input to useful models, like this one.
+
+## Consequences for Decision Theory
+
+The thing about explanatory models is that they can have very limited scope.
+
+- An explanation of this particular election doesn't have to generalise.
+- Why did Democrats do so well last month? Because of a backlash to Republican attacks on abortion rights.
+- Objection: That doesn't explain the poor results of Labour in the 2019 UK election.
+- Reply: Who cares? That's no reason to think it's the wrong explanation of this election.
+
+## Consequences for Decision Theory
+
+This matters because a lot of people in decision theory assume that a good decision theory will have something to say about every possible choice situation.
+
+- They say this because they think decision theory is in the business of giving advice, and you don't know what situation your advisee will be in.
+
+## Consequences for Decision Theory
+
+This matters because a lot of people in decision theory assume that a good decision theory will have something to say about every possible choice situation.
+
+- But if you're in the business of explanation, it's fine to say that the theory only applies in some cases, and it only provides explanations in those cases.
+
+## For Another Day
+
+At this point you might expect that I'd have a theory that does go silent on a bunch of hard cases, and you'd be right.
+
+- And I'm happy to talk about that theory at literally any length people want.
+- But it's mostly for another talk.
+
+## Conclusions
+
+- Decision theory provides idealisations.
+- These are not things we should aim for, but simplifications that play a role in explanations.
+
