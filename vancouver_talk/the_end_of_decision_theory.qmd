@@ -26,7 +26,7 @@ Negative claim
 
 Positive claim
 
-:   Because it helps us predict what people will do in an interesting range of cases.
+:   Because it helps us predict and understand what people will do in an interesting range of cases.
 
 # Getting at the Question
 
@@ -37,7 +37,7 @@ Positive claim
 
 ## Betting Example
 
--   Chooser has \$110, and is in a sportsbook.
+-   Chooser has \$110, and is in a sports betting shop.
 -   There is a basketball game about to start, between two teams they know to be equally matched.
 -   Chooser has three options: bet the \$110 on Home, bet it on Away, keep money.
 -   If they bet and are right, they win \$100 (plus get the money back they bet), if they are wrong, they lose the money.
@@ -347,7 +347,7 @@ Decision theory is neither the theory of what is best to do, nor what is advisab
 Imagine a version of Chooser with knowledge as it is, and computational powers as they might be.
 
 -   So for any mathematical problem, they can do it instantly.
--   Ask, what would be good advice for that person?
+-   Ask, what would they do?
 
 ## Decision Theory as Idealisation
 
@@ -387,7 +387,7 @@ Decision theory is relevant to how we should act because:
 
 1. It tells us that idealised people do use decision theory, and
 2. We should try to be like idealised people.
-C.  We should try to apply 
+C.  We should try to use decision theory. 
 
 ---
 
