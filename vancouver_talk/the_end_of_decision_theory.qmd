@@ -585,7 +585,7 @@ You can't build models like this without a theory of rational action under uncer
 The thing about explanatory models is that they can have very limited scope.
 
 - An explanation of this particular election doesn't have to generalise.
-- Why did Democrats do so well last month? Because of a backlash to Republican attacks on abortion rights.
+- Why did Democrats do so well in last month's US elections? Because of a backlash to Republican attacks on abortion rights.
 - Objection: That doesn't explain the poor results of Labour in the 2019 UK election.
 - Reply: Who cares? That's no reason to think it's the wrong explanation of this election.
 
@@ -601,11 +601,20 @@ This matters because a lot of people in decision theory assume that a good decis
 
 - But if you're in the business of explanation, it's fine to say that the theory only applies in some cases, and it only provides explanations in those cases.
 
+## Consequences for Decision Theory
+
+There are (at least) two interesting notions around here:
+
+1. What the ideal decider would do in a particular situation.
+2. What it would be advisable for a real life human to do in this situation.
+
+- These come apart in Traveling Salesman cases, and we should keep open the possibility that they also come apart in cases that philosophers talk about.
+
 ## For Another Day
 
-At this point you might expect that I'd have a theory that does go silent on a bunch of hard cases, and you'd be right.
+At this point you might expect that I'd have a theory that does go silent on a bunch of hard cases, and which explains away a bunch of intuitions about cases as intuitions about advisability, not about what an ideal decider does, and you'd be right on both counts.
 
-- And I'm happy to talk about that theory at literally any length people want.
+- And I'm happy to talk about that theory (and those cases) at literally any length people want.
 - But it's mostly for another talk.
 
 ## Conclusions
