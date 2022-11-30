@@ -245,7 +245,7 @@ Not a bad path, but not the best.
 
 ## More Good Advice
 
-Swap adjacent edges, two at a time, until there are no benefits from doing this swapping.
+Delete pairs of edges and find the optimal replacement for that pair, until there are no benefits from doing this deletion.
 
 -   This will give you something very close to the original, but typically a bit shorter. And here it knocks off a few hundred miles.
 
@@ -284,6 +284,87 @@ tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
   theme(axis.title.x = element_text())
 tour_map
 ```
+
+## Making Adjustments
+
+::: {layout-ncol=2}
+```{r echo=FALSE, cache=TRUE, fig.width=6}
+require(ggrepel)
+theme_set(theme_map())
+
+
+swmich <- our_gps %>% 
+  filter(long > -87.5, long < -85, lat > 40.5, lat < 43) %>% 
+  mutate(name = str_remove(name, ", MI")) %>% 
+  mutate(name = str_remove(name, ", IN"))
+  
+tour_line <- solve_TSP(as.TSP(city_matrix), method = "farthest_insertion", start = 1)
+
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+
+paths <- paths %>% add_row(step = 1 + nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") + 
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
+  coord_quickmap(xlim=c(-88,-85), ylim = c(41.5,43)) +
+  geom_text_repel(data = swmich, aes(x = long, y = lat, label=name), inherit.aes = FALSE) +
+#  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+    labs(x = "") +
+  theme(axis.title.x = element_text())
+tour_map
+```
+```{r echo=FALSE, cache=TRUE, fig.width=6}
+theme_set(theme_map())
+tour_line <- solve_TSP(as.TSP(city_matrix), method = "farthest_insertion", start = 1)
+tour_line <- solve_TSP(as.TSP(city_matrix), method = "two_opt", tour = tour_line)
+paths <- tribble(
+  ~step, ~property, ~rowid, ~long, ~lat
+)
+
+
+for (i in 1:nrow(our_gps)){
+  x <- tour_line[i]
+  first_city <- our_gps %>% slice(x)
+  next_city <- our_gps %>% slice(x %% 31)
+  paths <- paths %>%
+    add_row(step = i, property = "from", rowid = first_city$rowid[1], long = first_city$long[1], lat = first_city$lat[1])# %>%
+  #    add_row(step = i, property = "to", rowid = next_city$rowid[1], long = next_city$long[1], lat = next_city$lat[1])
+}
+
+x <- tour_line[1]
+
+
+paths <- paths %>% add_row(step = 1 + nrow(our_gps), property = "from", rowid = our_gps$rowid[x], long = our_gps$long[x], lat = our_gps$lat[x])
+
+tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "grey90") + 
+  geom_point(data = our_gps %>% select(long, lat), aes(x = long, y = lat), size = 0.25, inherit.aes = FALSE) +
+  geom_path(data = paths %>% select(long, lat), aes(x = long, y = lat), inherit.aes = FALSE, colour = "grey30", alpha = 0.5 ) + 
+  coord_quickmap(xlim=c(-88,-85), ylim = c(41.5,43)) +
+  geom_text_repel(data = swmich, aes(x = long, y = lat, label=name), inherit.aes = FALSE) +
+#  labs(x = paste0("Tour length: ", tour_length(tour_line), " miles.")) +
+    labs(x = "") +
+  theme(axis.title.x = element_text())
+tour_map
+```
+:::
 
 ## Unlimited Computing
 
@@ -552,7 +633,7 @@ Make the following assumptions.
 
 1. Cars vary a lot in quality, even coming from the same production line.
 2. Sellers of used cars know how good this token car is.
-3. Buyers of uesd cars do not; they only know how good the model is in general.
+3. Buyers of used cars do not; they only know how good the model is in general.
 4. People rarely sell cars they just bought.
 5. Everyone involved is an expected utility maximiser.
 
