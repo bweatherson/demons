@@ -1,0 +1,161 @@
+---
+title: "Feasible Epistemology"
+author: "Brian Weatherson"
+format:
+  revealjs: 
+    theme: white
+editor: source
+---
+
+## Overview
+
+- I've learned a lot from Maria's work over the years and thrilled to see it in book form.
+- I'd say I'm sympathetic to the view, but that understates how much I've been persuaded by the view.
+
+## Overview
+
+- I'm going to say a couple of things about things I like about the view.
+- Then raise a couple of questions, one about a point of detail, and one about a much bigger picture question about the project.
+
+# Ideal and Non-Ideal
+
+## Ideal and Non-Ideal
+
+- I think of the two parts of Maria's view, the theory of knowledge on the one hand and the theory of optimal feasible dispositions on the other, as versions of ideal and non-ideal theory.
+- One question already is how much that matches with Maria's understanding of her own project.
+
+## Ideal and Non-Ideal
+
+- Thinking of theories as being ideal or non-ideal theories is helpful across a wide range of philosophical debates.
+- Obviously it's been a big deal in political philosophy the last couple of decades.
+- I think it should be central to decision theory.
+
+## Three Consequences
+
+1. Explaining (away) intuitions.
+2. Scepticism about 'intermediate' notions.
+3. Need to state the point of ideal theory.
+
+## Explaining (away) Intuitions
+
+- This is the main thing Maria uses the distinction for.
+- Sometimes there is an intuition that someone should not believe _p_, while Maria's ideal theory says that they should believe that _p_.
+- Solution: The intuition is tracking non-ideal theory.
+
+## Free Move?
+
+- This can't be something you just say for free.
+- Need a story about why the ideal theory has this consequence.
+- And need a non-ideal theory that gets the right result.
+- As I read chapter 3, that's one of the main aims of the chapter.
+
+## Example
+
+- A climber has checked their equipment carefully and knows it's safe.
+- They get _misleading_ evidence that due to their physical condition they are prone to overlooking errors.
+- What should they do?
+
+## Answer(s)
+
+- The know the equipment is safe; they can see it.
+- But in acting on that knowledge, in not double checking, they violate an important constraint in non-ideal epistemology.
+- That is, they don't manifest dispositions that are the best feasible disposition to have.
+
+## Explanation
+
+- Intuitively, the climber would be doing something wrong in double-checking.
+- But that's no objection to saying that taking things as they appear is not ideal.
+- It is ideal; the thing they would do wrong is part of non-ideal epistemology.
+
+## Scepticism about Intermediate Notions
+
+Once you have the ideal/non-ideal distinction in place, there is grounds for scepticism about the utility of a bunch of philosophical projects.
+
+- A lot of what we do in philosophy feels _intermediate_ between ideal and non-ideal.
+- We idealise on this dimension but not that.
+
+## Intermediate Epistemology
+
+Two really bold conjectures.
+
+1. The notion of justified belief might be one notion that's problematic in this way.
+2. It isn't a good idea to do epistemology for people with perceptual capacities as they are, and cognitive capacities as they might be.
+
+## Intermediate Epistemology
+
+My guess is that Maria is more sympathetic to the first of these than the second, but maybe she can tell us!
+
+## What is the Point
+
+But the final thing that comes out of the ideal/non-ideal distinction is that the theorist who works in both registers owes us a story about why we do ideal theory at all.
+
+## Getting Better
+
+The point can't be this:
+
+- Ideal theory is good because it gives us something to aim for.
+- The closer we get to ideal theory, the better we get.
+
+## Second Best
+
+It can't be that because it's not true in general that getting more like the ideal makes us better.
+
+- This is the point of Lipsey and Lancaster's "General Theory of the Second Best", but it applies everywhere.
+
+## Second Best
+
+In general, lots of things we do have the function of mitigating our other flaws.
+
+- Removing these mitigations would make us more like the ideal, but would not make us better.
+
+## Approaching Perfection
+
+We differ from the ideal in three kinds of ways, and philosophers have done a bad job of distinguishing them.
+
+1. We have flaws the ideal agent lacks.
+2. We have mitigations for those flaws the ideal agent does not have or need.
+3. We differ in all sorts of grue-like properties, like making an even number of errors.
+
+## So What Is the Point?
+
+We'll come back to this.
+
+# Gravity
+
+## A Higher-Order Example
+
+- Climber has to make a difficult move.
+- She has checked her setup, and she think it looks pretty good, but is worried that it might fail in a particular unlikely but possible situation.
+- She's right to worry about this; the situation is realistic, and her setup isn't reliable should it eventuate.
+
+## A Higher-Order Example
+
+- She gets evidence from her smartwatch that she has a certain physical condition, high pulse rate perhaps, that makes people overly prone to worrying.
+- People in such situations who think a situation is unlikely but possible are typically wrong, and the situation is not a reasonable one to worry about.
+- What should she do?
+
+## Verdict
+
+- She should adjust the setup so that it won't fail in a realistic situation!
+- Everyone (well, just about everyone) I've checked agrees with this.
+- The higher order evidence that she's excessively worrying should be ignored.
+
+## But Why?
+
+I think the following is a compulsory question for any theory of higher-order evidence.
+
+- Why does it seem a climber should take account of higher-order evidence that one is overconfident, but not that one is underconfident?
+
+## Two Answers
+
+1. My preferred answer - higher-order evidence provides reason to inquire, not reason to change beliefs.
+2. Maria's preferred answer - ignoring higher-order evidence might not change the status of a belief (whether it is reasonable, knowledge, etc), but might manifest bad dispositions.
+
+- These aren't incompatible!
+
+## Maria's Answer
+
+I haven't run the numbers to check this, but I think it turns out that the disposition to ignore pro-confidence higher-order evidence is going to be good by Maria's lights.
+
+- After all, it doesn't typically issue in knowledge.
+- So I think this kind of case will be another nice advantage of Maria's view.
