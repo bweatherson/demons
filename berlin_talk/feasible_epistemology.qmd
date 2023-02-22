@@ -159,3 +159,95 @@ I haven't run the numbers to check this, but I think it turns out that the dispo
 
 - After all, it doesn't typically issue in knowledge.
 - So I think this kind of case will be another nice advantage of Maria's view.
+
+# A Puzzle About Feasibility
+
+## Evaluating Dispositions
+
+A key part of Maria's theory is that some things that other people have said to be irrational are in fact rational, but manifestations of bad dispositions.
+
+- Obligatory question: What makes a disposition good or bad?
+
+## Answer
+
+- Primary answer: Knowledge generation
+- Secondary answer: True belief generation
+- I think the positive view is that both matter, but the first matters much more.
+
+## One Puzzle
+
+Why just care about epistemic things?
+
+- Why not just say that good dispositions are conducive to flourishing, and bad ones are not?
+- I'll come back to this.
+
+## Another Puzzle
+
+When Maria runs the numbers to show that ignoring higher-order evidence is bad, the argument relies on the premise that the prior in p is under 0.5.
+
+- p here is the proposition that the thinker has good evidence for, and believes because of the good evidence, but they have evidence that they do not have good evidence for it.
+
+## A Possible Disposition
+
+When p is one of two answers to a binary question, by which I mean one where there are antecedently two possible answers that both roughly equally likely, ignore higher-order evidence.
+
+- Is this a good disposition?
+- If not, why not?
+
+# More Radical Views
+
+## Three Big Questions
+
+1. Should our evaluation of dispositions be more holistic?
+2. Why does knowledge go with the ideal not with the feasible?
+3. What is the point of knowledge/ideal inquiry?
+
+## Big Picture
+
+I think Maria is right to have a two-track theory, but the tracks should be further apart.
+
+## Holistic Evaluation
+
+Here is a simple explanation of what's wrong with Maria's mountain climber.
+
+- People who do stuff like that end up dead really quickly.
+- This is **not** the explanation that Maria offers.
+
+## Holistic Evaluation
+
+So here's a request for further clarification. Why not include the following factors in evaluating a disposition?
+
+1. How much it would cost to be wrong?
+2. How much it would cost to withhold belief/engage in further checking?
+
+## Knowledge as Practical
+
+Here's something that seems like good common sense, and which you can find going back to classical Indian epistemology.
+
+- Sensible people base their actions on what they know.
+- That suggests that knowledge should be part of the 'good feasible dispositions' part of the story, not the 'ideal response to evidence' part of the story.
+
+## Knowledge as Practical
+
+It would be a very big project, and a very different project, to evaluate that, but I think it should be on the table.
+
+## What's the Point
+
+And this leads to our final question.
+
+- What is the point of knowledge on this view?
+
+## What's the Point
+
+I know what the point of knowledge is on pragmatic encroachment views; it grounds sensible behavior.
+
+- What is the point of it on Maria's view?
+- Do we have to make the same distinction between rational behavior and behavior that manifests good dispositions?
+- If so, what is the value of behaving rationally?
+
+# Summing Up
+
+## Thanks and Congrats
+
+- This is a really valuable book; a capstone to an important and influential research project.
+- And I'm very grateful to have the chance to talk about it with everyone here.
