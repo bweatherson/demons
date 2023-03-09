@@ -1,0 +1,4 @@
+Use of the free database in production requires that you link back to: 
+https://simplemaps.com/data/us-cities.
+
+The city populations are taken from the Census Bureau site at https://www.census.gov/data/tables/time-series/demo/popest/2020s-total-cities-and-towns.html#ds
