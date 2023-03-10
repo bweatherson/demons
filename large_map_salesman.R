@@ -58,18 +58,18 @@ city_lengths <- as_tibble(matrix(nrow = length(used_cities$code),
                                  ncol = length(used_cities$code)), 
                                 .name_repair = ~ used_cities$code)
 
-for (i in 1:length(used_cities$code)){
-  for(j in 1:length(used_cities$code)){
-    city_lengths[[i, j]] <- as.integer(
-      distHaversine(
-        c(used_cities$lng[i], used_cities$lat[i]),
-        c(used_cities$lng[j], used_cities$lat[j])
-      )
-    )
-  }
-}
+# for (i in 1:length(used_cities$code)){
+#   for(j in 1:length(used_cities$code)){
+#     city_lengths[[i, j]] <- as.integer(
+#       distHaversine(
+#         c(used_cities$lng[i], used_cities$lat[i]),
+#         c(used_cities$lng[j], used_cities$lat[j])
+#       )
+#     )
+#   }
+# }
 
-#load("city_lengths.RData")
+load("city_lengths.RData")
 
 city_lengths <- as.matrix(city_lengths)
 
