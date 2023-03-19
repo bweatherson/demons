@@ -54,20 +54,20 @@ used_cities <- uscities |>
   ungroup() |>
   rowid_to_column()
 
-city_lengths <- as_tibble(matrix(nrow = length(used_cities$code), 
-                                 ncol = length(used_cities$code)), 
-                                .name_repair = ~ used_cities$code)
-
-for (i in 1:length(used_cities$code)){
-  for(j in 1:length(used_cities$code)){
-    city_lengths[[i, j]] <- as.integer(
-      distHaversine(
-        c(used_cities$lng[i], used_cities$lat[i]),
-        c(used_cities$lng[j], used_cities$lat[j])
-      )
-    )
-  }
-}
+# city_lengths <- as_tibble(matrix(nrow = length(used_cities$code), 
+#                                  ncol = length(used_cities$code)), 
+#                                 .name_repair = ~ used_cities$code)
+# 
+# for (i in 1:length(used_cities$code)){
+#   for(j in 1:length(used_cities$code)){
+#     city_lengths[[i, j]] <- as.integer(
+#       distHaversine(
+#         c(used_cities$lng[i], used_cities$lat[i]),
+#         c(used_cities$lng[j], used_cities$lat[j])
+#       )
+#     )
+#   }
+# }
 
 load("city_lengths.RData")
 
@@ -75,7 +75,7 @@ city_lengths <- as.matrix(city_lengths)
 
 rownames(city_lengths) <- used_cities$code
 
-tour_line <- solve_TSP(as.TSP(city_lengths), method = "farthest_insertion", start=1)
+tour_line <- solve_TSP(as.TSP(city_lengths), method = "nearest_insertion", start=739)
 tour_line <- solve_TSP(as.TSP(city_lengths), method = "two_opt", tour = tour_line)
 
 paths <- tribble(
@@ -115,12 +115,3 @@ tour_map <- ggplot(state_map_data, aes(long, lat, group = group)) +
 
 tour_map
 
-first_city <- tibble(
-  start_city = 1:1912,
-  length = NA)
-
-for (i in 1:1912){
-  tour_line <- solve_TSP(as.TSP(city_lengths), method = "farthest_insertion", start=i)
-  tour_line <- solve_TSP(as.TSP(city_lengths), method = "two_opt", tour = tour_line)
-  first_city$length[i] <- tour_length(tour_line)
-}
