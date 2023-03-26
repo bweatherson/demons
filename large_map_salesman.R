@@ -34,48 +34,52 @@ all_states <- map_data("state") %>%
   select(state = region)
 
 all_states$code <- c("AL", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA",
-                     "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", 
-                     "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", 
-                     "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", 
-                     "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY")
+                    "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA",
+                    "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM",
+                    "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD",
+                    "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY")
 
-used_states <- 1:49
+used_states <- c(4, 27)
 
 long_states <- all_states$state[used_states]
 short_states <- all_states$code[used_states]
 
-used_cities <- uscities |> 
+all_cities <- uscities |> 
   filter(source == "shape") |> 
   select(city, state_id, state_name, lat, lng, population) |> 
   filter(!state_id %in% c("HI", "AK", "PR")) |> 
+#  filter(state_id %in% short_states) |>
   group_by(state_id) |>
   slice(1:40) |> 
   mutate(code = paste0(city, ", ", state_id)) |>
   ungroup() |>
   rowid_to_column()
 
-# city_lengths <- as_tibble(matrix(nrow = length(used_cities$code), 
-#                                  ncol = length(used_cities$code)), 
-#                                 .name_repair = ~ used_cities$code)
-# 
-# for (i in 1:length(used_cities$code)){
-#   for(j in 1:length(used_cities$code)){
-#     city_lengths[[i, j]] <- as.integer(
-#       distHaversine(
-#         c(used_cities$lng[i], used_cities$lat[i]),
-#         c(used_cities$lng[j], used_cities$lat[j])
-#       )
-#     )
-#   }
-# }
+used_cities <- all_cities |>
+  filter(state_id %in% short_states)
 
-load("city_lengths.RData")
+city_lengths <- as_tibble(matrix(nrow = length(used_cities$code),
+                                 ncol = length(used_cities$code)),
+                                .name_repair = ~ used_cities$code)
+
+for (i in 1:length(used_cities$code)){
+  for(j in 1:length(used_cities$code)){
+    city_lengths[[i, j]] <- as.integer(
+      distHaversine(
+        c(used_cities$lng[i], used_cities$lat[i]),
+        c(used_cities$lng[j], used_cities$lat[j])
+      )
+    )
+  }
+}
+
+#load("city_lengths.RData")
 
 city_lengths <- as.matrix(city_lengths)
 
 rownames(city_lengths) <- used_cities$code
 
-tour_line <- solve_TSP(as.TSP(city_lengths), method = "nearest_insertion", start=739)
+tour_line <- solve_TSP(as.TSP(city_lengths), method = "farthest_insertion", start=1)
 tour_line <- solve_TSP(as.TSP(city_lengths), method = "two_opt", tour = tour_line)
 
 paths <- tribble(
@@ -92,6 +96,13 @@ for (i in 1:nrow(used_cities)){
             lng = first_city$lng[1], 
             lat = first_city$lat[1])
 }
+
+paths <- paths |>
+  add_row(step = nrow(used_cities) + 1,
+          property = "from",
+          rowid = paths$rowid[1],
+          lng = paths$lng[1],
+          lat = paths$lat[1])
 
 state_map_data <- map_data("state") |>
   filter(region %in% long_states) 
